@@ -5,7 +5,7 @@ const initialData = {
         'task-3': { id: 'task-3', content: 'Digest'},
         'task-4': { id: 'task-4', content: 'Fart'},
     },
-    number: 4,
+    number: 0,
     columns: {
         'data-1': {
             id: 'data-1',

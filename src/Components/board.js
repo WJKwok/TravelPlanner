@@ -77,33 +77,47 @@ class Board extends Component {
         this.setState(newState);
     };
 
+    changeHandler = (e) => {
+        this.setState({
+            [e.target.id]: e.target.value
+        })
+    };
+
     clickHandler = () => {
         console.log('hello');
 
-        const columnsCount = this.state.columnOrder.length + 2;
-        const newColumn = `column-${columnsCount}`;
+        const columnsCount = this.state.number;
+
+        var columns = {};
+        var columnOrder = [];
+
+        for (var i = 0; i < columnsCount; i++) {
+            var dataObject = {};
+            dataObject['id'] = `column-${i}`;
+            dataObject['title'] = `column-${i}`;
+            dataObject['taskIds'] = [];
+
+            columns[`column-${i}`] = dataObject;
+            columnOrder.push(`column-${i}`);
+        }
 
         const newState = {
             ...this.state,
             columns: {
                 ...this.state.columns,
-                [newColumn]: {
-                    id: newColumn,
-                    title: 'the end',
-                    taskIds: [],
-                },
+                ...columns,
             },
-            columnOrder: [...this.state.columnOrder, newColumn],
+            columnOrder: [...columnOrder],
         }
 
         this.setState(newState);
-    
     };
 
     render() {
         return (
             <div>
-                <button onClick={this.clickHandler}>Add column</button>
+                <input id='number' value={this.state.number} onChange={this.changeHandler}/>
+                <button onClick={this.clickHandler}>Submit</button>
                 <DragDropContext onDragEnd={this.onDragEnd}>
                     <div className='container'>
                         {this.state.columnOrder.map(columnId => {
