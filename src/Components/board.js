@@ -86,6 +86,44 @@ class Board extends Component {
     clickHandler = () => {
         console.log('hello');
 
+        // https://stackoverflow.com/questions/43262121/trying-to-use-fetch-and-pass-in-mode-no-cors 
+        // added proxy in package.json "proxy": "https://maps.googleapis.com/maps/api"
+
+        fetch("/place/textsearch/json?query=restaurants+hamburg+germany&key=AIzaSyDVzbjC2hViOnbBS8t-ZQPaD64n5O-2gI0")
+            .then(res => res.json())
+            .then(data => {
+                console.log(data.results)
+                console.log(data.results[0].name);
+
+                var tasksFetched = {};
+                var taskIds = [];
+
+                for (var i = 0; i < data.results.length; i++) {
+                    var taskObject = {};
+                    taskObject['id'] = `task-${i}`;
+                    taskObject['content'] = data.results[i].name;
+                    console.log(taskObject);
+                    taskIds.push(`task-${i}`);
+                    tasksFetched[`task-${i}`] = taskObject;
+                }
+
+                const newState = {
+                    ...this.state,
+                    tasks: tasksFetched,
+                    columns: {
+                        ...this.state.columns,
+                        'data-1': {
+                            ...this.state.columns['data-1'],
+                            taskIds: taskIds
+
+                        }
+                    }
+                }
+
+                this.setState(newState);
+            })
+            .catch(error => console.error(error))
+
         const columnsCount = this.state.number;
 
         var columns = {};

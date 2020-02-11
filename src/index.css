@@ -32,7 +32,7 @@ code {
 .column {
   padding:8px;
   flex-grow: 1;
-  min-height: 200px;
+  min-height: 300px;
 }
 
 .item {

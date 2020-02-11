@@ -7,7 +7,6 @@ const item = (props) => {
     return (
         <Draggable draggableId={task.id} 
             index={index}
-            isDragDisabled={task.id === 'task-1'}
         >
             {(provided) => (
                 <div className='item'
@@ -24,3 +23,5 @@ const item = (props) => {
 
 export default item;
 
+// draggable attribute
+// isDragDisabled={task.id === 'task-1'}
