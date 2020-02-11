@@ -88,8 +88,9 @@ class Board extends Component {
 
         // https://stackoverflow.com/questions/43262121/trying-to-use-fetch-and-pass-in-mode-no-cors 
         // added proxy in package.json "proxy": "https://maps.googleapis.com/maps/api"
-
-        fetch("/place/textsearch/json?query=restaurants+hamburg+germany&key=AIzaSyDVzbjC2hViOnbBS8t-ZQPaD64n5O-2gI0")
+        const googlePlacesApi = process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
+        console.log(googlePlacesApi);
+        fetch(`/place/textsearch/json?query=restaurants+hamburg+germany&key=${googlePlacesApi}`)
             .then(res => res.json())
             .then(data => {
                 console.log(data.results)
