@@ -90,7 +90,7 @@ class Board extends Component {
         // added proxy in package.json "proxy": "https://maps.googleapis.com/maps/api"
         const googlePlacesApi = process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
         console.log(googlePlacesApi);
-        fetch(`/place/textsearch/json?query=restaurants+hamburg+germany&key=${googlePlacesApi}`)
+        fetch(`/place/textsearch/json?query=museum+hamburg+germany&key=${googlePlacesApi}`)
             .then(res => res.json())
             .then(data => {
                 console.log(data.results)
@@ -133,7 +133,7 @@ class Board extends Component {
         for (var i = 0; i < columnsCount; i++) {
             var dataObject = {};
             dataObject['id'] = `column-${i}`;
-            dataObject['title'] = `column-${i}`;
+            dataObject['title'] = `Day ${i + 1}`;
             dataObject['taskIds'] = [];
 
             columns[`column-${i}`] = dataObject;

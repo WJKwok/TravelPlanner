@@ -8,11 +8,14 @@ const column = (props) => {
     const {column, tasks} = props;
 
     return (
-        <div className='board'>
+        <div className={column.id === 'data-1' ? 'board-horizontal' : 'board'}>
             <h3>{column.title}</h3>
-            <Droppable droppableId={column.id}>
+            <Droppable 
+                droppableId={column.id}
+                direction={column.id === 'data-1' ? "horizontal" : "vertical"}
+            >
                 {(provided) => (
-                    <div className='column'
+                    <div className={column.id === 'data-1' ? 'column-horizontal' : 'column'}
                         ref={provided.innerRef}
                         {...provided.droppableProps}
                     >
