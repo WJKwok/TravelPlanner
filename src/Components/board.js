@@ -89,8 +89,10 @@ class Board extends Component {
         // https://stackoverflow.com/questions/43262121/trying-to-use-fetch-and-pass-in-mode-no-cors 
         // added proxy in package.json "proxy": "https://maps.googleapis.com/maps/api"
         const googlePlacesApi = process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
+        const place = this.state.place;
+        const type = this.state.type;
         console.log(googlePlacesApi);
-        fetch(`/place/textsearch/json?query=museum+hamburg+germany&key=${googlePlacesApi}`)
+        fetch(`/place/textsearch/json?query=${type}+${place}&key=${googlePlacesApi}`)
             .then(res => res.json())
             .then(data => {
                 console.log(data.results)
@@ -103,6 +105,7 @@ class Board extends Component {
                     var taskObject = {};
                     taskObject['id'] = `task-${i}`;
                     taskObject['content'] = data.results[i].name;
+                    taskObject['rating'] = data.results[i].rating;
                     console.log(taskObject);
                     taskIds.push(`task-${i}`);
                     tasksFetched[`task-${i}`] = taskObject;
@@ -155,8 +158,12 @@ class Board extends Component {
     render() {
         return (
             <div>
-                <input id='number' value={this.state.number} onChange={this.changeHandler}/>
-                <button onClick={this.clickHandler}>Submit</button>
+                <div className="">
+                    <input id='type' placeholder='Type' type="text" value={this.state.type} onChange={this.changeHandler}/>
+                    <input id='place' placeholder='City' type="text" value={this.state.place} onChange={this.changeHandler}/>
+                    <input id='number' placeholder='No. of Days' type="text" value={this.state.number} onChange={this.changeHandler}/>
+                    <button type='submit' onClick={this.clickHandler}>Submit</button>
+                </div>
                 <DragDropContext onDragEnd={this.onDragEnd}>
                     <div className='container'>
                         {this.state.columnOrder.map(columnId => {

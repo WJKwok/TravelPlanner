@@ -14,7 +14,8 @@ const item = (props) => {
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                 >
-                    {task.content}
+                    <p>{task.content}</p>
+                    <p>{task.rating}</p>
                 </div>
             )}
         </Draggable>
