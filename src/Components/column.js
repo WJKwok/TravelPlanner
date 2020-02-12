@@ -5,7 +5,7 @@ import Item from './item';
 
 const column = (props) => {
 
-    const {column, tasks} = props;
+    const {column, places} = props;
 
     return (
         <div className={column.id === 'data-1' ? 'board-horizontal' : 'board'}>
@@ -19,7 +19,7 @@ const column = (props) => {
                         ref={provided.innerRef}
                         {...provided.droppableProps}
                     >
-                        {tasks.map((task, index) => <Item key={task.id} task={task} index={index}/>)}
+                        {places.map((place, index) => <Item key={place.id} place={place} index={index}/>)}
                         {provided.placeholder}
                     </div>
                 )}

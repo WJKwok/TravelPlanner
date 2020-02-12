@@ -28,13 +28,13 @@ class Board extends Component {
         //if moving within the same column
         if (start === finish) {
             const column = this.state.columns[source.droppableId];
-            const newTaskIds = Array.from(column.taskIds);
-            newTaskIds.splice(source.index, 1);
-            newTaskIds.splice(destination.index, 0, draggableId);
+            const newplaceIds = Array.from(column.placeIds);
+            newplaceIds.splice(source.index, 1);
+            newplaceIds.splice(destination.index, 0, draggableId);
 
             const newColumn = {
                 ...column,
-                taskIds: newTaskIds,
+                placeIds: newplaceIds,
             };
 
             const newState = {
@@ -50,18 +50,18 @@ class Board extends Component {
         }
 
         //moving from one list to another
-        const startTaskIds = Array.from(start.taskIds);
-        startTaskIds.splice(source.index, 1);
+        const startplaceIds = Array.from(start.placeIds);
+        startplaceIds.splice(source.index, 1);
         const newStart = {
             ...start,
-            taskIds: startTaskIds,
+            placeIds: startplaceIds,
         };
 
-        const finishTaskIds = Array.from(finish.taskIds);
-        finishTaskIds.splice(destination.index, 0, draggableId);
+        const finishplaceIds = Array.from(finish.placeIds);
+        finishplaceIds.splice(destination.index, 0, draggableId);
         const newFinish = {
             ...finish,
-            taskIds: finishTaskIds,
+            placeIds: finishplaceIds,
         };
 
 
@@ -96,29 +96,28 @@ class Board extends Component {
             .then(res => res.json())
             .then(data => {
                 console.log(data.results)
-                console.log(data.results[0].name);
 
-                var tasksFetched = {};
-                var taskIds = [];
+                var placesFetched = {};
+                var placeIds = [];
 
                 for (var i = 0; i < data.results.length; i++) {
-                    var taskObject = {};
-                    taskObject['id'] = `task-${i}`;
-                    taskObject['content'] = data.results[i].name;
-                    taskObject['rating'] = data.results[i].rating;
-                    console.log(taskObject);
-                    taskIds.push(`task-${i}`);
-                    tasksFetched[`task-${i}`] = taskObject;
+                    var placeObject = {};
+                    placeObject['id'] = `place-${i}`;
+                    placeObject['content'] = data.results[i].name;
+                    placeObject['rating'] = data.results[i].rating;
+                    console.log(placeObject);
+                    placeIds.push(`place-${i}`);
+                    placesFetched[`place-${i}`] = placeObject;
                 }
 
                 const newState = {
                     ...this.state,
-                    tasks: tasksFetched,
+                    places: placesFetched,
                     columns: {
                         ...this.state.columns,
                         'data-1': {
                             ...this.state.columns['data-1'],
-                            taskIds: taskIds
+                            placeIds: placeIds
 
                         }
                     }
@@ -137,7 +136,7 @@ class Board extends Component {
             var dataObject = {};
             dataObject['id'] = `column-${i}`;
             dataObject['title'] = `Day ${i + 1}`;
-            dataObject['taskIds'] = [];
+            dataObject['placeIds'] = [];
 
             columns[`column-${i}`] = dataObject;
             columnOrder.push(`column-${i}`);
@@ -158,8 +157,12 @@ class Board extends Component {
     render() {
         return (
             <div>
-                <div className="">
-                    <input id='type' placeholder='Type' type="text" value={this.state.type} onChange={this.changeHandler}/>
+                <div>
+                    <select className="select-css" id='type' value={this.state.type} onChange={this.changeHandler}>
+                        <option value="Restaurants">Restaurants</option>
+                        <option value="Hotels">Hotels</option>
+                        <option value="Tourist+attraction">Tourist+attraction</option>
+                    </select>
                     <input id='place' placeholder='City' type="text" value={this.state.place} onChange={this.changeHandler}/>
                     <input id='number' placeholder='No. of Days' type="text" value={this.state.number} onChange={this.changeHandler}/>
                     <button type='submit' onClick={this.clickHandler}>Submit</button>
@@ -168,21 +171,21 @@ class Board extends Component {
                     <div className='container'>
                         {this.state.columnOrder.map(columnId => {
                             const column = this.state.columns[columnId];
-                            const tasks = column.taskIds.map(taskId => 
-                                this.state.tasks[taskId]
+                            const places = column.placeIds.map(placeId => 
+                                this.state.places[placeId]
                             );
 
-                            return <Column key={column.id} column={column} tasks={tasks}/>
+                            return <Column key={column.id} column={column} places={places}/>
                         })}
                     </div>
                     <div className='container'>
                         {this.state.dataColumn.map(columnId => {
                             const column = this.state.columns[columnId];
-                            const tasks = column.taskIds.map(taskId => 
-                                this.state.tasks[taskId]
+                            const places = column.placeIds.map(placeId => 
+                                this.state.places[placeId]
                             );
 
-                            return <Column key={column.id} column={column} tasks={tasks}/>
+                            return <Column key={column.id} column={column} places={places}/>
                         })}
                     </div>
                 </DragDropContext>

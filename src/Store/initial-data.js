@@ -1,13 +1,13 @@
 const initialData = {
-    tasks: {},
+    places: {},
     number: 0,
     place: "",
-    type: "",
+    type: "Restaurants",
     columns: {
         'data-1': {
             id: 'data-1',
             title: 'Places',
-            taskIds: [],
+            placeIds: [],
         },
     },
     dataColumn: ['data-1'],

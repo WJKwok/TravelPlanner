@@ -15,7 +15,7 @@ class AddColumn extends Component {
                 'column-4': {
                     id: 'column-4',
                     title: 'the end',
-                    taskIds: [],
+                    placeIds: [],
                 },
             },
             columnOrder: ['column-2', 'column-3', 'column-4'],

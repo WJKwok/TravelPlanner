@@ -3,9 +3,9 @@ import { Draggable } from 'react-beautiful-dnd';
 
 const item = (props) => {
 
-    const {task, index} = props;
+    const {place, index} = props;
     return (
-        <Draggable draggableId={task.id} 
+        <Draggable draggableId={place.id} 
             index={index}
         >
             {(provided) => (
@@ -14,8 +14,8 @@ const item = (props) => {
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                 >
-                    <p>{task.content}</p>
-                    <p>{task.rating}</p>
+                    <p>{place.content}</p>
+                    <p>{place.rating}</p>
                 </div>
             )}
         </Draggable>
@@ -25,4 +25,4 @@ const item = (props) => {
 export default item;
 
 // draggable attribute
-// isDragDisabled={task.id === 'task-1'}
+// isDragDisabled={place.id === 'place-1'}
