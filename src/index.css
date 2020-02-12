@@ -94,3 +94,11 @@ button {
 button:hover {
   background-color: #999;
 }
+
+img {
+  object-fit: cover;
+  width: 180px;
+  height: 180px;
+
+}
+

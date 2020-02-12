@@ -83,7 +83,7 @@ class Board extends Component {
         })
     };
 
-    clickHandler = () => {
+    clickHandler = async () => {
         console.log('hello');
 
         // https://stackoverflow.com/questions/43262121/trying-to-use-fetch-and-pass-in-mode-no-cors 
@@ -92,6 +92,54 @@ class Board extends Component {
         const place = this.state.place;
         const type = this.state.type;
         console.log(googlePlacesApi);
+
+        // let response = await fetch(`/place/textsearch/json?query=${type}+${place}&key=${googlePlacesApi}`)
+        // let data = await response.json()
+
+        // console.log(data.results.length);
+
+        // var placesFetched = {};
+        // var placeIds = [];
+        
+        // for (var i = 0; i < data.results.length; i++) {
+
+        //     //object structure of place card is set here
+
+        //     var placeObject = {};
+        //     placeObject['id'] = `place-${i}`;
+        //     placeObject['content'] = data.results[i].name;
+        //     placeObject['rating'] = data.results[i].rating;
+        //     placeObject['photoRef'] = data.results[i].photos[0].photo_reference;
+        //     console.log(placeObject);
+        //     placeIds.push(`place-${i}`);
+        //     placesFetched[`place-${i}`] = placeObject;
+
+            
+        //     //try requesting photo
+        //     // /place/photo?maxwidth=400&photoreference=&key=YOUR_API_KEY
+        //     // let imgResponse = await fetch(`/place/photo?maxwidth=1600&photoreference=${photoReference}&key=${googlePlacesApi}`)
+        //     // console.log(imgResponse);
+        
+        
+        // }
+        
+
+        // const newState1 = {
+        //     ...this.state,
+        //     places: placesFetched,
+        //     columns: {
+        //         ...this.state.columns,
+        //         'data-1': {
+        //             ...this.state.columns['data-1'],
+        //             placeIds: placeIds
+
+        //         }
+        //     }
+        // }
+
+        // this.setState(newState1);
+
+
         fetch(`/place/textsearch/json?query=${type}+${place}&key=${googlePlacesApi}`)
             .then(res => res.json())
             .then(data => {
@@ -99,17 +147,22 @@ class Board extends Component {
 
                 var placesFetched = {};
                 var placeIds = [];
-
+                
                 for (var i = 0; i < data.results.length; i++) {
+
+                    //object structure of place card is set here
+
                     var placeObject = {};
                     placeObject['id'] = `place-${i}`;
                     placeObject['content'] = data.results[i].name;
                     placeObject['rating'] = data.results[i].rating;
+                    placeObject['photoRef'] = data.results[i].photos ? data.results[i].photos[0].photo_reference : "0";
                     console.log(placeObject);
                     placeIds.push(`place-${i}`);
                     placesFetched[`place-${i}`] = placeObject;
+                
                 }
-
+                
                 const newState = {
                     ...this.state,
                     places: placesFetched,
@@ -126,6 +179,8 @@ class Board extends Component {
                 this.setState(newState);
             })
             .catch(error => console.error(error))
+
+        //setting number of columns
 
         const columnsCount = this.state.number;
 
