@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 
 import initialData from '../Store/initial-data';
 import Column from './column';
 
-class Board extends Component {
+function Board() {
 
-    state = initialData;
+    const [state, setState] = React.useState(initialData);
 
-    onDragEnd = result => {
+    const onDragEnd = result => {
         const { destination, source, draggableId } = result;
 
         if (!destination) {
@@ -22,12 +22,12 @@ class Board extends Component {
             return;
         }
 
-        const start = this.state.columns[source.droppableId];
-        const finish = this.state.columns[destination.droppableId];
+        const start = state.columns[source.droppableId];
+        const finish = state.columns[destination.droppableId];
 
         //if moving within the same column
         if (start === finish) {
-            const column = this.state.columns[source.droppableId];
+            const column = state.columns[source.droppableId];
             const newplaceIds = Array.from(column.placeIds);
             newplaceIds.splice(source.index, 1);
             newplaceIds.splice(destination.index, 0, draggableId);
@@ -38,14 +38,14 @@ class Board extends Component {
             };
 
             const newState = {
-                ...this.state,
+                ...state,
                 columns: {
-                    ...this.state.columns,
+                    ...state.columns,
                     [newColumn.id]: newColumn,
                 },
             };
 
-            this.setState(newState);
+            setState(newState);
             return;
         }
 
@@ -66,123 +66,29 @@ class Board extends Component {
 
 
         const newState = {
-            ...this.state,
+            ...state,
             columns: {
-                ...this.state.columns,
+                ...state.columns,
                 [newStart.id]: newStart,
                 [newFinish.id]: newFinish,
             },
         };
 
-        this.setState(newState);
+        setState(newState);
     };
 
-    changeHandler = (e) => {
-        this.setState({
+    const changeHandler = (e) => {
+        setState({
+            ...state,
             [e.target.id]: e.target.value
         })
     };
 
-    clickHandler = async () => {
-        console.log('hello');
-
-        // https://stackoverflow.com/questions/43262121/trying-to-use-fetch-and-pass-in-mode-no-cors 
-        // added proxy in package.json "proxy": "https://maps.googleapis.com/maps/api"
-        const googlePlacesApi = process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
-        const place = this.state.place;
-        const type = this.state.type;
-        console.log(googlePlacesApi);
-
-        // let response = await fetch(`/place/textsearch/json?query=${type}+${place}&key=${googlePlacesApi}`)
-        // let data = await response.json()
-
-        // console.log(data.results.length);
-
-        // var placesFetched = {};
-        // var placeIds = [];
-        
-        // for (var i = 0; i < data.results.length; i++) {
-
-        //     //object structure of place card is set here
-
-        //     var placeObject = {};
-        //     placeObject['id'] = `place-${i}`;
-        //     placeObject['content'] = data.results[i].name;
-        //     placeObject['rating'] = data.results[i].rating;
-        //     placeObject['photoRef'] = data.results[i].photos[0].photo_reference;
-        //     console.log(placeObject);
-        //     placeIds.push(`place-${i}`);
-        //     placesFetched[`place-${i}`] = placeObject;
-
-            
-        //     //try requesting photo
-        //     // /place/photo?maxwidth=400&photoreference=&key=YOUR_API_KEY
-        //     // let imgResponse = await fetch(`/place/photo?maxwidth=1600&photoreference=${photoReference}&key=${googlePlacesApi}`)
-        //     // console.log(imgResponse);
-        
-        
-        // }
-        
-
-        // const newState1 = {
-        //     ...this.state,
-        //     places: placesFetched,
-        //     columns: {
-        //         ...this.state.columns,
-        //         'data-1': {
-        //             ...this.state.columns['data-1'],
-        //             placeIds: placeIds
-
-        //         }
-        //     }
-        // }
-
-        // this.setState(newState1);
-
-
-        fetch(`/place/textsearch/json?query=${type}+${place}&key=${googlePlacesApi}`)
-            .then(res => res.json())
-            .then(data => {
-                console.log(data.results)
-
-                var placesFetched = {};
-                var placeIds = [];
-                
-                for (var i = 0; i < data.results.length; i++) {
-
-                    //object structure of place card is set here
-
-                    var placeObject = {};
-                    placeObject['id'] = `place-${i}`;
-                    placeObject['content'] = data.results[i].name;
-                    placeObject['rating'] = data.results[i].rating;
-                    placeObject['photoRef'] = data.results[i].photos ? data.results[i].photos[0].photo_reference : "0";
-                    console.log(placeObject);
-                    placeIds.push(`place-${i}`);
-                    placesFetched[`place-${i}`] = placeObject;
-                
-                }
-                
-                const newState = {
-                    ...this.state,
-                    places: placesFetched,
-                    columns: {
-                        ...this.state.columns,
-                        'data-1': {
-                            ...this.state.columns['data-1'],
-                            placeIds: placeIds
-
-                        }
-                    }
-                }
-
-                this.setState(newState);
-            })
-            .catch(error => console.error(error))
+    const clickHandler = async () => {
 
         //setting number of columns
 
-        const columnsCount = this.state.number;
+        const columnsCount = state.number;
 
         var columns = {};
         var columnOrder = [];
@@ -197,57 +103,92 @@ class Board extends Component {
             columnOrder.push(`column-${i}`);
         }
 
+        // https://stackoverflow.com/questions/43262121/trying-to-use-fetch-and-pass-in-mode-no-cors 
+        // added proxy in package.json "proxy": "https://maps.googleapis.com/maps/api"
+        const googlePlacesApi = process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
+        const place = state.place;
+        const type = state.type;
+
+        const response = await fetch(`/place/textsearch/json?query=${type}+${place}&key=${googlePlacesApi}`)
+        const data = await response.json();
+        
+        console.log(data.results)
+
+        var placesFetched = {};
+        var placeIds = [];
+        
+        for (var j = 0; j < data.results.length; j++) {
+
+            //object structure of place card is set here
+
+            var placeObject = {};
+            placeObject['id'] = `place-${j}`;
+            placeObject['content'] = data.results[j].name;
+            placeObject['rating'] = data.results[j].rating;
+            placeObject['photoRef'] = data.results[j].photos ? data.results[j].photos[0].photo_reference : "0";
+            console.log(placeObject);
+            placeIds.push(`place-${j}`);
+            placesFetched[`place-${j}`] = placeObject;
+        
+        }
+
+        columns['data-1'] = {
+            ...state.columns['data-1'],
+            placeIds: placeIds
+        }
+        
         const newState = {
-            ...this.state,
+            ...state,
+            places: placesFetched,
             columns: {
-                ...this.state.columns,
+                ...state.columns,
                 ...columns,
             },
             columnOrder: [...columnOrder],
         }
 
-        this.setState(newState);
+        setState(newState);
+    
     };
 
-    render() {
-        return (
+    return (
+        <div>
             <div>
-                <div>
-                    <select className="select-css" id='type' value={this.state.type} onChange={this.changeHandler}>
-                        <option value="Restaurants">Restaurants</option>
-                        <option value="Hotels">Hotels</option>
-                        <option value="Tourist+attraction">Tourist+attraction</option>
-                    </select>
-                    <input id='place' placeholder='City' type="text" value={this.state.place} onChange={this.changeHandler}/>
-                    <input id='number' placeholder='No. of Days' type="text" value={this.state.number} onChange={this.changeHandler}/>
-                    <button type='submit' onClick={this.clickHandler}>Submit</button>
-                </div>
-                <DragDropContext onDragEnd={this.onDragEnd}>
-                    <div className='container'>
-                        {this.state.columnOrder.map(columnId => {
-                            const column = this.state.columns[columnId];
-                            const places = column.placeIds.map(placeId => 
-                                this.state.places[placeId]
-                            );
-
-                            return <Column key={column.id} column={column} places={places}/>
-                        })}
-                    </div>
-                    <div className='container'>
-                        {this.state.dataColumn.map(columnId => {
-                            const column = this.state.columns[columnId];
-                            const places = column.placeIds.map(placeId => 
-                                this.state.places[placeId]
-                            );
-
-                            return <Column key={column.id} column={column} places={places}/>
-                        })}
-                    </div>
-                </DragDropContext>
+                <select className="select-css" id='type' value={state.type} onChange={changeHandler}>
+                    <option value="Restaurants">Restaurants</option>
+                    <option value="Hotels">Hotels</option>
+                    <option value="Tourist+attraction">Tourist+attraction</option>
+                </select>
+                <input id='place' placeholder='City' type="text" value={state.place} onChange={changeHandler}/>
+                <input id='number' placeholder='No. of Days' type="text" value={state.number} onChange={changeHandler}/>
+                <button type='submit' onClick={clickHandler}>Submit</button>
             </div>
-            
-        );
-    }
+            <DragDropContext onDragEnd={onDragEnd}>
+                <div className='container'>
+                    {state.columnOrder.map(columnId => {
+                        const column = state.columns[columnId];
+                        const places = column.placeIds.map(placeId => 
+                            state.places[placeId]
+                        );
+
+                        return <Column key={column.id} column={column} places={places}/>
+                    })}
+                </div>
+                <div className='container'>
+                    {state.dataColumn.map(columnId => {
+                        const column = state.columns[columnId];
+                        const places = column.placeIds.map(placeId => 
+                            state.places[placeId]
+                        );
+
+                        return <Column key={column.id} column={column} places={places}/>
+                    })}
+                </div>
+            </DragDropContext>
+        </div>
+        
+    );
+
 }
 
 export default Board;
