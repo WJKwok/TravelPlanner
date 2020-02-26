@@ -28,7 +28,7 @@ code {
   margin-right: 8px;
   border: 1px solid lightgrey;
   border-radius: 2px;
-  min-width: 220px;
+  min-width: 350px;
   display: flex;
   flex-direction: column;
 
@@ -63,12 +63,11 @@ code {
 
 .item {
   margin: 2px;
-  border: 1px solid lightgrey;
-  border-radius: 2px;
-  padding: 8px;
-  background-color: white;
-  margin-bottom: 8px;
-  
+}
+
+.card-body {
+  max-height: 200px;
+  overflow-y: scroll;
 }
 
 h3 {

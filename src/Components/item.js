@@ -1,6 +1,10 @@
 import React from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 
+import Accordion from 'react-bootstrap/Accordion';
+import Card from 'react-bootstrap/Card';
+
+
 const item = (props) => {
 
     const {place, index} = props;
@@ -11,15 +15,26 @@ const item = (props) => {
             index={index}
         >
             {(provided) => (
-                <div className='item'
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                >   
-                    
-                    <p>{place.content}</p>
-                    <p>{place.rating}</p>
-                </div>
+                    <Accordion
+                        className="item"
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                    >
+                        <Card>
+                            <Accordion.Toggle as={Card.Header} eventKey="0">
+                                {place.content}
+                            </Accordion.Toggle>
+                            <Accordion.Collapse eventKey="0">
+                                <Card.Body 
+                                    className="card-body"
+                                >
+                                    <p>{place.rating}</p>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                                </Card.Body>
+                            </Accordion.Collapse>
+                        </Card>
+                    </Accordion>
             )}
         </Draggable>
     );
