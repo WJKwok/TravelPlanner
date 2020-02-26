@@ -1,21 +1,45 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Droppable } from 'react-beautiful-dnd'
 
+import { PlaceContext } from '../Store/PlaceContext';
+
 import Item from './item';
+import GoogleMap from './googlemap';
 
-const column = (props) => {
+function Column(props) {
 
+    const {contextState, dispatch} = useContext(PlaceContext);
     const {column, places} = props;
 
+    const manipulatePlaces = () => {
+        const id = column.id;
+        const currentOrder = contextState.columns[id].placeIds;
+        currentOrder.pop();
+        const newOrder = {
+            ...contextState,
+            columns: {
+                ...contextState.columns,
+                [id]: {
+                    ...contextState.columns[id],
+                    placeIds: currentOrder
+                },
+            },
+        }
+
+        console.log(newOrder);
+        dispatch({ type:'CHANGE_ORDER', order: {newOrder}});
+
+    }
+
     return (
-        <div className={column.id === 'data-1' ? 'board-horizontal' : 'board'}>
+        <div className='board'>
             <h3>{column.title}</h3>
             <Droppable 
                 droppableId={column.id}
-                direction={column.id === 'data-1' ? "horizontal" : "vertical"}
+                direction="vertical"
             >
                 {(provided) => (
-                    <div className={column.id === 'data-1' ? 'column-horizontal' : 'column'}
+                    <div className='column'
                         ref={provided.innerRef}
                         {...provided.droppableProps}
                     >
@@ -24,9 +48,10 @@ const column = (props) => {
                     </div>
                 )}
             </Droppable>
-            
+            <button onClick={manipulatePlaces}>Calculate</button>
+            <GoogleMap places={places}/>
         </div>
     );
 }
 
-export default column;
+export default Column;

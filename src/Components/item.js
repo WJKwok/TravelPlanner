@@ -4,7 +4,8 @@ import { Draggable } from 'react-beautiful-dnd';
 const item = (props) => {
 
     const {place, index} = props;
-    const placeImgUrl = "/place/photo?maxheight=400&photoreference=" + place.photoRef + "&key=" + process.env.REACT_APP_GOOGLE_PLACES_API_KEY; 
+    // const placeImgUrl = "/place/photo?maxheight=400&photoreference=" + place.photoRef + "&key=" + process.env.REACT_APP_GOOGLE_PLACES_API_KEY; 
+    
     return (
         <Draggable draggableId={place.id} 
             index={index}
@@ -15,7 +16,7 @@ const item = (props) => {
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                 >   
-                    <img src={placeImgUrl}/>
+                    
                     <p>{place.content}</p>
                     <p>{place.rating}</p>
                 </div>
@@ -28,3 +29,4 @@ export default item;
 
 // draggable attribute
 // isDragDisabled={place.id === 'place-1'}
+//<img src={placeImgUrl}/>

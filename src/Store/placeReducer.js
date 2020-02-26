@@ -39,6 +39,8 @@ const loadPlaces = (state, data, days) => {
         placeObject['content'] = data.results[j].name;
         placeObject['rating'] = data.results[j].rating;
         placeObject['photoRef'] = data.results[j].photos ? data.results[j].photos[0].photo_reference : "0";
+        placeObject['location'] = data.results[j].geometry.location;
+        
         //console.log(placeObject);
         placeIds.push(`place-${j}`);
         placesFetched[`place-${j}`] = placeObject;
@@ -60,5 +62,6 @@ const loadPlaces = (state, data, days) => {
         columnOrder: [...columnOrder],
     }
 
+    // console.log(newState);
     return newState;
 }

@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 
 import Column from './column';
+import HorizontalColumn from './horizontalColumn';
 import Form from './form';
 
 import { PlaceContext } from '../Store/PlaceContext';
@@ -46,7 +47,7 @@ function Board() {
                     [newColumn.id]: newColumn,
                 },
             };
-
+            console.log(newOrder);
             dispatch({ type:'CHANGE_ORDER', order: {newOrder}});
             return;
         }
@@ -76,14 +77,15 @@ function Board() {
             },
         };
 
+        console.log(newOrder);
         dispatch({ type:'CHANGE_ORDER', order: {newOrder}});
     };
 
     return (
-        <div>
+        <div className="page-container">
             <Form/>
             <DragDropContext onDragEnd={onDragEnd}>
-                <div className='container'>
+                <div className='column-container'>
                     {contextState.columnOrder.map(columnId => {
                         const column = contextState.columns[columnId];
                         const places = column.placeIds.map(placeId => 
@@ -93,14 +95,14 @@ function Board() {
                         return <Column key={column.id} column={column} places={places}/>
                     })}
                 </div>
-                <div className='container'>
+                <div>
                     {contextState.dataColumn.map(columnId => {
                         const column = contextState.columns[columnId];
                         const places = column.placeIds.map(placeId => 
                             contextState.places[placeId]
                         );
 
-                        return <Column key={column.id} column={column} places={places}/>
+                        return <HorizontalColumn key={column.id} column={column} places={places}/>
                     })}
                 </div>
             </DragDropContext>

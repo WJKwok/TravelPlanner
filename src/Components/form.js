@@ -18,9 +18,9 @@ function Form() {
         const googlePlacesApi = process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
         const response = await fetch(`/place/textsearch/json?query=${type}+${location}&key=${googlePlacesApi}`)
         const data = await response.json();
-
+        
+        //console.log(data);
         dispatch({ type:'SHOW_PLACES', search: {data, days}});
-    
     };
 
     return (
