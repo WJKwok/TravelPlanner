@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Board from './Components/board';
+import Page from './Components/page';
 import PlaceContextProvider from './Store/PlaceContext';
 
 
@@ -8,7 +8,7 @@ function App() {
   return (
     <div>
       <PlaceContextProvider>
-        <Board/>
+        <Page/>
       </PlaceContextProvider>
     </div>
   );

@@ -16,7 +16,7 @@ function Form() {
         // https://stackoverflow.com/questions/43262121/trying-to-use-fetch-and-pass-in-mode-no-cors 
         // added proxy in package.json "proxy": "https://maps.googleapis.com/maps/api"
         const googlePlacesApi = process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
-        const response = await fetch(`/place/textsearch/json?query=${type}+${location}&key=${googlePlacesApi}`)
+        const response = await fetch(`/place/textsearch/json?query=best+${type}+${location}&key=${googlePlacesApi}`)
         const data = await response.json();
         
         //console.log(data);

@@ -10,16 +10,18 @@ function GoogleMap({places}) {
 
     const zoom = 11
 
-    const MapPin = () => (
-        <div className="pin">
+    const MapPin = ({text}) => (
+        <div className='pin'>
+            {text}
         </div>
         );
 
-    const markerPins = places.map(place => {
+    const markerPins = places.map((place, index) => {
         return <MapPin 
         key={place.id}
         lat={place.location.lat}
         lng={place.location.lng}
+        text={`${index + 1}`}
         />
     })
     

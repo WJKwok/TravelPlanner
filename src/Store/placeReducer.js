@@ -7,6 +7,9 @@ export const placeReducer = (state, action) => {
         case 'CHANGE_ORDER':
             const { newOrder } = action.order;
             return newOrder;
+        case 'HOVER_COLOR':
+            const { newColor } = action.color;
+            return newColor;
         default:
             return state;
     }

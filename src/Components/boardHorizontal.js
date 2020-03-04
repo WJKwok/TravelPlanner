@@ -2,20 +2,21 @@ import React from 'react';
 import { Droppable } from 'react-beautiful-dnd'
 
 import Item from './item';
+import GoogleMap from './googlemap';
 
-function HorizontalColumn(props) {
+function BoardHorizontal(props) {
 
     const {column, places} = props;
 
     return (
-        <div className='board-horizontal'>
-            <h3>{column.title}</h3>
+        <div className='board-places'>
+            <p className="board-title">{column.title}</p>
             <Droppable 
                 droppableId={column.id}
                 direction="horizontal"
             >
                 {(provided) => (
-                    <div className='column-horizontal'
+                    <div className='droppable'
                         ref={provided.innerRef}
                         {...provided.droppableProps}
                     >
@@ -24,8 +25,9 @@ function HorizontalColumn(props) {
                     </div>
                 )}
             </Droppable>
+            <GoogleMap places={places}/>
         </div>
     );
 }
 
-export default HorizontalColumn;
+export default BoardHorizontal;
