@@ -8,7 +8,7 @@ import Card from 'react-bootstrap/Card';
 function Item(props) {
 
     const {place, index} = props;
-    const placeImgUrl = "/place/photo?maxheight=400&photoreference=" + place.photoRef + "&key=" + process.env.REACT_APP_GOOGLE_PLACES_API_KEY; 
+    //const placeImgUrl = "/place/photo?maxheight=400&photoreference=" + place.photoRef + "&key=" + process.env.REACT_APP_GOOGLE_PLACES_API_KEY; 
     
     return (
         <Draggable draggableId={place.id} 
@@ -17,6 +17,7 @@ function Item(props) {
             {(provided) => (
                     <Accordion
                         className="item"
+                        defaultActiveKey="0"
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
@@ -29,7 +30,7 @@ function Item(props) {
                                 <Card.Body 
                                     className="toggle-body"
                                 >
-                                    <img src={placeImgUrl}/>
+                                    <img alt="" src="https://i.imgur.com/zbBglmB.jpg"/>
                                     <p>{place.rating}</p>
                                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
                                 </Card.Body>
@@ -45,4 +46,4 @@ export default Item;
 
 // draggable attribute
 // isDragDisabled={place.id === 'place-1'}
-//<img src={placeImgUrl}/>
+// <img src={placeImgUrl}/>

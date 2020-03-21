@@ -4,12 +4,12 @@ import { Droppable } from 'react-beautiful-dnd'
 import Item from './item';
 import GoogleMap from './googlemap';
 
-function BoardHorizontal(props) {
+function PlaceBoard(props) {
 
     const {column, places} = props;
 
     return (
-        <div className='board-places'>
+        <div className='place-board'>
             <p className="board-title">{column.title}</p>
             <Droppable 
                 droppableId={column.id}
@@ -30,4 +30,4 @@ function BoardHorizontal(props) {
     );
 }
 
-export default BoardHorizontal;
+export default PlaceBoard;

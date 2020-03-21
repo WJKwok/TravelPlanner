@@ -6,7 +6,7 @@ import { PlaceContext } from '../Store/PlaceContext';
 import Item from './item';
 import GoogleMap from './googlemap';
 
-function Board(props) {
+function DayBoard(props) {
 
     const {contextState, dispatch} = useContext(PlaceContext);
     const {column, places} = props;
@@ -32,7 +32,7 @@ function Board(props) {
     }
 
     return (
-        <div className='board-day'>
+        <div className='day-board'>
             <p className="board-title">{column.title}</p>
             <Droppable 
                 droppableId={column.id}
@@ -54,4 +54,4 @@ function Board(props) {
     );
 }
 
-export default Board;
+export default DayBoard;

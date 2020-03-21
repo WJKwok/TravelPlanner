@@ -1,8 +1,8 @@
 export const placeReducer = (state, action) => {
     switch (action.type) {
         case 'SHOW_PLACES':
-            const { data, days } = action.search;
-            const newState = loadPlaces(state, data, days);
+            const { compiledData, days, location } = action.search;
+            const newState = loadPlaces(state, compiledData, days, location);
             return newState;
         case 'CHANGE_ORDER':
             const { newOrder } = action.order;
@@ -15,10 +15,11 @@ export const placeReducer = (state, action) => {
     }
 }
 
-const loadPlaces = (state, data, days) => {
+const loadPlaces = (state, compiledData, days, location) => {
 
-    var columns = {};
-    var columnOrder = [];
+    let columns = {};
+    let dayBoards = [];
+    let placeBoards = [];
 
     for (var i = 0; i < days; i++) {
         var dataObject = {};
@@ -27,42 +28,54 @@ const loadPlaces = (state, data, days) => {
         dataObject['placeIds'] = [];
 
         columns[`column-${i}`] = dataObject;
-        columnOrder.push(`column-${i}`);
+        dayBoards.push(`column-${i}`);
     }
 
-    var placesFetched = {};
-    var placeIds = [];
+    let placesFetched = {};
+    const placeTypes = ['Restaurants', "Hotels", "Tourist+attraction"];
     
-    for (var j = 0; j < data.results.length; j++) {
+    for (var c = 0; c < compiledData.length; c++){
 
-        //object structure of place card is set here
+        let data = compiledData[c];
+        let placeIds = [];
 
-        var placeObject = {};
-        placeObject['id'] = `place-${j}`;
-        placeObject['content'] = data.results[j].name;
-        placeObject['rating'] = data.results[j].rating;
-        placeObject['photoRef'] = data.results[j].photos ? data.results[j].photos[0].photo_reference : "0";
-        placeObject['location'] = data.results[j].geometry.location;
+        for (var j = 0; j < data.results.length; j++) {
+
+            //object structure of place card is set here
+    
+            var placeObject = {};
+            placeObject['id'] = `place-${placeTypes[c]}-${j}`;
+            placeObject['content'] = data.results[j].name;
+            placeObject['rating'] = data.results[j].rating;
+            placeObject['photoRef'] = data.results[j].photos ? data.results[j].photos[0].photo_reference : "0";
+            placeObject['location'] = data.results[j].geometry.location;
+            
+            //console.log(placeObject);
+            placeIds.push(`place-${placeTypes[c]}-${j}`);
+            placesFetched[`place-${placeTypes[c]}-${j}`] = placeObject;
         
-        //console.log(placeObject);
-        placeIds.push(`place-${j}`);
-        placesFetched[`place-${j}`] = placeObject;
+        }
     
-    }
+        columns[`data-${c+1}`] = {
+            id: `data-${c+1}`,
+            title: `${placeTypes[c]}`,
+            placeIds: placeIds
+        }
 
-    columns['data-1'] = {
-        ...state.columns['data-1'],
-        placeIds: placeIds
-    }
+        placeBoards.push(`data-${c+1}`);
+
+    } 
     
     const newState = {
         ...state,
+        location: location,
         places: placesFetched,
         columns: {
             ...state.columns,
             ...columns,
         },
-        columnOrder: [...columnOrder],
+        dayBoards: [...dayBoards],
+        placeBoards: [...placeBoards],
     }
 
     // console.log(newState);

@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 
-import Board from './board';
-import BoardHorizontal from './boardHorizontal';
+import DayBoard from './dayBoard';
+import PlaceBoard from './placeBoard';
 import Form from './form';
 
 import { PlaceContext } from '../Store/PlaceContext';
@@ -81,28 +81,30 @@ function Page() {
         dispatch({ type:'CHANGE_ORDER', order: {newOrder}});
     };
 
+    console.log(contextState);
+
     return (
         <div>
             <Form/>
             <DragDropContext onDragEnd={onDragEnd}>
-                <div className='boards-container'>
-                    {contextState.columnOrder.map(columnId => {
+                <div className='day-boards-container'>
+                    {contextState.dayBoards.map(columnId => {
                         const column = contextState.columns[columnId];
                         const places = column.placeIds.map(placeId => 
                             contextState.places[placeId]
                         );
 
-                        return <Board key={column.id} column={column} places={places}/>
+                        return <DayBoard key={column.id} column={column} places={places}/>
                     })}
                 </div>
-                <div>
-                    {contextState.dataColumn.map(columnId => {
+                <div className='place-boards-container'>
+                    {contextState.placeBoards.map(columnId => {
                         const column = contextState.columns[columnId];
                         const places = column.placeIds.map(placeId => 
                             contextState.places[placeId]
                         );
 
-                        return <BoardHorizontal key={column.id} column={column} places={places}/>
+                        return <PlaceBoard key={column.id} column={column} places={places}/>
                     })}
                 </div>
             </DragDropContext>
