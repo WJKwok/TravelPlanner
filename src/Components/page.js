@@ -81,6 +81,10 @@ function Page() {
         dispatch({ type:'CHANGE_ORDER', order: {newOrder}});
     };
 
+    const addExtraDay = () => {
+        dispatch({type:'ADD_EXTRA_DAY'});
+    }
+
     console.log(contextState);
 
     return (
@@ -96,6 +100,8 @@ function Page() {
 
                         return <DayBoard key={column.id} column={column} places={places}/>
                     })}
+                    {contextState.dayBoards.length > 0 ? <button className="extra-day" onClick={addExtraDay}>+</button> : ""}
+                    
                 </div>
                 <div className='place-boards-container'>
                     {contextState.placeBoards.map(columnId => {

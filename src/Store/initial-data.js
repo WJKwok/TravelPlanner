@@ -1,6 +1,6 @@
 const initialData = {
     places: {},
-    number: 0,
+    days: 0,
     location: "Berlin",
     columns: {},
     placeBoards: [],

@@ -2,8 +2,11 @@ export const placeReducer = (state, action) => {
     switch (action.type) {
         case 'SHOW_PLACES':
             const { compiledData, days, location } = action.search;
-            const newState = loadPlaces(state, compiledData, days, location);
-            return newState;
+            const placesLoaded = loadPlaces(state, compiledData, days, location);
+            return placesLoaded;
+        case 'ADD_EXTRA_DAY':
+            const extraDay = addExtraDay(state);
+            return extraDay;
         case 'CHANGE_ORDER':
             const { newOrder } = action.order;
             return newOrder;
@@ -13,6 +16,29 @@ export const placeReducer = (state, action) => {
         default:
             return state;
     }
+}
+
+const addExtraDay = (state) => {
+
+    const nextColumnIndex = state.dayBoards.length;
+    const nextColumn = {
+        id: `column-${nextColumnIndex}`, 
+        title: `Day ${nextColumnIndex + 1}`, 
+        placeIds: []
+    }
+
+    const newState = {
+        ...state,
+        days: nextColumnIndex + 1,
+        columns: {
+            ...state.columns,
+            [`column-${nextColumnIndex}`]: nextColumn
+        },
+        dayBoards: [...state.dayBoards, `column-${nextColumnIndex}`],
+    }
+
+    console.log(newState);
+    return newState
 }
 
 const loadPlaces = (state, compiledData, days, location) => {
@@ -68,6 +94,7 @@ const loadPlaces = (state, compiledData, days, location) => {
     
     const newState = {
         ...state,
+        days: days,
         location: location,
         places: placesFetched,
         columns: {

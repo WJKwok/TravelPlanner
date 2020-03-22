@@ -6,7 +6,6 @@ import { PlaceContext } from '../Store/PlaceContext';
 function GoogleMap({places}) {
 
     const {contextState} = useContext(PlaceContext);
-    console.log(contextState.location);
 
     const coordinates = {
         "Berlin": {
