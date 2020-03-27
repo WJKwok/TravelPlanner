@@ -22,7 +22,7 @@ const addExtraDay = (state) => {
 
     const nextColumnIndex = state.dayBoards.length;
     const nextColumn = {
-        id: `column-${nextColumnIndex}`, 
+        id: `day-${nextColumnIndex}`, 
         title: `Day ${nextColumnIndex + 1}`, 
         placeIds: []
     }
@@ -32,9 +32,9 @@ const addExtraDay = (state) => {
         days: nextColumnIndex + 1,
         columns: {
             ...state.columns,
-            [`column-${nextColumnIndex}`]: nextColumn
+            [`day-${nextColumnIndex}`]: nextColumn
         },
-        dayBoards: [...state.dayBoards, `column-${nextColumnIndex}`],
+        dayBoards: [...state.dayBoards, `day-${nextColumnIndex}`],
     }
 
     console.log(newState);
@@ -45,16 +45,16 @@ const loadPlaces = (state, compiledData, days, location) => {
 
     let columns = {};
     let dayBoards = [];
-    let placeBoards = [];
+    let categoryBoards = [];
 
     for (var i = 0; i < days; i++) {
         var dataObject = {};
-        dataObject['id'] = `column-${i}`;
+        dataObject['id'] = `day-${i}`;
         dataObject['title'] = `Day ${i + 1}`;
         dataObject['placeIds'] = [];
 
-        columns[`column-${i}`] = dataObject;
-        dayBoards.push(`column-${i}`);
+        columns[`day-${i}`] = dataObject;
+        dayBoards.push(`day-${i}`);
     }
 
     let placesFetched = {};
@@ -82,13 +82,13 @@ const loadPlaces = (state, compiledData, days, location) => {
         
         }
     
-        columns[`data-${c+1}`] = {
-            id: `data-${c+1}`,
+        columns[`category-${c+1}`] = {
+            id: `category-${c+1}`,
             title: `${placeTypes[c]}`,
             placeIds: placeIds
         }
 
-        placeBoards.push(`data-${c+1}`);
+        categoryBoards.push(`category-${c+1}`);
 
     } 
     
@@ -102,7 +102,7 @@ const loadPlaces = (state, compiledData, days, location) => {
             ...columns,
         },
         dayBoards: [...dayBoards],
-        placeBoards: [...placeBoards],
+        categoryBoards: [...categoryBoards],
     }
 
     // console.log(newState);

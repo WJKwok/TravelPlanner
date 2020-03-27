@@ -4,7 +4,7 @@ import { Droppable } from 'react-beautiful-dnd'
 import Item from './item';
 import GoogleMap from './googlemap';
 
-function PlaceBoard(props) {
+function CategoryBoard(props) {
 
     const {column, places} = props;
 
@@ -30,4 +30,4 @@ function PlaceBoard(props) {
     );
 }
 
-export default PlaceBoard;
+export default CategoryBoard;

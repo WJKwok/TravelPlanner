@@ -1,8 +1,10 @@
 import React, { useContext } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
+import { useQuery } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
 
 import DayBoard from './dayBoard';
-import PlaceBoard from './placeBoard';
+import CategoryBoard from './categoryBoard';
 import Form from './form';
 
 import { PlaceContext } from '../Store/PlaceContext';
@@ -10,6 +12,13 @@ import { PlaceContext } from '../Store/PlaceContext';
 function Page() {
 
     const { contextState, dispatch } = useContext(PlaceContext);
+
+    const {
+        loading,
+        data
+    } = useQuery(FETCH_USERS_QUERY);
+
+    console.log(data);
 
     const onDragEnd = result => {
         const { destination, source, draggableId } = result;
@@ -104,13 +113,13 @@ function Page() {
                     
                 </div>
                 <div className='place-boards-container'>
-                    {contextState.placeBoards.map(columnId => {
+                    {contextState.categoryBoards.map(columnId => {
                         const column = contextState.columns[columnId];
                         const places = column.placeIds.map(placeId => 
                             contextState.places[placeId]
                         );
 
-                        return <PlaceBoard key={column.id} column={column} places={places}/>
+                        return <CategoryBoard key={column.id} column={column} places={places}/>
                     })}
                 </div>
             </DragDropContext>
@@ -119,5 +128,16 @@ function Page() {
     );
 
 }
+
+const FETCH_USERS_QUERY = gql`
+{
+    getUsers{
+        id
+        username
+        email
+        createdAt
+    }
+}
+`
 
 export default Page;

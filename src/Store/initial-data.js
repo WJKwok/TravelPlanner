@@ -3,7 +3,7 @@ const initialData = {
     days: 0,
     location: "Berlin",
     columns: {},
-    placeBoards: [],
+    categoryBoards: [],
     dayBoards: [],
 }
 
