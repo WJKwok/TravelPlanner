@@ -31,7 +31,7 @@ function Form() {
     useEffect(() => {
         setDays(placeState.days);
         setLocation(placeState.location);
-    }, [placeState.location])
+    }, [placeState.location, placeState.days])
 
     // console.log('form has been re-rendered: ', days, location)
 

@@ -2,6 +2,8 @@
 const googlePlacesApi = process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
 
 export const fetchCategories = async (categories, city, dispatch) => {
+    
+    dispatch({ type:"LOAD_EMPTY_CATEGORY", payload:{categories}})
 
     for (var i = 0; i < categories.length; i++){
 

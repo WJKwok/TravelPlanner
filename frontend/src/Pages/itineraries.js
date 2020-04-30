@@ -42,8 +42,9 @@ function Itineraries() {
     });
 
     console.log(itineraries);
-    const itineraryCards = itineraries ?
-        itineraries.map((itinerary) => {
+    const itineraryCards = loading ?
+        ""
+        : itineraries.map((itinerary) => {
             return (
                 <Link to={`/itinerary/${itinerary.id}`} key={itinerary.id}>
                     <Card className={classes.root}>
@@ -71,7 +72,6 @@ function Itineraries() {
                     </Card>
                 </Link>
             )})
-        : ""
     
     return (
         <div>

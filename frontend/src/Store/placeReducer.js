@@ -23,6 +23,12 @@ export const placeReducer = (state, action) => {
             const { itinerary, placesFetched } = action.payload
             const itineraryLoaded = loadEntireItinerary(state, itinerary, placesFetched)
             return itineraryLoaded
+        // Load empty category to give it a skeleton, else if you drag without everything having loaded it will cause issue
+        case 'LOAD_EMPTY_CATEGORY':
+            const { categories } = action.payload
+            const emptyCategoriesLoaded = loadEmptyCategories(state, categories)
+            console.log("emptyCategoriesLoaded:", emptyCategoriesLoaded)
+            return emptyCategoriesLoaded
         case 'LOAD_CATEGORY':
             const { extraSuggestions, placeType} = action.payload
             const categoryLoaded = loadCategory(state, extraSuggestions, placeType)
@@ -166,12 +172,37 @@ const loadEntireItinerary = (state, itinerary, placesFetched) => {
     return newState
 }
 
+const loadEmptyCategories = (state, categories) => {
+    let columns = {};
+    let categoryBoards = [];
+
+    for (var i = 0; i < categories.length; i++) {
+        let categoryObject = {};
+        categoryObject['id'] = `category-${categories[i]}`;
+        categoryObject['title'] = `${categories[i]}`;
+        categoryObject['placeIds'] = [];
+
+        columns[`category-${categories[i]}`] = categoryObject;
+        categoryBoards.push(`category-${categories[i]}`)
+    }
+
+    const newState = {
+        ...state,
+        columns: {
+            ...state.columns,
+            ...columns,
+        },
+        categoryBoards: categoryBoards,
+    }
+
+    return newState
+}
+
 const loadCategory = (state, extraSuggestions, placeType) => {
 
     //console.log('hello from reducer: ', extraSuggestions)
-    let placesFetched = state.places
-    let columns = {};
-    let categoryBoards = [];    
+    let placesFetched = {}
+    let newColumn = {};
 
     let data = extraSuggestions;
     let placeIds = [];
@@ -198,23 +229,23 @@ const loadCategory = (state, extraSuggestions, placeType) => {
     
     }
     
-    columns[`category-${placeType}`] = {
+    newColumn[`category-${placeType}`] = {
         id: `category-${placeType}`,
         title: `${placeType}`,
         placeIds: placeIds
     }
 
-    categoryBoards.push(`category-${placeType}`);
-
 
     const newState = {
         ...state,
-        places: placesFetched,
+        places: {
+            ...state.places,
+            ...placesFetched
+        },
         columns: {
             ...state.columns,
-            ...columns,
+            ...newColumn,
         },
-        categoryBoards: [...state.categoryBoards, ...categoryBoards],
     }
 
     console.log(newState)

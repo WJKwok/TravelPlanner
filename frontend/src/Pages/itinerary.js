@@ -13,8 +13,10 @@ import CategoryBoard from '../Components/categoryBoard';
 import Form from '../Components/form';
 import PlaceAutoComplete from '../Components/placeAutoComplete'
 import { fetchCategories, fetchPlaceIds, fetchPlaceIdsDaybyDay } from '../Services/googlePlaceApi'
+import { GET_USER_ITINERARIES } from '../utils/graphql'
 
 import { PlaceContext } from '../Store/PlaceContext';
+import { AuthContext } from '../Store/AuthContext';
 
 
 const useStyles = makeStyles({
@@ -35,6 +37,7 @@ const useStyles = makeStyles({
 
 function Itinerary(props) {
 
+    const { authState } = useContext(AuthContext);
     const { placeState, dispatch } = useContext(PlaceContext);
     const [ itineraryId, setItineraryId ] = useState(props.match.params.itineraryId ? props.match.params.itineraryId : "");
     const [ saveError, setSaveError ] = useState("")
@@ -71,6 +74,8 @@ function Itinerary(props) {
         // just doen't seem to work
         // skip: itineraryId !== placeState.itineraryId,
         onCompleted(data){
+            console.log('yes i fired again!!!', itineraryId);
+            console.log('place state id: ', placeState.itineraryId)
             // does not run when the component was not remounted and parameter in query does not change
             if (itineraryId !== placeState.itineraryId){
                 fetchItineraryFromGoogle(data);
@@ -163,12 +168,42 @@ function Itinerary(props) {
     const mutation = itineraryId ? SAVE_ITINERARY : SUBMIT_ITINERARY;
     const [submitItinerary] = useMutation(mutation, {
         // 'result' is the second parameter!
-        update(_, result){
-            console.log(result.data);
+        update(proxy, result){
 
-            if (!itineraryId) {
-                setItineraryId(result.data.submitItinerary.id)
+            // if(proxy.data.data.ROOT_QUERY.getUserItineraries){
+            //     console.log("it's here!")
+            // }
+
+            try {
+
+                const data = proxy.readQuery({
+                    query: GET_USER_ITINERARIES,
+                    variables: {
+                        userId: authState.user.id
+                    }
+                });
+    
+                // writing to cache so that the query doesn't have to recall
+                // for queries with variables, it is impt to define it during write query, else it would be a different cache, and it wouldn't be read.
+                proxy.writeQuery({
+                    query: GET_USER_ITINERARIES,
+                    variables: {
+                        userId: authState.user.id
+                    },
+                    data: {
+                        getUserItineraries: [...data.getUserItineraries, result.data.submitItinerary]
+                    }
+                })
+            } catch (err) {
+                console.log(err);
             }
+            
+            
+
+            // Unnecessary 
+            // if (!itineraryId) {
+            //     setItineraryId(result.data.submitItinerary.id)
+            // }
             setSaveError("");
         },
         onError(err){
@@ -239,7 +274,9 @@ function Itinerary(props) {
                         Save Itinerary
                     </Button>
                 </div>
-                {saveError ? <p>{saveError}</p> : ""}
+                <div className={classes.buttonDiv}>
+                    {saveError ? <p>{saveError}</p> : null}
+                </div>
                 {placeState.categoryBoards.length > 0 
                 ? <div className='place-boards-container'>
                     {placeState.categoryBoards.map(columnId => {
