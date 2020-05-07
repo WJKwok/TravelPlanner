@@ -1,5 +1,11 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+steps to run this project:
+1. clone
+2. `npm i` to install modules
+3. you would need to create `.env` file and input a valid REACT_APP_GOOGLE_PLACES_API_KEY variable
+4. `npm start`
+
 ## Available Scripts
 
 In the project directory, you can run:
