@@ -4,7 +4,7 @@
 
 ## Change directory into `Backend`
 2. `npm i` to install modules
-3. create `config.js` file with valid `MONGODB` uri and `SECRET_KEY` variable
+3. create `.env` file with valid `MONGODB` uri and `SECRET_KEY` variable
 4. `node index`
 
 ## Switch directory to `Frontend`

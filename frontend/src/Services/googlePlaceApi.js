@@ -1,6 +1,6 @@
 
 const googlePlacesApi = process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
-// const baseUrl = 'https://maps.googleapis.com/maps/api'
+const baseUrl = 'https://maps.googleapis.com/maps/api'
 export const fetchCategories = async (categories, city, dispatch) => {
     
     dispatch({ type:"LOAD_EMPTY_CATEGORY", payload:{categories}})
@@ -10,7 +10,7 @@ export const fetchCategories = async (categories, city, dispatch) => {
         // https://stackoverflow.com/questions/43262121/trying-to-use-fetch-and-pass-in-mode-no-cors 
         // added proxy in package.json "proxy": "https://maps.googleapis.com/maps/api"
 
-        const response = await fetch(`/place/textsearch/json?query=best+${categories[i]}+${city}&key=${googlePlacesApi}`)
+        const response = await fetch(`${baseUrl}/place/textsearch/json?query=best+${categories[i]}+${city}&key=${googlePlacesApi}`)
         const extraSuggestions = await response.json();
 
         dispatch({ type:"LOAD_CATEGORY", payload:{extraSuggestions, placeType: categories[i]}})
@@ -25,7 +25,7 @@ export const fetchPlaceIdsDaybyDay = async (dayPlans, dispatch) => {
         const placeIds = dayPlans[i].placeIds
 
         for(var j = 0; j < placeIds.length; j++){
-            const response = await fetch(`/place/details/json?placeid=${placeIds[j]}&key=${googlePlacesApi}`)
+            const response = await fetch(`${baseUrl}/place/details/json?placeid=${placeIds[j]}&key=${googlePlacesApi}`)
             const placeData = await response.json();
 
             let placeObject = {};
@@ -53,7 +53,7 @@ export const fetchPlaceIds = async (dayPlans) => {
         const placeIds = dayPlans[i].placeIds
 
         for(var j = 0; j < placeIds.length; j++){
-            const response = await fetch(`/place/details/json?placeid=${placeIds[j]}&key=${googlePlacesApi}`)
+            const response = await fetch(`${baseUrl}/place/details/json?placeid=${placeIds[j]}&key=${googlePlacesApi}`)
             const placeData = await response.json();
 
             let placeObject = {};
