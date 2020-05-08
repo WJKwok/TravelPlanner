@@ -12,7 +12,7 @@ export const fetchCategories = async (categories, city, dispatch) => {
 
         const response = await fetch(`${baseUrl}/place/textsearch/json?query=best+${categories[i]}+${city}&key=${googlePlacesApi}`, {
             mode: 'no-cors', 
-          })
+        });
         const extraSuggestions = await response.json();
 
         dispatch({ type:"LOAD_CATEGORY", payload:{extraSuggestions, placeType: categories[i]}})
@@ -29,7 +29,7 @@ export const fetchPlaceIdsDaybyDay = async (dayPlans, dispatch) => {
         for(var j = 0; j < placeIds.length; j++){
             const response = await fetch(`${baseUrl}/place/details/json?placeid=${placeIds[j]}&key=${googlePlacesApi}`, {
                 mode: 'no-cors', 
-            })
+            });
             const placeData = await response.json();
 
             let placeObject = {};
@@ -59,7 +59,7 @@ export const fetchPlaceIds = async (dayPlans) => {
         for(var j = 0; j < placeIds.length; j++){
             const response = await fetch(`${baseUrl}/place/details/json?placeid=${placeIds[j]}&key=${googlePlacesApi}`, {
                 mode: 'no-cors', 
-            })
+            });
             const placeData = await response.json();
 
             let placeObject = {};
