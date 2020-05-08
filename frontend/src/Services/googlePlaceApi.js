@@ -1,6 +1,6 @@
 
 const googlePlacesApi = process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
-
+// const baseUrl = 'https://maps.googleapis.com/maps/api'
 export const fetchCategories = async (categories, city, dispatch) => {
     
     dispatch({ type:"LOAD_EMPTY_CATEGORY", payload:{categories}})

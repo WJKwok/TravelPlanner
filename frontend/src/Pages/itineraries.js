@@ -1,12 +1,13 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
 import { AuthContext } from '../Store/AuthContext';
 import { PlaceContext } from '../Store/PlaceContext';
 
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import AddCircleOutlineRoundedIcon from '@material-ui/icons/AddCircleOutlineRounded';
 import {Card, CardMedia, CardContent, Typography, IconButton, makeStyles} from '@material-ui/core';
 
@@ -23,6 +24,10 @@ const useStyles = makeStyles({
     },
     nextButton: {
         marginLeft: "auto",
+        "&:hover": {
+            backgroundColor: "transparent",
+            color: 'red'
+        },
     },
 })
 
@@ -41,36 +46,67 @@ function Itineraries() {
         }
     });
 
+    const [deleteItinerary] = useMutation(DELETE_ITINERARY, {
+        update(proxy, result){
+            console.log('done:', result.data.deleteItinerary)
+
+            const data = proxy.readQuery({
+                query: GET_USER_ITINERARIES,
+                variables: {
+                    userId: authState.user.id
+                }
+            })
+
+            proxy.writeQuery({
+                query: GET_USER_ITINERARIES,
+                variables: {
+                    userId: authState.user.id
+                },
+                data: {
+                    getUserItineraries: data.getUserItineraries.filter(i => i.id !== result.data.deleteItinerary)
+                }
+            })
+
+        },
+        onError(err){
+            console.log(err)
+        }
+    })
+
+    const deleteHandler = (itineraryId) => {
+        deleteItinerary({ variables: { itineraryId } })
+    }
+
     console.log(itineraries);
     const itineraryCards = loading ?
         ""
         : itineraries.map((itinerary) => {
             return (
-                <Link to={`/itinerary/${itinerary.id}`} key={itinerary.id}>
-                    <Card className={classes.root}>
-                        <CardMedia
-                            className={classes.headerThumbnail}
-                            image="https://i.imgur.com/zbBglmB.jpg"
-                        />
-                        <div>
-                            <CardContent className={classes.headerTitle}>
-                                <Typography variant="h5">
-                                    {itinerary.city}
-                                </Typography>
-                                <Typography variant="subtitle1">
-                                    {itinerary.dayPlans.length} Days
-                                </Typography>
-                            </CardContent>
-                        </div>
-                        <IconButton
-                            className={classes.nextButton}
-                            disableRipple={true}
-                            disableFocusRipple={true}
-                        >
-                            <NavigateNextIcon />
-                        </IconButton>
-                    </Card>
-                </Link>
+                <Card className={classes.root} key={itinerary.id}>
+                    <CardMedia
+                        className={classes.headerThumbnail}
+                        image="https://i.imgur.com/zbBglmB.jpg"
+                    />
+                    <Link to={`/itinerary/${itinerary.id}`}>
+                        <CardContent className={classes.headerTitle}>
+                            <Typography variant="h5">
+                                {itinerary.city}
+                            </Typography>
+                            <Typography variant="subtitle1">
+                                {itinerary.dayPlans.length} Days
+                            </Typography>
+                        </CardContent>
+                    
+                    </Link>
+                    <IconButton
+                        className={classes.nextButton}
+                        disableRipple={true}
+                        disableFocusRipple={true}
+                        onClick={() => deleteHandler(itinerary.id)}
+                    >
+                        <HighlightOffIcon />
+                    </IconButton>
+                </Card>
             )})
     
     return (
@@ -105,6 +141,12 @@ const GET_USER_ITINERARIES = gql`
             user
             username
         }
+    }
+`
+
+const DELETE_ITINERARY =  gql`
+    mutation deleteItinerary($itineraryId: ID!){
+        deleteItinerary(itineraryId: $itineraryId)
     }
 `
 

@@ -38,5 +38,6 @@ module.exports = gql`
         login(username: String!, password: String!): User!
         submitItinerary(dayPlans: [DayPlanInput], city: String!): Itinerary!
         saveItinerary(id: ID!, dayPlans: [DayPlanInput]): Itinerary!
+        deleteItinerary(itineraryId: ID!): String!
     }
 `

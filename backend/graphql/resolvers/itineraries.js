@@ -1,4 +1,4 @@
-const { UserInputError } = require('apollo-server')
+const { UserInputError, AuthenticationError } = require('apollo-server')
 const Itinerary = require('../../models/Itinerary');
 const checkAuth = require('../../utils/checkAuth');
 
@@ -57,6 +57,21 @@ module.exports = {
             const submitted = await newItinerary.save()
 
             return submitted;
+        },
+        async deleteItinerary(_, {itineraryId}, context) {
+            const user = checkAuth(context);
+            
+            try {
+                const itinerary = await Itinerary.findById(itineraryId);
+                if (itinerary.username === user.username) {
+                    itinerary.delete()
+                    return itinerary.id;
+                } else {
+                    throw new AuthenticationError('Action not allowed')
+                }
+            } catch (err) {
+                throw new Error(err);
+            }
         }
     }
 }
