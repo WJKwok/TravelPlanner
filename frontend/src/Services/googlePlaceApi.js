@@ -11,7 +11,7 @@ export const fetchCategories = async (categories, city, dispatch) => {
         // added proxy in package.json "proxy": "https://maps.googleapis.com/maps/api"
 
         const response = await fetch(`${baseUrl}/place/textsearch/json?query=best+${categories[i]}+${city}&key=${googlePlacesApi}`, {
-            mode: 'no-cors', 
+            mode: 'no-cors'
         });
         const extraSuggestions = await response.json();
 
