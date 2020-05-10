@@ -2,8 +2,8 @@
   base = "frontend"
 
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
+  from = "/place"
+  to = "https://maps.googleapis.com/maps/api"
   status = 200
 
 [[headers]]
