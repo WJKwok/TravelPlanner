@@ -5,6 +5,7 @@
   from = "/place"
   to = "https://maps.googleapis.com/maps/api"
   status = 200
+  force = true
 
 [[headers]]
   # Define which paths this specific [[headers]] block will cover.
