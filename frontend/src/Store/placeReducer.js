@@ -201,7 +201,7 @@ const loadEmptyCategories = (state, categories) => {
 const loadCategory = (state, extraSuggestions, placeType) => {
 
     //console.log('hello from reducer: ', extraSuggestions)
-    let placesFetched = {}
+    let placesFetched = state.places
     let newColumn = {};
 
     let data = extraSuggestions;
