@@ -1,5 +1,5 @@
-[build]	[build]
-  base = "frontend"	  base = "frontend" 
+[build]	  
+  base = "frontend" 
 
 [[redirects]]	
   from = "/place/*"	
