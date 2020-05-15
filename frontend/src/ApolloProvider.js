@@ -9,7 +9,8 @@ import { setContext } from 'apollo-link-context';
 
 
 const httpLink = createHttpLink({
-    uri: 'https://code-trivago-travel-planner.herokuapp.com/'
+    uri: 'http://localhost:5010/'
+    //uri: 'https://code-trivago-travel-planner.herokuapp.com/'
 })
 
 const authLink = setContext(() => {

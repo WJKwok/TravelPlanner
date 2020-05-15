@@ -53,7 +53,7 @@ module.exports = {
                 createdAt: new Date().toISOString()
             })
 
-            const submitted = await newItinerary.save()
+            const submitted = await newItinerary.save();
 
             return submitted;
         },
@@ -62,7 +62,7 @@ module.exports = {
             
             try {
                 const itinerary = await Itinerary.findById(itineraryId);
-                if (itinerary.username === user.username) {
+                if (itinerary.user.toString() === user.id) {
                     itinerary.delete()
                     return itinerary.id;
                 } else {
