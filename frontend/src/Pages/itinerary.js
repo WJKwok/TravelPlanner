@@ -195,7 +195,7 @@ function Itinerary(props) {
                     }
                 })
             } catch (err) {
-                console.log(err);
+                console.log('update cache error:', err);
             }
             
             
@@ -207,7 +207,8 @@ function Itinerary(props) {
             setSaveError("");
         },
         onError(err){
-            setSaveError(err.graphQLErrors[0].extensions.exception.stacktrace[0]);
+            console.log('error saving/submitting:', err);
+            //setSaveError(err.graphQLErrors[0].extensions.exception.stacktrace[0]);
         },
         variables: {
             dayPlans: itinerary,

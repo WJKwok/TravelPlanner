@@ -15,7 +15,6 @@ module.exports = gql`
         id: ID!
         city: String!
         dayPlans: [DayPlan]!
-        username: String!
         user: User!
         createdAt: String!
     }

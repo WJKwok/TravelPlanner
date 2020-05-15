@@ -50,7 +50,6 @@ module.exports = {
                 city: city,
                 dayPlans,
                 user: user.id,
-                username: user.username,
                 createdAt: new Date().toISOString()
             })
 
