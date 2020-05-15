@@ -7,7 +7,7 @@ module.exports = {
         async getItinerary(_, {itineraryId}, context) {
             //const user = checkAuth(context);
             try {
-                const itinerary = await Itinerary.findById(itineraryId);
+                const itinerary = await Itinerary.findById(itineraryId).populate('user');
                 return itinerary;
             } catch(err) {
                 throw new Error(err);
@@ -15,7 +15,7 @@ module.exports = {
         },
         async getUserItineraries(_, {userId}) {            
             try {
-                const itineraries = await Itinerary.find({ user: userId})
+                const itineraries = await Itinerary.find({ user: userId}).populate('user')
                 return itineraries
             } catch(err) {
                 throw new Error(err);
@@ -26,7 +26,7 @@ module.exports = {
         async saveItinerary(_, {id, dayPlans}, context){
             const user = checkAuth(context);
             try{
-                let itinerary = await Itinerary.findById(id);
+                let itinerary = await Itinerary.findById(id).populate('user');
                 if (itinerary) {
         
                     itinerary.dayPlans = dayPlans

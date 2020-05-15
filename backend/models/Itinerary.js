@@ -6,8 +6,8 @@ const itinerarySchema = new Schema({
     createdAt: String,
     dayPlans: [],
     user: {
-        type: Schema.Types.ObjectId,
-        ref: 'users',
+        type: Schema.ObjectId,
+        ref: 'User',
     }
 });
 
