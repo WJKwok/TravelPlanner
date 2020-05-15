@@ -72,6 +72,7 @@ function Login() {
                 />
             </div>
             <Button 
+                id='login-button'
                 variant="outlined" 
                 className={classes.submitButton}
                 onClick={loginUser}

@@ -13,8 +13,9 @@ query getUserItineraries(
             placeIds
         }
         createdAt
-        user
-        username
+        user {
+            username
+        }
     }
 }
 `

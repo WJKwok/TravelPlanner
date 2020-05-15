@@ -12,7 +12,7 @@ import AddCircleOutlineRoundedIcon from '@material-ui/icons/AddCircleOutlineRoun
 import {Card, CardMedia, CardContent, Typography, IconButton, makeStyles} from '@material-ui/core';
 
 const useStyles = makeStyles({
-    root: {
+    itineraryCard: {
         marginBottom: 15,
         display: 'flex',
     },
@@ -82,7 +82,7 @@ function Itineraries() {
         ""
         : itineraries.map((itinerary) => {
             return (
-                <Card className={classes.root} key={itinerary.id}>
+                <Card className={classes.itineraryCard} key={itinerary.id}>
                     <CardMedia
                         className={classes.headerThumbnail}
                         image="https://i.imgur.com/zbBglmB.jpg"
@@ -138,8 +138,9 @@ const GET_USER_ITINERARIES = gql`
                 placeIds
             }
             createdAt
-            user
-            username
+            user {
+                username
+            }
         }
     }
 `

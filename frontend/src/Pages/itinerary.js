@@ -312,8 +312,9 @@ const SUBMIT_ITINERARY =  gql`
                 placeIds
             }
             createdAt
-            user
-            username
+            user {
+                username
+            }
         }
     }
 `
@@ -333,8 +334,9 @@ const SAVE_ITINERARY = gql`
                 placeIds
             }
             createdAt
-            user
-            username
+            user {
+                username
+            }
         }
     }
 `
@@ -352,8 +354,9 @@ const GET_ITINERARY = gql`
                 placeIds
             }
             createdAt
-            user
-            username 
+            user {
+                username
+            }
         }
     }
 `
