@@ -170,7 +170,7 @@ function Itinerary(props) {
         // 'result' is the second parameter!
         update(proxy, result){
 
-            console.log('save submit result:', result);
+            console.log('saved submit result:', result);
             // if(proxy.data.data.ROOT_QUERY.getUserItineraries){
             //     console.log("it's here!")
             // }
