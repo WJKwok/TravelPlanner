@@ -43,7 +43,7 @@ module.exports = {
             const user = checkAuth(context);
 
             if (dayPlans.length === 0){
-                throw new Error('Itinerary should not be empty');
+                throw new Error('Itinerary cannot not be empty');
             }
 
             const newItinerary = new Itinerary({
