@@ -1,5 +1,5 @@
 
-
+// "proxy": "https://maps.googleapis.com/maps/api",
 const googlePlacesApi = process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
 // const baseUrl = 'https://maps.googleapis.com/maps/api'
 export const fetchPredictions = async(searchString, coordinates) => {
