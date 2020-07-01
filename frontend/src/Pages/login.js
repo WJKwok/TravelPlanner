@@ -24,7 +24,7 @@ const useStyles = makeStyles({
 function Login() {
 
     const { authState, dispatch } = useContext(AuthContext)
-    const [errors, setErrors] = useState({})
+    // const [errors, setErrors] = useState({})
     const classes = useStyles();
 
     const initialLoginInputState = {

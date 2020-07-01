@@ -6,7 +6,6 @@ import gql from 'graphql-tag';
 import { AuthContext } from '../Store/AuthContext';
 import { PlaceContext } from '../Store/PlaceContext';
 
-import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import AddCircleOutlineRoundedIcon from '@material-ui/icons/AddCircleOutlineRounded';
 import {Card, CardMedia, CardContent, Typography, IconButton, makeStyles} from '@material-ui/core';

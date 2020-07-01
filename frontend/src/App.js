@@ -10,9 +10,12 @@ import Itinerary from './Pages/itinerary';
 import Login from './Pages/login';
 import Register from './Pages/register';
 import Itineraries from './Pages/itineraries';
-import PlaceAutoComplete from './Components/placeAutoComplete';
+import Planner from './Pages/planner'
+import Logger from './Pages/logger';
+
 import PlaceContextProvider from './Store/PlaceContext';
 import { AuthContextProvider } from './Store/AuthContext';
+import SpotContextProvider from './Store/SpotContext';
 
 
 function App() {
@@ -20,15 +23,18 @@ function App() {
     <Container maxWidth="lg">
       <AuthContextProvider>
         <PlaceContextProvider>
-          <BrowserRouter>
-            <NavHeader/>
-            <Route exact path='/' component={Itinerary}/>
-            <Route exact path='/search' component={PlaceAutoComplete}/>
-            <AuthRoute exact path='/login' component={Login}/>
-            <AuthRoute exact path='/register' component={Register}/>
-            <UnAuthRoute exact path='/itineraries' component={Itineraries}/>
-            <UnAuthRoute exact path='/itinerary/:itineraryId' component={Itinerary}/>
-          </BrowserRouter>
+          <SpotContextProvider>
+            <BrowserRouter>
+              <NavHeader/>
+              <Route exact path='/' component={Itinerary}/>
+              <Route exact path='/planner' component={Planner}/>
+              <Route exact path='/logger' component={Logger}/>
+              <AuthRoute exact path='/login' component={Login}/>
+              <AuthRoute exact path='/register' component={Register}/>
+              <UnAuthRoute exact path='/itineraries' component={Itineraries}/>
+              <UnAuthRoute exact path='/itinerary/:itineraryId' component={Itinerary}/>
+            </BrowserRouter>
+          </SpotContextProvider>
         </PlaceContextProvider>
       </AuthContextProvider>
     </Container> 

@@ -10,9 +10,11 @@ import AddCircleOutlineRoundedIcon from '@material-ui/icons/AddCircleOutlineRoun
 
 import DayBoard from '../Components/dayBoard';
 import CategoryBoard from '../Components/categoryBoard';
+import SearchBoard from '../Components/searchBoard';
 import Form from '../Components/form';
+import { onDragEnd } from '../utils/dndLogic';
 import PlaceAutoComplete from '../Components/placeAutoComplete'
-import { fetchCategories, fetchPlaceIds, fetchPlaceIdsDaybyDay } from '../Services/googlePlaceApi'
+import { fetchCategories, fetchPlaceIds } from '../Services/googlePlaceApi'
 import { GET_USER_ITINERARIES } from '../utils/graphql'
 
 import { PlaceContext } from '../Store/PlaceContext';
@@ -94,75 +96,19 @@ function Itinerary(props) {
     }, [data])
     */
 
-    const onDragEnd = result => {
-        const { destination, source, draggableId } = result;
+    const addCardToSearchBoard = (placeObject) => {
+        dispatch({type:'ADD_SEARCH_ITEM', payload:{placeObject}})
+    }
 
-        if (!destination) {
-            return;
-        }
+    const searchBoard = () => {
+        const column = placeState.columns['searched-items'];
+        const places = column.placeIds.map(placeId => 
+            placeState.places[placeId]
+        );
 
-        if (
-            destination.droppableId === source.droppableId &&
-            destination.index === source.index
-        ) {
-            return;
-        }
-
-        const start = placeState.columns[source.droppableId];
-        const finish = placeState.columns[destination.droppableId];
-
-        //if moving within the same column
-        if (start === finish) {
-            const column = placeState.columns[source.droppableId];
-            const newplaceIds = Array.from(column.placeIds);
-            newplaceIds.splice(source.index, 1);
-            newplaceIds.splice(destination.index, 0, draggableId);
-
-            const newColumn = {
-                ...column,
-                placeIds: newplaceIds,
-            };
-
-            const newOrder = {
-                ...placeState,
-                columns: {
-                    ...placeState.columns,
-                    [newColumn.id]: newColumn,
-                },
-            };
-            console.log(newOrder);
-            dispatch({ type:'CHANGE_ORDER', order: {newOrder}});
-            return;
-        }
-
-        //moving from one list to another
-        const startplaceIds = Array.from(start.placeIds);
-        startplaceIds.splice(source.index, 1);
-        const newStart = {
-            ...start,
-            placeIds: startplaceIds,
-        };
-
-        const finishplaceIds = Array.from(finish.placeIds);
-        finishplaceIds.splice(destination.index, 0, draggableId);
-        const newFinish = {
-            ...finish,
-            placeIds: finishplaceIds,
-        };
-
-
-        const newOrder = {
-            ...placeState,
-            columns: {
-                ...placeState.columns,
-                [newStart.id]: newStart,
-                [newFinish.id]: newFinish,
-            },
-        };
-
-        console.log(newOrder);
-        dispatch({ type:'CHANGE_ORDER', order: {newOrder}});
-    };
+        return <SearchBoard key={column.id} column={column} places={places}/>
+        
+    }
 
     let itinerary = [];
     const mutation = itineraryId ? SAVE_ITINERARY : SUBMIT_ITINERARY;
@@ -241,9 +187,15 @@ function Itinerary(props) {
             <Form/>
             {itineraryId !== placeState.itineraryId ? <p>Loading</p> : ""}
             {placeState.days !== 0 
-            ? <DragDropContext onDragEnd={onDragEnd}>
+            ? <DragDropContext onDragEnd={(result) => onDragEnd(result, placeState, dispatch)}>
                 <div className='day-and-search'>
-                    <PlaceAutoComplete/>
+                    <div>
+                        <PlaceAutoComplete 
+                            clickFunction={addCardToSearchBoard}
+                            city={placeState.location}/>
+                        {searchBoard()}
+                    </div>
+                    
                     
                     <div className='day-boards-container'>
                         {placeState.dayBoards.map(columnId => {

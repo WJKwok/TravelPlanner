@@ -1,10 +1,9 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { List, ListItem, ListItemText, TextField }  from '@material-ui/core/';
 
-import { PlaceContext } from '../Store/PlaceContext'
 
-import SearchBoard from './searchBoard';
+import {fetchOnePlaceId, fetchPredictions} from '../Services/googlePlaceApi';
 
 const useStyles = makeStyles({
     root: {
@@ -21,13 +20,10 @@ const useStyles = makeStyles({
 })
 
 
-function PlaceAutoComplete() {
+function PlaceAutoComplete({clickFunction, city}) {
 
-    const { placeState, dispatch } = useContext(PlaceContext)
     const [searchState, setSearchState] = useState("");
     const [sugestionsState, setSuggestionState] = useState([]);
-
-    const googlePlacesApi = process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
 
     const coordinates = {
         "Berlin": {
@@ -44,44 +40,27 @@ function PlaceAutoComplete() {
         },
     }
 
-    console.log("Hi from placeAutoComplete: ", placeState.location);
+    console.log("Hi from placeAutoComplete: ", city);
 
     const searchHandler = async (e) => {
         setSearchState(e.target.value)
-        const locationCoords = `${coordinates[placeState.location].lat},${coordinates[placeState.location].lng}`;
-        console.log("Hi from placeAutoComplete: ", locationCoords);
-        const response = await fetch(`/place/autocomplete/json?input=${e.target.value}&types=establishment&location=${locationCoords}&radius=500&key=${googlePlacesApi}`)
-        const data = await response.json();
+        const locationCoords = `${coordinates[city].lat},${coordinates[city].lng}`;
+        const data = await fetchPredictions(e.target.value, locationCoords)
         setSuggestionState(data.predictions);
         console.log(data);
     }
 
-    const addCard = async (placeId) => {
-
-        const response = await fetch(`/place/details/json?placeid=${placeId}&key=${googlePlacesApi}`)
-        const placeData = await response.json();
-
-        let placeObject = {};
-        placeObject['id'] = placeId
-        placeObject['content'] = placeData.result.name;
-        placeObject['rating'] = placeData.result.rating;
-        placeObject['photoRef'] = placeData.result.photos ? placeData.result.photos[0].photo_reference : "0";
-        placeObject['location'] = placeData.result.geometry.location;
-        
-        console.log(placeObject);
-        dispatch({type:'ADD_SEARCH_ITEM', payload:{placeObject}})
+    useEffect(() => {
         setSearchState("");
         setSuggestionState([]);
-    }
+    }, [city])
 
-    const searchBoard = () => {
-        const column = placeState.columns['searched-items'];
-        const places = column.placeIds.map(placeId => 
-            placeState.places[placeId]
-        );
+    const addCard = async (placeId) => {
 
-        return <SearchBoard key={column.id} column={column} places={places}/>
-        
+        const placeObject = await fetchOnePlaceId(placeId)
+        clickFunction(placeObject)
+        setSearchState("");
+        setSuggestionState([]);
     }
 
     const classes = useStyles();
@@ -90,7 +69,7 @@ function PlaceAutoComplete() {
         <div>
             <TextField 
                 className={classes.textField}
-                label="Place Search" 
+                label={`Searching in ${city} ...`}
                 value={searchState} 
                 variant="outlined" 
                 onChange={searchHandler}
@@ -106,7 +85,6 @@ function PlaceAutoComplete() {
                             </ListItem>
                 })}
             </List>
-            {searchBoard()}
         </div>
         
     );

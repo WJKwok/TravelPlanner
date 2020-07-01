@@ -1,4 +1,4 @@
-import initialData from './initial-data';
+import {initialData} from './initial-data';
 
 export const placeReducer = (state, action) => {
     switch (action.type) {
@@ -6,8 +6,6 @@ export const placeReducer = (state, action) => {
             console.log('clearing state...')
             console.log('cleared state: ', initialData)
             const clearedState = clearState()
-            //WHY can't i return initialData?
-            //return initialData
             return clearedState;
         case 'LOAD_EMPTY_DAYS':
             console.log('before dayboards loaded places length: ', Object.keys(state.places).length)

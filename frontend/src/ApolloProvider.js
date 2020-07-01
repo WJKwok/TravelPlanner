@@ -9,8 +9,8 @@ import { setContext } from 'apollo-link-context';
 
 
 const httpLink = createHttpLink({
-    //uri: 'http://localhost:5010/'
-    uri: 'https://travel-planner-backend.herokuapp.com/'
+    uri: 'http://localhost:5010/'
+    //uri: 'https://travel-planner-backend.herokuapp.com/'
 })
 
 const authLink = setContext(() => {
@@ -22,7 +22,7 @@ const authLink = setContext(() => {
     }
 })
 
-const client = new ApolloClient({
+export const client = new ApolloClient({
     link: authLink.concat(httpLink),
     cache: new InMemoryCache()
 });

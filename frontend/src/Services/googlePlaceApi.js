@@ -1,6 +1,30 @@
 
+
 const googlePlacesApi = process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
 // const baseUrl = 'https://maps.googleapis.com/maps/api'
+export const fetchPredictions = async(searchString, coordinates) => {
+    const response = await fetch(`/place/autocomplete/json?input=${searchString}&types=establishment&location=${coordinates}&radius=500&key=${googlePlacesApi}`)
+    const data = await response.json();
+
+    return data
+}
+
+export const fetchOnePlaceId = async (placeId) => {
+
+    const response = await fetch(`/place/details/json?placeid=${placeId}&key=${googlePlacesApi}`)
+    const placeData = await response.json();
+
+    let placeObject = {};
+    placeObject['id'] = placeId
+    placeObject['content'] = placeData.result.name;
+    placeObject['rating'] = placeData.result.rating;
+    placeObject['photoRef'] = placeData.result.photos ? placeData.result.photos[0].photo_reference : "0";
+    placeObject['location'] = placeData.result.geometry.location;
+    placeObject['address'] = placeData.result.formatted_address;
+    
+    return placeObject
+}
+
 export const fetchCategories = async (categories, city, dispatch) => {
     
     dispatch({ type:"LOAD_EMPTY_CATEGORY", payload:{categories}})
