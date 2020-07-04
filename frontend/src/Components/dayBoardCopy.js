@@ -1,5 +1,6 @@
 import React, {useRef} from 'react';
 import { Droppable } from 'react-beautiful-dnd';
+import moment from 'moment';
 
 import SpotCard from './spotCard';
 import GoogleMap from './googleMapCopy';
@@ -26,7 +27,7 @@ const useStyles = makeStyles(theme => ({
 
 function DayBoard(props) {
 
-    const {boardId, spots} = props
+    const {boardId, dateTitle, spots} = props
     const classes = useStyles();
 
 
@@ -44,22 +45,25 @@ function DayBoard(props) {
   }
 
     return (
-      <div className={classes.root} >
-        <Droppable 
-          droppableId={boardId}
-          direction="vertical"
-        >
-          {(provided) => (
-              <div 
-              className={classes.droppable} 
-              ref={(ref) => setRef(provided.innerRef, ref)}
-              {...provided.droppableProps}>
-                {spots.map((spot, index) => <SpotCard key={spot.place.id} spot={spot} index={index} expanded={false}/>)}
-                {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-        <GoogleMap city='Berlin' spots={spots} pinClicked={executeScroll}/>
+      <div>
+        <p>{dateTitle.format("DD MMM")}</p>
+        <div className={classes.root} >
+          <Droppable 
+            droppableId={boardId}
+            direction="vertical"
+          >
+            {(provided) => (
+                <div 
+                className={classes.droppable} 
+                ref={(ref) => setRef(provided.innerRef, ref)}
+                {...provided.droppableProps}>
+                  {spots.map((spot, index) => <SpotCard key={spot.place.id} spot={spot} index={index} expanded={false}/>)}
+                  {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+          <GoogleMap city='Berlin' spots={spots} pinClicked={executeScroll}/>
+        </div>
       </div>
     )
 }

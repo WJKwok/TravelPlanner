@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const initialData = {
     itineraryId: "",
     places: {},
@@ -17,6 +19,8 @@ export const initialData = {
 
 export const initialDataTest = {
     spots: {},
+    startDate: moment(),
+    numberOfDays: 1,
     columns:{
         'filtered-spots': {
             id: 'filtered-spots',
@@ -28,14 +32,9 @@ export const initialDataTest = {
             title: 'day1',
             spotIds: []
         },
-        'day2': {
-            id: 'day2',
-            title: 'day2',
-            spotIds: []
-        }
     },
     filteredBoard: ['filtered-spots'],
-    dayBoard:['day1', 'day2']
+    dayBoard:['day1']
 }
 
 //Object.freeze({})

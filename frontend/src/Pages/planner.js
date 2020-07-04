@@ -2,10 +2,12 @@ import React, {useContext} from 'react'
 import { useQuery, useLazyQuery} from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import {DragDropContext} from 'react-beautiful-dnd'
+import moment from 'moment';
 
 import CategoryChip from '../Components/categoryChip';
 import SpotsBoard from '../Components/spotsBoard';
 import DayBoard from '../Components/dayBoardCopy';
+import DatePicker from '../Components/datePicker';
 import { SpotContext } from '../Store/SpotContext';
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -29,8 +31,7 @@ const useStyles = makeStyles(theme => ({
   dayBoardContainer: {
     display: 'flex',
     borderRadius: 5,
-    padding: '30px 0 20px 10px',
-    marginBottom: 0,
+    padding: '10px 0 20px 4px',
     overflowX: 'auto',
   }
 }));
@@ -209,12 +210,15 @@ function Planner() {
             return <SpotsBoard key={columnId} boardId={columnId} spots={spots} />
           })}
         </div>
+        <DatePicker/>
         <div className={classes.dayBoardContainer}>
-          {spotState.dayBoard.map(columnId => {
+          {spotState.dayBoard.map((columnId, index) => {
             const column = spotState.columns[columnId];
             const spots = column.spotIds.map(spotId => spotState.spots[spotId])
+            let dateTitle = moment(spotState.startDate).add(index, 'days');
+ 
 
-            return <DayBoard key={columnId} boardId={columnId} spots={spots}/>
+            return <DayBoard key={columnId} boardId={columnId} dateTitle={dateTitle} spots={spots}/>
           })}
         </div>
       </DragDropContext>
