@@ -15,6 +15,11 @@ const useStyles = makeStyles(theme => ({
       marginRight: 30,
       boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)',
     },
+    dateTitle: {
+      padding: 8,
+      backgroundColor: 'grey',
+      color: 'white',
+    },
     droppable: {
       padding: 8,
       flexGrow: 1,
@@ -46,8 +51,10 @@ function DayBoard(props) {
 
     return (
       <div>
-        <p>{dateTitle.format("DD MMM")}</p>
         <div className={classes.root} >
+          <div className={classes.dateTitle}>
+            <p>{dateTitle.format("DD MMM")} ({dateTitle.format("ddd")})</p>
+          </div>
           <Droppable 
             droppableId={boardId}
             direction="vertical"
