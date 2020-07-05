@@ -196,12 +196,12 @@ function Planner() {
   return (
     <div>
       <div className={classes.explanation}>
-        <p>A sample guidebook implementation with mocked data. Features:</p>
+        <p>A sample Berlin guidebook implementation with mocked data. Features:</p>
         <ul>
-          <li>filter categories as you like (except for 'cafe' - it's a dummy)</li>
-          <li>click on map pins to autoscroll to index cards</li>
+          <li>Filter categories as you like (except for 'cafe' - it's a dummy)</li>
+          <li>Click on map pins to autoscroll to index cards</li>
           <li>Drag and drop cards to DayBoards below to plan your itinerary</li>
-          <li>Number of dayboards will render according to Datepicker selection.</li>
+          <li>Number of dayboards will render according to Datepicker selection</li>
         </ul> 
       </div>
       <Paper component="ul" className={classes.categoryChipBoard}>
