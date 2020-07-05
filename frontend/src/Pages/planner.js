@@ -196,7 +196,7 @@ function Planner() {
   return (
     <div>
       <div className={classes.explanation}>
-        <p>A sample Berlin guidebook implementation with mocked data. Features:</p>
+        <p>A sample Berlin guidebook implementation. Features:</p>
         <ul>
           <li>Filter categories as you like (except for 'cafe' - it's a dummy)</li>
           <li>Click on map pins to autoscroll to index cards</li>
