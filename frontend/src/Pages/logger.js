@@ -19,7 +19,7 @@ const useStyles = makeStyles({
     },
     submitButton:{
         float: "right",
-    }
+    },
 });
 
 function Logger(){
@@ -131,100 +131,101 @@ function Logger(){
     }
 
     return(
-        <div className={classes.root}>
-            <PlaceAutoComplete 
-                clickFunction={getDetails}
-                city={city}/>
-            <div className={classes.form}>
-                <TextField 
-                    className={classes.textField}
-                    label="Guide" 
-                    value={guide} 
-                    variant="outlined" 
-                    select
-                    onChange={(e) => {
-                        setCity(e.target.value.city)
-                        setGuide(e.target.value)
-                        setCategory("")
-                    }}
-                >
-                    {guideMenu()}
-                </TextField>
-                <TextField 
-                    className={classes.textField}
-                    label="Category" 
-                    value={category} 
-                    variant="outlined" 
-                    select
-                    onChange={(e) => {
-                        setCategory(e.target.value)
-                    }}
-                >
-                    {categoryMenu()}
-                </TextField>
-                <TextField 
-                    className={classes.textField}
-                    label="PlaceId" 
-                    value={placeId} 
-                    variant="outlined" 
-                    disabled
-                />
-                <TextField 
-                    className={classes.textField}
-                    label="Name" 
-                    value={name} 
-                    variant="outlined" 
-                    disabled
-                />
-                <TextField 
-                    className={classes.textField}
-                    label="Rating" 
-                    value={rating} 
-                    variant="outlined"
-                    disabled 
-                />
-                <TextField 
-                    className={classes.textField}
-                    label="Address" 
-                    value={address} 
-                    variant="outlined" 
-                    disabled
-                />
-                <TextField 
-                    className={classes.textField}
-                    label="Location" 
-                    value={location} 
-                    variant="outlined" 
-                    disabled
-                />
-                <TextField 
-                    className={classes.textField}
-                    label="ImgUrl" 
-                    value={imgUrl} 
-                    variant="outlined" 
-                    onChange={(e) => setImgUrl(e.target.value)}
-                />
-                <img src={imgUrl} className={classes.textField}/>
-                <TextField 
-                    className={classes.textField}
-                    label="Content " 
-                    value={content} 
-                    variant="outlined" 
-                    multiline
-                    rows={4}
-                    onChange={(e) => setContent(e.target.value)}
-                />
-                <Button 
-                    variant="outlined" 
-                    className={classes.submitButton}
-                    onClick={submit}
-                    
-                >
-                    Submit
-                </Button>
+        <div>
+            <div className={classes.root}>
+                <PlaceAutoComplete 
+                    clickFunction={getDetails}
+                    city={city}/>
+                <div className={classes.form}>
+                    <TextField 
+                        className={classes.textField}
+                        label="Guide" 
+                        value={guide} 
+                        variant="outlined" 
+                        select
+                        onChange={(e) => {
+                            setCity(e.target.value.city)
+                            setGuide(e.target.value)
+                            setCategory("")
+                        }}
+                    >
+                        {guideMenu()}
+                    </TextField>
+                    <TextField 
+                        className={classes.textField}
+                        label="Category" 
+                        value={category} 
+                        variant="outlined" 
+                        select
+                        onChange={(e) => {
+                            setCategory(e.target.value)
+                        }}
+                    >
+                        {categoryMenu()}
+                    </TextField>
+                    <TextField 
+                        className={classes.textField}
+                        label="PlaceId" 
+                        value={placeId} 
+                        variant="outlined" 
+                        disabled
+                    />
+                    <TextField 
+                        className={classes.textField}
+                        label="Name" 
+                        value={name} 
+                        variant="outlined" 
+                        disabled
+                    />
+                    <TextField 
+                        className={classes.textField}
+                        label="Rating" 
+                        value={rating} 
+                        variant="outlined"
+                        disabled 
+                    />
+                    <TextField 
+                        className={classes.textField}
+                        label="Address" 
+                        value={address} 
+                        variant="outlined" 
+                        disabled
+                    />
+                    <TextField 
+                        className={classes.textField}
+                        label="Location" 
+                        value={location} 
+                        variant="outlined" 
+                        disabled
+                    />
+                    <TextField 
+                        className={classes.textField}
+                        label="ImgUrl" 
+                        value={imgUrl} 
+                        variant="outlined" 
+                        onChange={(e) => setImgUrl(e.target.value)}
+                    />
+                    <img src={imgUrl} className={classes.textField}/>
+                    <TextField 
+                        className={classes.textField}
+                        label="Content " 
+                        value={content} 
+                        variant="outlined" 
+                        multiline
+                        rows={4}
+                        onChange={(e) => setContent(e.target.value)}
+                    />
+                    <Button 
+                        variant="outlined" 
+                        className={classes.submitButton}
+                        onClick={submit}
+                        
+                    >
+                        Submit
+                    </Button>
+                </div>
             </div>
         </div>
-        
     );
 }
 

@@ -34,6 +34,12 @@ const useStyles = makeStyles({
             backgroundColor: "transparent"
         },
     },
+    explanation: {
+        backgroundColor: 'grey',
+        color: 'white',
+        padding: 5,
+        marginBottom: 10,
+    }
 })
 
 
@@ -184,6 +190,15 @@ function Itinerary(props) {
 
     return (
         <div>
+            <div className={classes.explanation}>
+                <p>An itinerary planner drawing data from google places API Features:</p>
+                <ul>
+                    <li>Start by selecting destination and number of days</li>
+                    <li>drag and drop places of interest from categories below to days on top right</li>
+                    <li>on top left, search for places of interest not suggested by google maps api</li>
+                    <li>if logged in, you can save itinerary and return to it</li>
+                </ul> 
+            </div>
             <Form/>
             {itineraryId !== placeState.itineraryId ? <p>Loading</p> : ""}
             {placeState.days !== 0 

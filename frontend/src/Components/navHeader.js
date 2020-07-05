@@ -25,6 +25,13 @@ function NavHeader() {
                 name={user.username}
                 active
             />
+            <Menu.Item
+                as={Link}
+                to='/planner'
+                name='planner'
+                active={activeItem === 'planner'}
+                onClick={handleItemClick}
+            />
             <Menu.Menu position='right'>
                 <Menu.Item
                     name='logout'
@@ -40,6 +47,13 @@ function NavHeader() {
                 to='/'
                 name='home'
                 active={activeItem === 'home'}
+                onClick={handleItemClick}
+            />
+            <Menu.Item
+                as={Link}
+                to='/planner'
+                name='planner'
+                active={activeItem === 'planner'}
                 onClick={handleItemClick}
             />
             <Menu.Menu position='right'>

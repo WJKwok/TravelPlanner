@@ -33,6 +33,12 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 5,
     padding: '10px 0 20px 4px',
     overflowX: 'auto',
+  },
+  explanation: {
+    backgroundColor: 'grey',
+    color: 'white',
+    padding: 5,
+    marginBottom: 10,
   }
 }));
 
@@ -189,6 +195,15 @@ function Planner() {
 
   return (
     <div>
+      <div className={classes.explanation}>
+        <p>A sample guidebook implementation with mocked data. Features:</p>
+        <ul>
+          <li>filter categories as you like (except for 'cafe' - it's a dummy)</li>
+          <li>click on map pins to autoscroll to index cards</li>
+          <li>Drag and drop cards to DayBoards below to plan your itinerary</li>
+          <li>Number of dayboards will render according to Datepicker selection.</li>
+        </ul> 
+      </div>
       <Paper component="ul" className={classes.categoryChipBoard}>
         {categoryChips.map(data => {
           return (
