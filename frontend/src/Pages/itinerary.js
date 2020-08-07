@@ -39,6 +39,10 @@ const useStyles = makeStyles({
         color: 'white',
         padding: 5,
         marginBottom: 10,
+    },
+    autoComplete: {
+        width: 400,
+        marginRight: 20
     }
 })
 
@@ -204,7 +208,7 @@ function Itinerary(props) {
             {placeState.days !== 0 
             ? <DragDropContext onDragEnd={(result) => onDragEnd(result, placeState, dispatch)}>
                 <div className='day-and-search'>
-                    <div>
+                    <div className={classes.autoComplete}>
                         <PlaceAutoComplete 
                             clickFunction={addCardToSearchBoard}
                             city={placeState.location}/>

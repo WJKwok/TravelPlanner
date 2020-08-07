@@ -9,7 +9,7 @@ function NavHeader() {
     const { dispatch : placeDispatch } = useContext(PlaceContext);
     const { authState : {user}, dispatch } = useContext(AuthContext);
 
-    const [activeItem, setActiveItem] = useState('name');
+    const [activeItem, setActiveItem] = useState("");
     const handleItemClick = ( e, {name} ) =>  setActiveItem(name);
 
     const handleLogout = () => {
@@ -21,13 +21,14 @@ function NavHeader() {
         <Menu pointing secondary>
             <Menu.Item
                 as={Link}
-                to='/itineraries'
-                name={user.username}
-                active
+                to='/trips'
+                name='trips'
+                active={activeItem === 'trips'}
+                onClick={handleItemClick}
             />
             <Menu.Item
                 as={Link}
-                to='/planner'
+                to='/'
                 name='planner'
                 active={activeItem === 'planner'}
                 onClick={handleItemClick}
@@ -45,13 +46,6 @@ function NavHeader() {
             <Menu.Item
                 as={Link}
                 to='/'
-                name='home'
-                active={activeItem === 'home'}
-                onClick={handleItemClick}
-            />
-            <Menu.Item
-                as={Link}
-                to='/planner'
                 name='planner'
                 active={activeItem === 'planner'}
                 onClick={handleItemClick}

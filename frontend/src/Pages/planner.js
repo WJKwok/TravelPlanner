@@ -1,5 +1,5 @@
-import React, {useContext} from 'react'
-import { useQuery, useLazyQuery} from '@apollo/react-hooks';
+import React, {useContext, useEffect, useState} from 'react'
+import { useQuery, useLazyQuery, useMutation} from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import {DragDropContext} from 'react-beautiful-dnd'
 import moment from 'moment';
@@ -8,6 +8,7 @@ import CategoryChip from '../Components/categoryChip';
 import SpotsBoard from '../Components/spotsBoard';
 import DayBoard from '../Components/dayBoardCopy';
 import DatePicker from '../Components/datePicker';
+import PlaceAutoComplete from '../Components/placeAutoComplete';
 import { SpotContext } from '../Store/SpotContext';
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -16,9 +17,14 @@ import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import LocalCafeIcon from "@material-ui/icons/LocalCafe";
 import RestaurantIcon from "@material-ui/icons/Restaurant";
 import LocalMallIcon from "@material-ui/icons/LocalMall";
+import SearchIcon from '@material-ui/icons/Search';
+import Button from '@material-ui/core/Button';
+import SaveIcon from '@material-ui/icons/Save';
 // import BookIcon from "@material-ui/icons/Book";
 // import LocalMoviesIcon from "@material-ui/icons/LocalMovies";
 // import StorefrontIcon from "@material-ui/icons/Storefront";
+
+import { useSnackbar } from 'notistack'
 
 const useStyles = makeStyles(theme => ({
   categoryChipBoard: {
@@ -32,32 +38,97 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     borderRadius: 5,
     padding: '10px 0 20px 4px',
-    overflowX: 'auto',
+    overflowX: 'scroll',
   },
   explanation: {
     backgroundColor: 'grey',
     color: 'white',
     padding: 5,
     marginBottom: 10,
+  },
+  dateAndSave: {
+    display: 'flex',
+  },
+  saveButton: {
+    margin: '0 0 0 auto',
+    alignSelf: 'center',
   }
 }));
 
-function Planner() {
+function Planner(props) {
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
-  const [categoryChips, setCategoryChips] = React.useState([]);
-  const [queriedVariables, setQueriedVariables] = React.useState([])
+  const [categoryChips, setCategoryChips] = useState([]);
+  const [queriedVariables, setQueriedVariables] = useState([])
+  const [startedSearch, setStartedSearch] = useState(false)
+  const [newSearchItem, setNewSearchItem] = useState({})
+  const [tripId, setTripId] = useState(props.match.params.tripId)
+
   const {spotState, dispatch} = useContext(SpotContext)
 
   const iconDict = {
       Retail: <LocalMallIcon />,
       Cafe: <LocalCafeIcon />,
       Restaurant: <RestaurantIcon />,
-      Museum: <AccountBalanceIcon />
+      Museum: <AccountBalanceIcon />,
+      Searched: <SearchIcon />
   }
 
+  console.log('tripId :', tripId)
   //temporary for testing
-  const guideId = "5ed7aee473e66d73abe88279";
+  const guideId = props.match.params.guideBookId;
+  console.log(props.match.params);
+  useEffect(() => {
+    if (tripId === undefined){
+      dispatch({type:"CLEAR_STATE"})
+      // console.log('fetch trip')
+      // getTrip({variables:{tripId}})
+      // console.log('trip categories', spotState.categoriesInTrip)
+    } 
+  }, [])
+
+  useEffect(() => {
+    if (startedSearch) {
+      const searchChip = {
+        key: 'Searched',
+        label: 'Searched',
+        icon: iconDict['Searched'],
+        clicked: true
+      }
+  
+      const categoriesAndSearch = [searchChip, ...categoryChips]
+      setCategoryChips(categoriesAndSearch)
+    }
+  }, [startedSearch])
+
   console.log('queriedVariables: ', queriedVariables);
+
+  useQuery(GET_GUIDE, {
+    skip: tripId,
+    onCompleted({getGuide}){
+      console.log('guide: ', getGuide)
+      getCategories(getGuide.categories)
+    },
+    variables: {
+      guideId,
+    }
+  })
+
+  // const [getTrip] = 
+  useQuery(GET_TRIP, {
+    skip: tripId === undefined,
+    onCompleted({getTrip : trip}){ 
+      console.log("get trip: ", trip)
+      // categories in trip are clicked
+      setQueriedVariables(trip.categoriesInTrip)
+      getCategories(trip.guide.categories, trip.categoriesInTrip)
+      dispatch({type:'LOAD_TRIP', payload:{trip}})
+    },
+    onError(err){
+      console.log("GETTRIP error", err);
+    },
+    variables:{tripId}
+  })
 
   const [getSpots] = useLazyQuery(GET_SPOTS, {
     onCompleted({getSpots}){  //deconstruct from data
@@ -68,25 +139,33 @@ function Planner() {
     },
   })
 
-  useQuery(GET_GUIDE, {
-    onCompleted({getGuide}){
-      console.log('guide: ', getGuide)
-      getCategories(getGuide)
+  const [getSpot] = useLazyQuery(GET_SPOT, {
+    onCompleted({getSpot}){  //deconstruct from data
+      if (!getSpot) {
+        dispatch({ type:'ADD_SEARCH_ITEM', payload:{newSearchItem}})
+        setStartedSearch(true)
+        enqueueSnackbar("Spot has been added in 'Searched' :)", {variant: 'success'})
+      } else {
+        const itemCategory = getSpot.category;
+        getSpots({variables: {
+            guideId,
+            category: itemCategory
+        }})
+        enqueueSnackbar(`item is in ${itemCategory} :)`, {variant: 'info'})
+      }
     },
-    variables: {
-      guideId,
-    }
   })
 
-  const getCategories = (guide) => {
-    let categories = guide.categories.map(category => {
+  const getCategories = (guideCategories, clickedCategories=[]) => {
+    let categories = guideCategories.map(category => {
         return {
             key: category,
             label: category,
             icon: iconDict[category],
-            clicked: false
+            clicked: clickedCategories.includes(category) ? true : false
         }
     })
+    console.log('building chips... :', categories)
     setCategoryChips(categories)
   }
 
@@ -114,6 +193,138 @@ function Planner() {
       }
     }
     return selectedChips
+  }
+
+  const searchedItemClicked = (searchedItem) => {
+
+    for (var key in spotState.spots) {
+      if (spotState.spots[key].place.id === searchedItem.id) {
+        console.log("STOP DO NOT ADD")
+        enqueueSnackbar("Item already exists", { variant: "info" });
+        return
+      }
+    }
+
+    const reshapedItem = {
+      category: 'Searched',
+      content: "hello",
+      guide: 'Searched',
+      id: searchedItem.id,
+      imgUrl: "https://i.imgur.com/zbBglmB.jpg",
+      place: {
+        id: searchedItem.id,
+        location: [searchedItem.location.lat, searchedItem.location.lng],
+        name: searchedItem.content,
+        rating: searchedItem.rating
+      }
+    }
+
+    setNewSearchItem(reshapedItem)
+
+    getSpot({variables: {
+      guideId,
+      placeId: searchedItem.id
+    }})
+  }
+
+  const [submitTrip] = useMutation(SUBMIT_TRIP, {
+    onCompleted({submitTrip}){
+      console.log(submitTrip);
+      setTripId(submitTrip.id);
+      enqueueSnackbar("Your trip has been saved:)", {variant: 'success'})
+    },
+    onError(err){
+      console.log(err)
+    }
+  })
+
+  const [editTrip] = useMutation(EDIT_TRIP, {
+    onCompleted({editTrip}){
+      console.log("Trip edited",editTrip);
+      setTripId(editTrip.id);
+      enqueueSnackbar("Your trip has been saved:)", {variant: 'success'})
+    },
+    update(proxy, result){
+      try {
+
+          const data = proxy.readQuery({
+              query: GET_TRIP,
+              variables: {
+                  tripId
+              }
+          });
+
+          // writing to cache so that the query doesn't have to recall
+          // for queries with variables, it is impt to define it during write query, else it would be a different cache, and it wouldn't be read.
+          proxy.writeQuery({
+              query: GET_TRIP,
+              variables: {
+                  tripId
+              },
+              data: {
+                  getTrip: {
+                    ...data.getTrip,
+                    filteredSpots: spotState.columns['filtered-spots'].spotIds,
+                    spotsArray: Object.values(spotState.spots),
+                    categoriesInTrip: queriedVariables
+                  }
+              }
+          })
+      } catch (err) {
+          console.log('update cache error:', err);
+      }
+        
+    },
+    onError(err){
+      console.log(err)
+    }
+  })
+
+  const saveItinerary = () => {
+    const dayKeyArray = spotState.dayBoard;
+    let categoriesInTrip = []
+    let googlePlacesInTrip = []
+    let daySpotsArray = []
+    for (let i=0; i < dayKeyArray.length; i++) {
+      daySpotsArray.push(spotState.columns[dayKeyArray[i]].spotIds)
+    }
+
+    const daySpotsArrayFlattened = daySpotsArray.flat()
+
+    for (let j=0; j < daySpotsArrayFlattened.length; j++){
+      const category = spotState.spots[daySpotsArrayFlattened[j]].category
+
+      if (category === 'Searched'){
+        googlePlacesInTrip.push(daySpotsArrayFlattened[j])
+      }
+      else if (!categoriesInTrip.includes(category)) {
+        categoriesInTrip.push(category)
+      }
+    }
+
+    if (!tripId) {
+      submitTrip({    
+        variables: {
+          guide: guideId,
+          startDate: spotState.startDate.format("YYYY-MM-DD"),
+          dayLists: daySpotsArray,
+          categoriesInTrip,
+          googlePlacesInTrip
+        }
+      })
+    } else {
+      console.log(tripId)
+      editTrip({    
+        variables: {
+          tripId,
+          startDate: spotState.startDate.format("YYYY-MM-DD"),
+          dayLists: daySpotsArray,
+          categoriesInTrip,
+          googlePlacesInTrip
+        }
+      })
+    }
+    
   }
 
   const onDragEnd = (result) => {
@@ -159,18 +370,20 @@ function Planner() {
             },
         };
 
-        console.log(newOrder)
+        console.log('reording within same column', newOrder)
         dispatch({type:'REORDER', payload:{newOrder}});
         return;
     }
 
     //moving from one list to another
-    const startspots = Array.from(start.spotIds);
-    startspots.splice(source.index, 1);
+
+    let startspots = Array.from(start.spotIds);
+    startspots = startspots.filter(el =>  el !=draggableId)
     const newStart = {
         ...start,
         spotIds: startspots,
     };
+
 
     const finishspots = Array.from(finish.spotIds);
     finishspots.splice(destination.index, 0, draggableId);
@@ -189,20 +402,15 @@ function Planner() {
         },
     };
 
-    console.log(newOrder);
+    console.log('moving to a different columns', newOrder);
     dispatch({type:'REORDER', payload:{newOrder}});
   }
 
+  console.log("where are my cat chips?: ", categoryChips)
   return (
     <div>
-      <div className={classes.explanation}>
-        <p>A sample Berlin guidebook implementation. Features:</p>
-        <ul>
-          <li>Filter categories as you like (except for 'cafe' - it's a dummy)</li>
-          <li>Click on map pins to autoscroll to index cards</li>
-          <li>Drag and drop cards to DayBoards below to plan your itinerary</li>
-          <li>Number of dayboards will render according to Datepicker selection</li>
-        </ul> 
+      <div>
+        <PlaceAutoComplete clickFunction={searchedItemClicked} city='Berlin'/>
       </div>
       <Paper component="ul" className={classes.categoryChipBoard}>
         {categoryChips.map(data => {
@@ -221,11 +429,24 @@ function Planner() {
 
             const selectedCategories = currentlySelectedChips();
             const spots = unfilteredSpots.filter((spot) => selectedCategories.includes(spot.category))
+            // console.log('filtering spots: ', spots);
             
             return <SpotsBoard key={columnId} boardId={columnId} spots={spots} />
           })}
         </div>
-        <DatePicker/>
+        <div className={classes.dateAndSave}>
+          <DatePicker/>
+          <Button
+            variant="outlined"
+            color="primary"
+            size="medium"
+            className={classes.saveButton}
+            startIcon={<SaveIcon />}
+            onClick={saveItinerary}
+          >
+            Save
+          </Button>
+        </div>
         <div className={classes.dayBoardContainer}>
           {spotState.dayBoard.map((columnId, index) => {
             const column = spotState.columns[columnId];
@@ -240,6 +461,103 @@ function Planner() {
     </div>
   );
 }
+
+
+const GET_TRIP = gql`
+  query getTrip($tripId: ID!){
+    getTrip(tripId: $tripId){
+      id
+      guide{
+        id
+        categories
+      }
+      startDate
+      dayLists
+      categoriesInTrip
+      googlePlacesInTrip
+      spotsArray {
+        id
+        guide
+        place {
+          id
+          name
+          rating
+          location
+        }
+        category
+        imgUrl
+        content
+      }
+      filteredSpots
+    }
+  }
+`
+
+const SUBMIT_TRIP = gql`
+  mutation submitTrip(
+    $guide: ID!
+    $startDate: String!
+    $dayLists: [[String]]!
+    $categoriesInTrip: [String]!
+    $googlePlacesInTrip: [String]!
+  ){
+    submitTrip(
+      guide: $guide
+      startDate: $startDate
+      dayLists: $dayLists
+      categoriesInTrip: $categoriesInTrip
+      googlePlacesInTrip: $googlePlacesInTrip
+    ){
+      id
+    }
+  }
+`
+
+const EDIT_TRIP = gql`
+  mutation editTrip(
+    $tripId: ID!
+    $startDate: String!
+    $dayLists: [[String]]!
+    $categoriesInTrip: [String]!
+    $googlePlacesInTrip: [String]!
+  ){
+    editTrip(
+      tripId: $tripId
+      startDate: $startDate
+      dayLists: $dayLists
+      categoriesInTrip: $categoriesInTrip
+      googlePlacesInTrip: $googlePlacesInTrip
+    ){
+      id
+      dayLists
+      startDate
+    }
+  }
+`
+
+const GET_SPOT = gql`
+  query getSpot(
+    $guideId: ID!
+    $placeId: String!
+  ){
+    getSpot(
+      guideId: $guideId
+      placeId: $placeId
+    ){
+      id
+      guide
+      place {
+        id
+        name
+        rating
+        location
+      }
+      category
+      imgUrl
+      content
+    }
+  }
+`
 
 const GET_SPOTS = gql`
   query getSpots(
@@ -312,3 +630,17 @@ const getFilteredData = () => {
   }
 }
 */
+
+/*
+  <div className={classes.explanation}>
+    <p>A sample Berlin guidebook implementation. Features:</p>
+    <ul>
+      <li>Filter categories as you like (except for 'cafe' - it's a dummy)</li>
+      <li>Click on map pins to autoscroll to index cards</li>
+      <li>Drag and drop cards to DayBoards below to plan your itinerary</li>
+      <li>Number of dayboards will render according to Datepicker selection</li>
+    </ul> 
+  </div>
+*/
+
+// console.log(ObjectId.isValid(newSearchItem.id) && ObjectId(newSearchItem.id).toString() === newSearchItem.id)

@@ -8,14 +8,15 @@ import {fetchOnePlaceId, fetchPredictions} from '../Services/googlePlaceApi';
 const useStyles = makeStyles({
     root: {
         width: '100%',
-        maxWidth: 400,
+        //minWidth: 400,
         backgroundColor: '#f8f8f8',
         '&:hover': {
             backgroundColor: '#e3e3e3'
         }
     },
     textField: {
-        width: 400,
+        //minWidth: 400,
+        width: '100%',
     },
 })
 

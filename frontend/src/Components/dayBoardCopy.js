@@ -11,7 +11,7 @@ const useStyles = makeStyles(theme => ({
     root: {
       display: "flex",
       flexDirection: "column",
-      minWidth: 320,
+      minWidth: 336,
       marginRight: 30,
       boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)',
     },
@@ -23,10 +23,9 @@ const useStyles = makeStyles(theme => ({
     droppable: {
       padding: 8,
       flexGrow: 1,
-      minHeight: 300,
-      maxHeight: 500,
+      minHeight: 400,
       minWidth: 200,
-      overflowY: 'auto',
+      // if you put a overflow scroll here, you won't be able to scroll through the day boards with a draggable
     }
   }));
 
@@ -50,27 +49,25 @@ function DayBoard(props) {
   }
 
     return (
-      <div>
-        <div className={classes.root} >
-          <div className={classes.dateTitle}>
-            <p>{dateTitle.format("DD MMM")} ({dateTitle.format("ddd")})</p>
-          </div>
-          <Droppable 
-            droppableId={boardId}
-            direction="vertical"
-          >
-            {(provided) => (
-                <div 
-                className={classes.droppable} 
-                ref={(ref) => setRef(provided.innerRef, ref)}
-                {...provided.droppableProps}>
-                  {spots.map((spot, index) => <SpotCard key={spot.place.id} spot={spot} index={index} expanded={false}/>)}
-                  {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-          <GoogleMap city='Berlin' spots={spots} pinClicked={executeScroll}/>
+      <div className={classes.root} >
+        <div className={classes.dateTitle}>
+          <p>{dateTitle.format("DD MMM")} ({dateTitle.format("ddd")})</p>
         </div>
+        <Droppable 
+          droppableId={boardId}
+          direction="vertical"
+        >
+          {(provided) => (
+              <div 
+              className={classes.droppable}
+              ref={(ref) => setRef(provided.innerRef, ref)}
+              {...provided.droppableProps}>
+                {spots.map((spot, index) => <SpotCard key={spot.place.id} spot={spot} index={index} expanded={false}/>)}
+                {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+        <GoogleMap city='Berlin' spots={spots} pinClicked={executeScroll}/>
       </div>
     )
 }

@@ -9,7 +9,7 @@ function AuthRoute({component: Component, ...rest}) {
         <Route
             {...rest} // exact, path, other props
             render={(props) => 
-                user ? <Redirect to='/itineraries'/> : <Component {...props}/>
+                user ? <Redirect to='/trips'/> : <Component {...props}/>
             }
         />
     )

@@ -3,11 +3,20 @@ const Place = require('../../models/Place');
 
 module.exports = {
     Query: {
+        async getSpot(_, {guideId, placeId}){
+            try {
+                const spot = await Spot.findOne({guide: guideId, place: placeId}).populate('place');
+                // console.log(spot);
+                return spot;
+            } catch (err) {
+                throw new Error(err);
+            }
+        },
         async getSpots(_, {guideId, category}) {
             try {
-                const spot = await Spot.find({guide: guideId, category}).populate('place');
-                //console.log(spot);
-                return spot;
+                const spots = await Spot.find({guide: guideId, category}).populate('place');
+                //console.log(spots);
+                return spots;
             } catch (err) {
                 throw new Error(err);
             }

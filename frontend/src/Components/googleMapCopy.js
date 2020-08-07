@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Badge from '@material-ui/core/Badge';
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import LocalCafeIcon from "@material-ui/icons/LocalCafe";
+import SearchIcon from '@material-ui/icons/Search';
 import RestaurantIcon from "@material-ui/icons/Restaurant";
 import LocalMallIcon from "@material-ui/icons/LocalMall";
 
@@ -21,6 +22,10 @@ const useStyles = makeStyles({
     },
     Museum: {
         backgroundColor: blue[500],
+        color: "white"
+    },
+    Searched: {
+        backgroundColor: blue[900],
         color: "white"
     }
 });
@@ -47,7 +52,8 @@ function GoogleMap({spots, city, pinClicked}) {
     const iconDict = {
         Retail: <LocalMallIcon style={{ color: deepPurple[500] }}/>,
         Restaurant: <RestaurantIcon style={{ color: indigo[500] }}/>,
-        Museum: <AccountBalanceIcon style={{ color: blue[500] }}/>
+        Museum: <AccountBalanceIcon style={{ color: blue[500] }}/>,
+        Searched: <SearchIcon style={{ color: blue[900] }}/>
     }
 
     let center = coordinates[city];
@@ -67,7 +73,7 @@ function GoogleMap({spots, city, pinClicked}) {
     const markerPins = spots.map((spot, index) => {
         const place = spot.place
         return <MapPin 
-        key={place.id}
+        key={spot.id}
         lat={place.location[0]}
         lng={place.location[1]}
         index={index}

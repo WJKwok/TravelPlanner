@@ -19,8 +19,9 @@ export const initialData = {
 
 export const initialDataTest = {
     spots: {},
-    startDate: moment(),
+    startDate: moment().startOf('date'),
     numberOfDays: 1,
+    destination: 'Berlin',
     columns:{
         'filtered-spots': {
             id: 'filtered-spots',

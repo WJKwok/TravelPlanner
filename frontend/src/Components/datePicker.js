@@ -33,33 +33,45 @@ const useStyles = makeStyles({
 })
 
 function DatePicker() {
-    const {dispatch} = useContext(SpotContext)
+    const {dispatch, spotState} = useContext(SpotContext)
 
     const classes = useStyles()
-    const [now, setNow] = useState(moment().startOf('date'))
-    const [startDate, setStartDate] = useState(moment().startOf('date'))
-    const [endDate, setEndDate] = useState(moment())
-    
+    const now = moment().startOf('date')
+    const startDate = spotState.startDate
+    const endDate = spotState.startDate.clone().add(spotState.numberOfDays - 1, 'days')
 
-    useEffect(()=> {
-        const numberOfDays = endDate.diff(startDate, 'days') + 1;
-        dispatch({ type: 'CHANGE_DATE', payload:{startDate, numberOfDays}})
-    }, [startDate, endDate])
+    // useEffect(()=> {
+    //     console.log('date changed: ', startDate, endDate)
+    //     const numberOfDays = endDate.diff(startDate, 'days') + 1;
+    //     dispatch({ type: 'CHANGE_DATE', payload:{startDate, numberOfDays}})
+    // }, [startDate, endDate])
 
     const startDateHandler = date => {
         const newDate = date.startOf('date')
+
+        if (newDate.isSameOrAfter(now) && newDate.isAfter(endDate)){
+            // setStartDate(newDate);
+            // setEndDate(newDate);
+            console.log('start > end', newDate)
+            dispatch({ type: 'CHANGE_DATE', payload:{startDate: newDate, numberOfDays: 1}})
+            return;
+        }
+
         if (newDate.isSameOrAfter(now)){
-            setStartDate(newDate);
-            if(newDate.isAfter(endDate)){
-                setEndDate(newDate);
-            }
+            // setStartDate(newDate);
+            const numberOfDays = endDate.diff(newDate, 'days') + 1;
+            dispatch({ type: 'CHANGE_DATE', payload:{startDate: newDate, numberOfDays}})
+            return;
         }
     }
 
     const endDateHandler = date => {
         const newDate = date.startOf('date')
+
         if (newDate.isSameOrAfter(startDate)){
-            setEndDate(newDate);
+            // setEndDate(newDate);
+            const numberOfDays = newDate.diff(startDate, 'days') + 1;
+            dispatch({ type: 'CHANGE_DATE', payload:{startDate: startDate, numberOfDays}})
         }
     }
 
@@ -72,13 +84,14 @@ function DatePicker() {
             <KeyboardDatePicker
                 className={classes.datePicker}
                 disableToolbar
-                disablePast='true'
+                // disablePast='true'
                 inputVariant="outlined"
                 variant="inline"
                 format="DD MMM YYYY"
                 margin="normal"
                 id="start"
                 label="Start Date"
+                minDate={startDate.isBefore(now) ? startDate : now}
                 value={startDate}
                 autoOk={true}
                 onChange={startDateHandler}

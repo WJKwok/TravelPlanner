@@ -10,7 +10,11 @@ const useStyles = makeStyles({
     root: {
         display: 'flex'
     },
+    autoComplete: {
+        flex: 2
+    },
     form: {
+        flex: 3,
         marginLeft: 8
     },
     textField: {
@@ -133,9 +137,12 @@ function Logger(){
     return(
         <div>
             <div className={classes.root}>
-                <PlaceAutoComplete 
-                    clickFunction={getDetails}
-                    city={city}/>
+                <div className={classes.autoComplete}>
+                    <PlaceAutoComplete 
+                        clickFunction={getDetails}
+                        city={city}/>
+                </div>
+                
                 <div className={classes.form}>
                     <TextField 
                         className={classes.textField}

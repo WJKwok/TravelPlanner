@@ -1,13 +1,28 @@
+import moment from 'moment';
+
 export const spotReducer = (state, action) => {
     switch (action.type) {
+        case 'CLEAR_STATE':
+            const defaultState = clearState()
+            return defaultState
+        case 'LOAD_TRIP':
+            const {trip} = action.payload
+            const tripLoaded = loadTrip(trip)
+            return tripLoaded
         case 'ADD_SPOTS':
             const {newSpots} = action.payload
             console.log('newSpots: ', newSpots);
             const newSpotsAdded = addNewSpots(state, newSpots)
             console.log('newSpotsAdded: ', newSpotsAdded)
             return newSpotsAdded;
+        case 'ADD_SEARCH_ITEM':
+            const {newSearchItem} = action.payload
+            const newSearchAdded = addSearchItem(state, newSearchItem)
+            console.log("newSearchitemstate: ",newSearchAdded)
+            return newSearchAdded;
         case 'REORDER':
             const {newOrder} = action.payload
+            console.log('Reordered: ', newOrder);
             return newOrder
         case 'CHANGE_DATE':
             const {startDate, numberOfDays} = action.payload
@@ -19,8 +34,72 @@ export const spotReducer = (state, action) => {
     }
 }
 
+const clearState = () => {
+    const newState = {
+        spots: {},
+        startDate: moment().startOf('date'),
+        numberOfDays: 1,
+        destination: 'Berlin',
+        columns:{
+            'filtered-spots': {
+                id: 'filtered-spots',
+                title: 'filtered-spots',
+                spotIds: []
+            },
+            'day1': {
+                id: 'day1',
+                title: 'day1',
+                spotIds: []
+            },
+        },
+        filteredBoard: ['filtered-spots'],
+        dayBoard:['day1']
+    }
+
+    return newState
+}
+
+const loadTrip = (trip) => {
+
+    const spots = {}
+    trip.spotsArray.forEach(spot => {
+        spots[spot.id] = spot
+    });
+
+    const columns = {}
+    const dayBoard = []
+    columns['filtered-spots'] = {
+        id: 'filtered-spots',
+        title: 'filtered-spots',
+        spotIds: trip.filteredSpots
+    }
+
+    for (let i = 0; i < trip.dayLists.length; i++){
+        const day = `day${i+1}`
+        dayBoard.push(day)
+        columns[day] = {
+            id: day,
+            title: day,
+            spotIds: trip.dayLists[i]
+        }
+    }
+
+    const newState = {
+        spots,
+        startDate: moment(trip.startDate),
+        numberOfDays: trip.dayLists.length,
+        destination: 'Berlin',
+        columns,
+        filteredBoard: ['filtered-spots'],
+        dayBoard,
+        categoriesInTrip: trip.categoriesInTrip
+    }
+
+    console.log('load trip state: ', newState)
+    return newState
+}
+
 const addNewSpots = (state, newSpots) => {
-    console.log('is it here??: ', newSpots)
     let mappedSpots = {}
     let spotIds = []
     for (var i = 0; i < newSpots.length; i ++){
@@ -47,10 +126,31 @@ const addNewSpots = (state, newSpots) => {
     return newState;
 }
 
+const addSearchItem = (state, newSearchItem) => {
+    const searchItem = {}
+    const itemId = newSearchItem.id;
+    searchItem[itemId] = newSearchItem
+    const newState = {
+        ...state,
+        spots: {
+            ...state.spots,
+            ...searchItem,
+        },
+        columns: {
+            ...state.columns,
+            'filtered-spots':{
+                ...state.columns['filtered-spots'],
+                spotIds: [...state.columns['filtered-spots'].spotIds, itemId]
+            }
+        }
+    }
+
+    return newState;
+}
+
 const changeDateAndDays = (state, startDate, numberOfDays) =>{
 
     const previousNumberOfDays = state.numberOfDays;
-    const differenceInDays = Math.abs(numberOfDays - previousNumberOfDays)
     
     const dayBoard = []
     for (var i = 0; i < numberOfDays; i ++){
@@ -59,7 +159,6 @@ const changeDateAndDays = (state, startDate, numberOfDays) =>{
     }
 
     if (previousNumberOfDays > numberOfDays) {
-        //loop down previousNumberOfDays by differenceInDays and remove keys
 
         let disposedSpotIds = []
 
@@ -107,7 +206,11 @@ const changeDateAndDays = (state, startDate, numberOfDays) =>{
             }
         }
         return newState
+    } else {
+        const newState = {
+            ...state,
+            startDate,
+        }
+        return newState
     }
-
-    return state
 }
