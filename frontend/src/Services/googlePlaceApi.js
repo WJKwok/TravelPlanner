@@ -13,7 +13,8 @@ export const fetchOnePlaceId = async (placeId) => {
 
     const response = await fetch(`/place/details/json?placeid=${placeId}&key=${googlePlacesApi}`)
     const placeData = await response.json();
-
+    
+    console.log('place data: ', placeData);
     let placeObject = {};
     placeObject['id'] = placeId
     placeObject['content'] = placeData.result.name;

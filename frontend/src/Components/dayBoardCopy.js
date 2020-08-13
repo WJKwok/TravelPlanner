@@ -62,7 +62,7 @@ function DayBoard(props) {
               className={classes.droppable}
               ref={(ref) => setRef(provided.innerRef, ref)}
               {...provided.droppableProps}>
-                {spots.map((spot, index) => <SpotCard key={spot.place.id} spot={spot} index={index} expanded={false}/>)}
+                {spots.map((spot, index) => <SpotCard key={spot.place.id} spot={spot} index={index} day={dateTitle.day()} expanded={false}/>)}
                 {provided.placeholder}
             </div>
           )}

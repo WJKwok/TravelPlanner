@@ -1,3 +1,4 @@
+require('dotenv').config();
 const {Client, Status} = require("@googlemaps/google-maps-services-js");
 
 module.exports.getGooglePlace = async(placeId) => {
@@ -6,7 +7,7 @@ module.exports.getGooglePlace = async(placeId) => {
         const response = await client.placeDetails({
             params: {
                 place_id: placeId,
-                key: 'AIzaSyA1akG-N0-euznd6XrQf-haKCgKuaAnFds'
+                key: process.env.GOOGLE_PLACES_KEY
             },
             timeout: 1000, // milliseconds
         })
@@ -22,7 +23,10 @@ module.exports.getGooglePlace = async(placeId) => {
                 id: placeId,
                 location: [result.geometry.location.lat, result.geometry.location.lng],
                 name: result.name,
-                rating: result.rating
+                businessStatus: result.business_status,
+                rating: result.rating,
+                address: result.formatted_address,
+                hours: result.opening_hours ? result.opening_hours.weekday_text : null
             }
         }
 
@@ -32,34 +36,40 @@ module.exports.getGooglePlace = async(placeId) => {
         console.log(error.response.data)
     }
     
-    
-    // client.placeDetails({
-    //     params: {
-    //         place_id: placeId,
-    //         key: 'AIzaSyA1akG-N0-euznd6XrQf-haKCgKuaAnFds'
-    //     },
-    //     timeout: 1000, // milliseconds
-    // })
-    // .then((response) => {
-    //     const result = response.data.result;
-    //     const googlePlace = {
-    //         category: 'Searched',
-    //         content: "hello",
-    //         guide: 'Searched',
-    //         id: result.id,
-    //         imgUrl: "https://i.imgur.com/zbBglmB.jpg",
-    //         place: {
-    //             id: result.id,
-    //             location: [result.geometry.location.lat, result.geometry.location.lng],
-    //             name: result.name,
-    //             rating: result.rating
-    //         }
-    //     }
+}
 
-    //     console.log('hello')
-    //     return googlePlace
-    // })
-    // .catch((error) => {
-    //     console.log(error);
-    // });
+
+module.exports.getGooglePlaceForUpdate = async(placeId) => {
+    const client = new Client({});
+    try {
+        const response = await client.placeDetails({
+            params: {
+                place_id: placeId,
+                key: process.env.GOOGLE_PLACES_KEY
+            },
+            timeout: 1000, // milliseconds
+        })
+
+        if (response.data.result) {
+            const result = response.data.result;
+
+            const googlePlace = {
+                id: placeId,
+                location: [result.geometry.location.lat, result.geometry.location.lng],
+                name: result.name,
+                businessStatus: result.business_status,
+                rating: result.rating,
+                address: result.formatted_address,
+                hours: result.opening_hours ? result.opening_hours.weekday_text : null
+            }
+            return googlePlace
+        } else {
+            return placeId
+        }
+        
+    } catch(error) {
+        console.log(error)
+        return placeId
+    }
+    
 }

@@ -56,6 +56,8 @@ module.exports = gql`
         name: String!
         rating: Float!
         location: [Float]!
+        businessStatus: String
+        hours: [String]
     }
     input PlaceInput {
         id: String!
@@ -93,6 +95,7 @@ module.exports = gql`
         submitTrip(guide: ID!, startDate: String!, dayLists: [[String]]!, categoriesInTrip: [String]!, googlePlacesInTrip: [String]!): Trip!
         editTrip(tripId: ID!, startDate: String!, dayLists: [[String]]!, categoriesInTrip: [String]!, googlePlacesInTrip: [String]!): Trip!
         savePlace(placeInput: PlaceInput!): Place!
+        updatePlaces: Boolean!
         saveSpot(spotInput: SpotInput!): Spot!
     }
 `

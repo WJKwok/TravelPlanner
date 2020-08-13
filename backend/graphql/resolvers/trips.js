@@ -1,4 +1,4 @@
-const { UserInputError, AuthenticationError } = require('apollo-server');
+const { UserInputError } = require('apollo-server');
 const Trip = require('../../models/Trip');
 const Spot = require('../../models/Spot');
 const checkAuth = require('../../utils/checkAuth');
@@ -58,7 +58,7 @@ module.exports = {
                     spotsArray: [...spots, ...places],
                     filteredSpots
                 }
-                console.log(result);
+                // console.log(result);
                 return result
             } catch(err) {
                 throw new Error(err)

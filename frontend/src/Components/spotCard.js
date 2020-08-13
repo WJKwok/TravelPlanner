@@ -14,14 +14,25 @@ const useStyles = makeStyles((theme) => ({
       maxWidth: 300,
       margin: 10,
     },
+    openStatus: {
+        border: '1px solid red',
+        padding: 5,
+        display: 'inline-block',
+        fontSize: 8,
+        borderRadius: 3,
+        verticalAlign: 'middle',
+    },
     header: {
       display: 'flex',
     },
     headerThumbnail: {
-        width: 100,
+        // width: 100,
+        width: "100%",
+        height: "auto"
     },
     headerTitle: {
         flex: '1 0 auto',
+        wordBreak: 'break-all',
     },
     rating: {
         display: "flex",
@@ -52,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
 
 function SpotCard(props) {
 
-    const {spot, index} = props;
+    const {spot, index, day} = props;
     //const placeImgUrl = "/place/photo?maxheight=400&photoreference=" + place.photoRef + "&key=" + process.env.REACT_APP_GOOGLE_PLACES_API_KEY; 
 
     const classes = useStyles();
@@ -61,6 +72,18 @@ function SpotCard(props) {
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
+
+    const dayToArrayIndex = day === 0 ? 6 : day -1
+
+    const businessStatus = spot.place.businessStatus === 'OPERATIONAL' ? 
+        ( <Typography>
+            <span className={classes.openStatus}>{spot.place.hours ? spot.place.hours[dayToArrayIndex] : 'Hours Null'}</span>
+        </Typography> ) : 
+        (<Typography>
+            <span className={classes.openStatus}>{spot.place.businessStatus}</span>
+        </Typography>)
+
+    // console.log(spot.place.name, spot.place.hours[-1]);
     
     return (
         <Draggable
@@ -73,7 +96,6 @@ function SpotCard(props) {
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
-                    
                 >
                     <div className={classes.header} onClick={handleExpandClick}>
                         {expanded ? "" : <CardMedia
@@ -82,8 +104,9 @@ function SpotCard(props) {
                         />}
                         <div>
                         <CardContent className={classes.headerTitle}>
+                            {businessStatus}
                             <Typography>
-                            {index+1}. {spot.place.name}
+                                {index+1}. {spot.place.name}
                             </Typography>
                             <div className={classes.rating}>
                                 <Typography>

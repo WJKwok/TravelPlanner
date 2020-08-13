@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     borderRadius: 5,
     padding: '10px 0 20px 4px',
-    overflowX: 'scroll',
+    overflowX: 'auto',
   },
   explanation: {
     backgroundColor: 'grey',
@@ -406,7 +406,6 @@ function Planner(props) {
     dispatch({type:'REORDER', payload:{newOrder}});
   }
 
-  console.log("where are my cat chips?: ", categoryChips)
   return (
     <div>
       <div>
@@ -483,6 +482,8 @@ const GET_TRIP = gql`
           name
           rating
           location
+          hours
+          businessStatus
         }
         category
         imgUrl
@@ -575,6 +576,8 @@ const GET_SPOTS = gql`
         name
         rating
         location
+        businessStatus
+        hours
       }
       category
       imgUrl

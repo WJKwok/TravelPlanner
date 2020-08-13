@@ -87,7 +87,7 @@ function Trips() {
                         className={classes.headerThumbnail}
                         image={itinerary.guide.coverImage}
                     />
-                    <Link to={`/${itinerary.guide.id}/${itinerary.id}`}>
+                    <Link to={`/planner/${itinerary.guide.id}/${itinerary.id}`}>
                         <CardContent className={classes.headerTitle}>
                             <Typography variant="h5">
                                 {itinerary.guide.city}

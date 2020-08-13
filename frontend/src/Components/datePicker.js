@@ -39,6 +39,8 @@ function DatePicker() {
     const now = moment().startOf('date')
     const startDate = spotState.startDate
     const endDate = spotState.startDate.clone().add(spotState.numberOfDays - 1, 'days')
+    const currentTripLength = spotState.numberOfDays
+    const tripLengthLimit = 7
 
     // useEffect(()=> {
     //     console.log('date changed: ', startDate, endDate)
@@ -47,30 +49,35 @@ function DatePicker() {
     // }, [startDate, endDate])
 
     const startDateHandler = date => {
-        const newDate = date.startOf('date')
+        const newStartDate = date.startOf('date')
+        const numberOfDays = endDate.diff(newStartDate, 'days') + 1
 
-        if (newDate.isSameOrAfter(now) && newDate.isAfter(endDate)){
-            // setStartDate(newDate);
-            // setEndDate(newDate);
-            console.log('start > end', newDate)
-            dispatch({ type: 'CHANGE_DATE', payload:{startDate: newDate, numberOfDays: 1}})
-            return;
+        if (newStartDate.isBefore(endDate) && numberOfDays < tripLengthLimit){
+            console.log('start < end & dayDiff < tripLengthLimit')
+            dispatch({ type: 'CHANGE_DATE', payload:{startDate: newStartDate, numberOfDays: numberOfDays}})
         }
 
-        if (newDate.isSameOrAfter(now)){
-            // setStartDate(newDate);
-            const numberOfDays = endDate.diff(newDate, 'days') + 1;
-            dispatch({ type: 'CHANGE_DATE', payload:{startDate: newDate, numberOfDays}})
-            return;
+        if (newStartDate.isBefore(endDate) && numberOfDays > tripLengthLimit){
+            console.log('start < end & dayDiff > tripLengthLimit')
+            dispatch({ type: 'CHANGE_DATE', payload:{startDate: newStartDate, numberOfDays: tripLengthLimit}})
         }
+
+        if (newStartDate.isAfter(endDate)){
+            dispatch({ type: 'CHANGE_DATE', payload:{startDate: newStartDate, numberOfDays: currentTripLength}})
+        }
+
+        if (newStartDate.isSame(endDate)){
+            dispatch({ type: 'CHANGE_DATE', payload:{startDate: newStartDate, numberOfDays: 1}})
+        }
+
     }
 
     const endDateHandler = date => {
-        const newDate = date.startOf('date')
+        const newEndDate = date.startOf('date')
 
-        if (newDate.isSameOrAfter(startDate)){
-            // setEndDate(newDate);
-            const numberOfDays = newDate.diff(startDate, 'days') + 1;
+        if (newEndDate.isSameOrAfter(startDate)){
+            // setEndDate(newEndDate);
+            const numberOfDays = newEndDate.diff(startDate, 'days') + 1;
             dispatch({ type: 'CHANGE_DATE', payload:{startDate: startDate, numberOfDays}})
         }
     }
@@ -91,7 +98,6 @@ function DatePicker() {
                 margin="normal"
                 id="start"
                 label="Start Date"
-                minDate={startDate.isBefore(now) ? startDate : now}
                 value={startDate}
                 autoOk={true}
                 onChange={startDateHandler}

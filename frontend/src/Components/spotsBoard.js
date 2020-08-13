@@ -1,6 +1,7 @@
 import React, {useRef} from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 
+import moment from 'moment';
 import SpotCard from './spotCard';
 import GoogleMap from './googleMapCopy';
 
@@ -46,7 +47,7 @@ function SpotsBoard(props) {
             ref={(ref) => setRef(provided.innerRef, ref)}
             {...provided.droppableProps}
             >
-              {spots.map((spot, index) => <SpotCard key={spot.id} spot={spot} index={index} expanded={true}/>)}
+              {spots.map((spot, index) => <SpotCard key={spot.id} spot={spot} day={moment().startOf('date').day()} index={index} expanded={true}/>)}
             {provided.placeholder}
           </div>)}
         </Droppable>
