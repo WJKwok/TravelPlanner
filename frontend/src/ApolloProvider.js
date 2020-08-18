@@ -15,7 +15,7 @@ const errorLink = onError(({ graphQLErrors }) => {
 
 const httpLink = createHttpLink({
     // uri: 'http://localhost:5010/'
-    uri: 'https://travel-planner-backend.herokuapp.com/'
+    uri: process.env.NODE_ENV === 'development' ? 'https://travel-planner-backend.herokuapp.com/' : 'http://localhost:5010/'
 })
 
 const authLink = setContext(() => {

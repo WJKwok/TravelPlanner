@@ -26,7 +26,7 @@ const useStyles = makeStyles({
 
 function Landing() {
     const classes = useStyles();
-
+    console.log('process.env.NODE_ENV: ', process.env.NODE_ENV)
     // deconstructing from data
     const {data:{ getGuides : guides } = {}, } = useQuery(GET_GUIDES)
 
