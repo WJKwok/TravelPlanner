@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import {Card, CardMedia, CardContent, Collapse, Typography, IconButton} from '@material-ui/core';
 import Rating from '@material-ui/lab/Rating';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Badge from '@material-ui/core/Badge';
 
 import {Draggable} from 'react-beautiful-dnd'
 
@@ -15,11 +16,7 @@ const useStyles = makeStyles((theme) => ({
       margin: 10,
     },
     openStatus: {
-        border: '1px solid red',
-        padding: 5,
-        display: 'inline-block',
-        fontSize: 8,
-        borderRadius: 3,
+        fontSize: 12,
         verticalAlign: 'middle',
     },
     header: {
@@ -27,15 +24,35 @@ const useStyles = makeStyles((theme) => ({
     },
     headerThumbnail: {
         // width: 100,
-        width: "100%",
-        height: "auto"
+        minWidth: 90,
+        objectFit: 'cover'
     },
     headerTitle: {
         flex: '1 0 auto',
-        wordBreak: 'break-all',
+        "& .MuiTypography-h6": {
+            lineHeight: 'normal'
+        }
+        // wordBreak: 'break-all',
+    },
+    rowOne:{
+        paddingBottom: 10,
+        display: 'flex',
+        alignItems: 'center'
+    },
+    indexCircle: {
+        backgroundColor: 'grey',
+        color: 'white',
+        borderRadius: 5,
+        padding: "0px 5px",
+        marginRight: 5
     },
     rating: {
         display: "flex",
+        alignItems: 'center'
+    },
+    ratingNumber: {
+        marginRight: 5,
+        fontSize: 12
     },
     collapseContent:{
         maxHeight: 200,
@@ -73,15 +90,21 @@ function SpotCard(props) {
         setExpanded(!expanded);
     };
 
+    const trimDayText = (dayText) => {
+        const dayAndHoursArray = dayText.split('day')
+        const trimmedDayText = dayAndHoursArray[0].slice(0,3) + dayAndHoursArray[1]
+        return trimmedDayText
+    }
+
     const dayToArrayIndex = day === 0 ? 6 : day -1
 
     const businessStatus = spot.place.businessStatus === 'OPERATIONAL' ? 
-        ( <Typography>
-            <span className={classes.openStatus}>{spot.place.hours ? spot.place.hours[dayToArrayIndex] : 'Hours Null'}</span>
-        </Typography> ) : 
-        (<Typography>
-            <span className={classes.openStatus}>{spot.place.businessStatus}</span>
-        </Typography>)
+        (<span className={classes.openStatus}>
+            {spot.place.hours ? trimDayText(spot.place.hours[dayToArrayIndex]) : 'Hours Null'}
+        </span>) : 
+        (<span className={classes.openStatus}>
+            {spot.place.businessStatus}
+        </span>)
 
     // console.log(spot.place.name, spot.place.hours[-1]);
     
@@ -104,19 +127,21 @@ function SpotCard(props) {
                         />}
                         <div>
                         <CardContent className={classes.headerTitle}>
-                            {businessStatus}
-                            <Typography>
-                                {index+1}. {spot.place.name}
+                            <Typography className={classes.rowOne}>
+                                <span className={classes.indexCircle}>{index+1}</span> {businessStatus}
+                            </Typography>
+                            <Typography variant="h6">
+                                {spot.place.name}
                             </Typography>
                             <div className={classes.rating}>
-                                <Typography>
-                                {spot.rating}  
+                                <Typography className={classes.ratingNumber}>
+                                {spot.place.rating}  
                                 </Typography>
-                                <Rating defaultValue={spot.place.rating} precision={0.5} readOnly />
+                                <Rating defaultValue={spot.place.rating} precision={0.5} size="small" readOnly />
                             </div>
                         </CardContent>
                         </div>
-                        <IconButton
+                        {/* <IconButton
                         className={clsx(classes.expand, {
                             [classes.expandOpen]: expanded,
                         })}
@@ -125,7 +150,7 @@ function SpotCard(props) {
                         aria-expanded={expanded}
                         >
                             <ExpandMoreIcon />
-                        </IconButton>
+                        </IconButton> */}
                     </div>
                     <Collapse className={classes.collapseContent} in={expanded} timeout="auto" unmountOnExit>
                         <CardMedia
