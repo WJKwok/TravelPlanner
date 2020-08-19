@@ -5,11 +5,22 @@ import { Link } from 'react-router-dom'
 import { AuthContext } from '../Store/AuthContext'
 import { PlaceContext } from '../Store/PlaceContext';
 
+import LoginModel from './loginModal';
+
 function NavHeader() {
     const { dispatch : placeDispatch } = useContext(PlaceContext);
     const { authState : {user}, dispatch } = useContext(AuthContext);
 
     const [activeItem, setActiveItem] = useState("");
+    const [loginOpen, setLoginOpen] = useState(false);
+
+    const handleClickOpen = () => {
+        setLoginOpen(true);
+    };
+    const handleClose = () => {
+        setLoginOpen(false);
+    };
+
     const handleItemClick = ( e, {name} ) =>  setActiveItem(name);
 
     const handleLogout = () => {
@@ -52,11 +63,11 @@ function NavHeader() {
             />
             <Menu.Menu position='right'>
                 <Menu.Item
-                    as={Link}
-                    to='/login'
+                    // as={Link}
+                    // to='/login'
                     name='login'
                     active={activeItem === 'login'}
-                    onClick={handleItemClick}
+                    onClick={handleClickOpen}
                 />
                 <Menu.Item
                     as={Link}
@@ -66,6 +77,7 @@ function NavHeader() {
                     onClick={handleItemClick}
                 />
             </Menu.Menu>
+            <LoginModel loginOpen={loginOpen} handleClose={handleClose}/>
         </Menu>
     )
 
