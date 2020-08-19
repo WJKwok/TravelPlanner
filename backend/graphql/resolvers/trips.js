@@ -1,4 +1,4 @@
-const { UserInputError } = require('apollo-server');
+const { UserInputError, AuthenticationError } = require('apollo-server');
 const Trip = require('../../models/Trip');
 const Spot = require('../../models/Spot');
 const checkAuth = require('../../utils/checkAuth');
@@ -95,6 +95,20 @@ module.exports = {
                 } else throw new UserInputError('Itinerary not found')
             } catch (err) {
                 throw new Error(err);
+            }
+        },
+        async deleteTrip(_, {tripId}, context) {
+            const user = checkAuth(context)
+            try {
+                const trip = await Trip.findById(tripId)
+                if (trip.user.toString() === user.id){
+                    trip.delete()
+                    return trip.id;
+                } else {
+                    throw new AuthenticationError('User does not own this trip')
+                }
+            } catch(err){
+                throw new Error(err)
             }
         }
     }

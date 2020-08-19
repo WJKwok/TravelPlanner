@@ -240,6 +240,33 @@ function Planner(props) {
       setTripId(submitTrip.id);
       enqueueSnackbar("Your trip has been saved:)", {variant: 'success'})
     },
+    update(proxy, result){
+
+      console.log('submitTrip result:', result);
+
+      try {
+        const data = proxy.readQuery({
+            query: GET_USER_TRIPS,
+            variables: {
+                userId: authState.user.id
+            }
+        });
+
+        // writing to cache so that the query doesn't have to recall
+        // for queries with variables, it is impt to define it during write query, else it would be a different cache, and it wouldn't be read.
+        proxy.writeQuery({
+            query: GET_USER_TRIPS,
+            variables: {
+                userId: authState.user.id
+            },
+            data: {
+              getUserTrips: [...data.getUserTrips, result.data.submitTrip]
+            }
+        })
+      } catch (err) {
+        console.log('update cache error:', err);
+      }
+    },
     onError(err){
       console.log(err)
     }
@@ -308,33 +335,37 @@ function Planner(props) {
         categoriesInTrip.push(category)
       }
     }
-
-    if (!tripId) {
-      if (!authState.user) {
-        enqueueSnackbar("You have to be logged in to save itinerary", {variant: 'error'})
-        return
-      }
-      submitTrip({    
-        variables: {
-          guide: guideId,
-          startDate: spotState.startDate.format("YYYY-MM-DD"),
-          dayLists: daySpotsArray,
-          categoriesInTrip,
-          googlePlacesInTrip
-        }
-      })
+    if (daySpotsArrayFlattened.length === 0) {
+      enqueueSnackbar("Your itinerary is empty", {variant: 'error'})
     } else {
-      console.log(tripId)
-      editTrip({    
-        variables: {
-          tripId,
-          startDate: spotState.startDate.format("YYYY-MM-DD"),
-          dayLists: daySpotsArray,
-          categoriesInTrip,
-          googlePlacesInTrip
+      if (!tripId) {
+        if (!authState.user) {
+          enqueueSnackbar("You have to be logged in to save itinerary", {variant: 'error'})
+          return
         }
-      })
+        submitTrip({    
+          variables: {
+            guide: guideId,
+            startDate: spotState.startDate.format("YYYY-MM-DD"),
+            dayLists: daySpotsArray,
+            categoriesInTrip,
+            googlePlacesInTrip
+          }
+        })
+      } else {
+        console.log(tripId)
+        editTrip({    
+          variables: {
+            tripId,
+            startDate: spotState.startDate.format("YYYY-MM-DD"),
+            dayLists: daySpotsArray,
+            categoriesInTrip,
+            googlePlacesInTrip
+          }
+        })
+      }
     }
+    
     
   }
 
@@ -545,6 +576,25 @@ const EDIT_TRIP = gql`
       startDate
     }
   }
+`
+
+const GET_USER_TRIPS = gql`
+    query getUserTrips(
+        $userId: ID!
+    ){
+        getUserTrips(
+            userId: $userId
+        ){
+            id
+            guide{
+                id
+                coverImage
+                city
+            }
+            dayLists
+            startDate
+        }
+    }
 `
 
 const GET_SPOT = gql`

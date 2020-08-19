@@ -46,36 +46,37 @@ function Trips() {
         }
     });
 
-    // const [deleteItinerary] = useMutation(DELETE_ITINERARY, {
-    //     update(proxy, result){
-    //         console.log('done:', result.data.deleteItinerary)
+    const [deleteTrip] = useMutation(DELETE_TRIP, {
+        update(proxy, result){
+            console.log('done:', result.data.deleteTrip)
 
-    //         const data = proxy.readQuery({
-    //             query: GET_USER_TRIPS,
-    //             variables: {
-    //                 userId: authState.user.id
-    //             }
-    //         })
+            const data = proxy.readQuery({
+                query: GET_USER_TRIPS,
+                variables: {
+                    userId: authState.user.id
+                }
+            })
 
-    //         proxy.writeQuery({
-    //             query: GET_USER_TRIPS,
-    //             variables: {
-    //                 userId: authState.user.id
-    //             },
-    //             data: {
-    //                 getUserItineraries: data.getUserItineraries.filter(i => i.id !== result.data.deleteItinerary)
-    //             }
-    //         })
+            proxy.writeQuery({
+                query: GET_USER_TRIPS,
+                variables: {
+                    userId: authState.user.id
+                },
+                data: {
+                    getUserTrips: data.getUserTrips.filter(i => i.id !== result.data.deleteTrip)
+                }
+            })
 
-    //     },
-    //     onError(err){
-    //         console.log(err)
-    //     }
-    // })
+        },
+        onError(err){
+            console.log(err)
+        }
+    })
 
-    // const deleteHandler = (itineraryId) => {
-    //     deleteItinerary({ variables: { itineraryId } })
-    // }
+    const deleteHandler = (tripId) => {
+        console.log("is there a trip id?", tripId)
+        deleteTrip({ variables: { tripId } })
+    }
 
     console.log(trips);
     const tripCards = loading ?
@@ -102,7 +103,7 @@ function Trips() {
                         className={classes.nextButton}
                         disableRipple={true}
                         disableFocusRipple={true}
-                        // onClick={() => deleteHandler(itinerary.id)}
+                        onClick={() => deleteHandler(trip.id)}
                     >
                         <HighlightOffIcon />
                     </IconButton>
@@ -141,6 +142,12 @@ const GET_USER_TRIPS = gql`
             dayLists
             startDate
         }
+    }
+`
+
+const DELETE_TRIP = gql`
+    mutation deleteTrip($tripId: ID!){
+        deleteTrip(tripId: $tripId)
     }
 `
 

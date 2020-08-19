@@ -94,6 +94,7 @@ module.exports = gql`
         deleteItinerary(itineraryId: ID!): String!
         submitTrip(guide: ID!, startDate: String!, dayLists: [[String]]!, categoriesInTrip: [String]!, googlePlacesInTrip: [String]!): Trip!
         editTrip(tripId: ID!, startDate: String!, dayLists: [[String]]!, categoriesInTrip: [String]!, googlePlacesInTrip: [String]!): Trip!
+        deleteTrip(tripId: ID!): String!
         savePlace(placeInput: PlaceInput!): Place!
         updatePlaces: Boolean!
         saveSpot(spotInput: SpotInput!): Spot!

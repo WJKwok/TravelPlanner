@@ -48,6 +48,7 @@ function DatePicker() {
     //     dispatch({ type: 'CHANGE_DATE', payload:{startDate, numberOfDays}})
     // }, [startDate, endDate])
 
+    console.log('start date:', startDate)
     const startDateHandler = date => {
         const newStartDate = date.startOf('date')
         const numberOfDays = endDate.diff(newStartDate, 'days') + 1
@@ -74,10 +75,17 @@ function DatePicker() {
 
     const endDateHandler = date => {
         const newEndDate = date.startOf('date')
+        const numberOfDays = newEndDate.diff(startDate, 'days') + 1;
 
-        if (newEndDate.isSameOrAfter(startDate)){
-            // setEndDate(newEndDate);
-            const numberOfDays = newEndDate.diff(startDate, 'days') + 1;
+        console.log('number of days: ', numberOfDays);
+
+        if (newEndDate.isSameOrAfter(startDate) && numberOfDays > tripLengthLimit){
+            console.log('start < end & dayDiff > tripLengthLimit')
+            dispatch({ type: 'CHANGE_DATE', payload:{startDate: newEndDate.clone().subtract('days', 7), numberOfDays: tripLengthLimit}})
+        }
+
+        if (newEndDate.isSameOrAfter(startDate) && numberOfDays <= tripLengthLimit){
+            console.log('start < end & dayDiff <= tripLengthLimit')
             dispatch({ type: 'CHANGE_DATE', payload:{startDate: startDate, numberOfDays}})
         }
     }

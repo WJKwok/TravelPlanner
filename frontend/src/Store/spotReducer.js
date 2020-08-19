@@ -149,7 +149,8 @@ const addSearchItem = (state, newSearchItem) => {
 }
 
 const changeDateAndDays = (state, startDate, numberOfDays) =>{
-
+    console.log('date changing (startDate):', startDate)
+    console.log('date changing (numberOfDays):', numberOfDays)
     const previousNumberOfDays = state.numberOfDays;
     
     const dayBoard = []

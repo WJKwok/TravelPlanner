@@ -6,6 +6,7 @@ import { AuthContext } from '../Store/AuthContext'
 import { PlaceContext } from '../Store/PlaceContext';
 
 import LoginModel from './loginModal';
+import RegisterModel from './registerModal'
 
 function NavHeader() {
     const { dispatch : placeDispatch } = useContext(PlaceContext);
@@ -13,13 +14,7 @@ function NavHeader() {
 
     const [activeItem, setActiveItem] = useState("");
     const [loginOpen, setLoginOpen] = useState(false);
-
-    const handleClickOpen = () => {
-        setLoginOpen(true);
-    };
-    const handleClose = () => {
-        setLoginOpen(false);
-    };
+    const [registerOpen, setRegisterOpen] = useState(false);
 
     const handleItemClick = ( e, {name} ) =>  setActiveItem(name);
 
@@ -67,17 +62,18 @@ function NavHeader() {
                     // to='/login'
                     name='login'
                     active={activeItem === 'login'}
-                    onClick={handleClickOpen}
+                    onClick={() => setLoginOpen(true)}
                 />
                 <Menu.Item
-                    as={Link}
-                    to='/register'
+                    // as={Link}
+                    // to='/register'
                     name='register'
                     active={activeItem === 'register'}
-                    onClick={handleItemClick}
+                    onClick={() => setRegisterOpen(true)}
                 />
             </Menu.Menu>
-            <LoginModel loginOpen={loginOpen} handleClose={handleClose}/>
+            <LoginModel loginOpen={loginOpen} setLoginOpen={setLoginOpen}/>
+            <RegisterModel registerOpen={registerOpen} setRegisterOpen={setRegisterOpen}/>
         </Menu>
     )
 

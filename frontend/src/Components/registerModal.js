@@ -13,36 +13,39 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-function LoginModal({loginOpen, setLoginOpen}) {
+function RegisterModal({registerOpen, setRegisterOpen}) {
 
 
     const { dispatch } = useContext(AuthContext)
 
     const [username, setUsername] = useState("")
+    const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-
+    const [confirmPassword, setConfirmPassword] = useState("")
+ 
     const { enqueueSnackbar } = useSnackbar();
 
-    const [loginUser] = useMutation(LOGIN_MUTATION, {
+    const [registerUser] = useMutation(REGISTER_USER,{
         update(_, result){
-            console.log("login success: ", result.data.login);
-            dispatch({ type: 'LOGIN', payload: result.data.login});
-            setLoginOpen(false);
-            enqueueSnackbar("Login Success", {variant: 'success'})
+            console.log(result.data.register);
+            dispatch({type:"LOGIN", payload:result.data.register});
+            setRegisterOpen(false);
+            enqueueSnackbar("Registration Success", {variant: 'success'})
         },
         onError(err){
-            console.log(err.graphQLErrors[0].message);
-            // enqueueSnackbar(err.graphQLErrors[0].message, {variant: 'error'})
+            console.log(err);
         },
         variables: {
             username,
-            password
+            email,
+            password,
+            confirmPassword
         }
     })
 
     return (
-        <Dialog open={loginOpen} onClose={() =>  setLoginOpen(false)} aria-labelledby="form-dialog-title">
-            <DialogTitle id="form-dialog-title">Login</DialogTitle>
+        <Dialog open={registerOpen} onClose={()=> setRegisterOpen(false)} aria-labelledby="form-dialog-title">
+            <DialogTitle id="form-dialog-title">Register</DialogTitle>
             <DialogContent>
                 <DialogContentText>
                     To subscribe to this website, please enter your email address here. We will send updates
@@ -58,42 +61,64 @@ function LoginModal({loginOpen, setLoginOpen}) {
                     onChange={(e) => setUsername(e.target.value)}
                 />
                 <TextField
+                    fullWidth
+                    margin="dense"
+                    id='email' 
+                    label="Email" 
+                    value={email} 
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+                <TextField
                     id='password' 
                     fullWidth
+                    margin="dense"
                     value={password} 
                     label="Password"
                     onChange={(e) => setPassword(e.target.value)}
                 />
+                <TextField
+                    fullWidth
+                    margin="dense"
+                    id='confirmPassword' 
+                    label="Confirm Password"
+                    value={confirmPassword} 
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                />
             </DialogContent>
             <DialogActions>
-                <Button 
-                    id='login-button'
-                    onClick={loginUser}
-                    color="primary"
+                <Button
+                    color='primary'
+                    onClick={registerUser}
                 >
-                    Login
+                    Register
                 </Button>
             </DialogActions>
         </Dialog>
     );
 }
 
-const LOGIN_MUTATION = gql`
-    mutation login(
+const REGISTER_USER = gql`
+    mutation register(
         $username: String!
+        $email: String!
         $password: String!
+        $confirmPassword: String!
     ){
-        login(
+        register(
+            registerInput:{
             username: $username
+            email: $email
             password: $password
+            confirmPassword: $confirmPassword
+            }
         ){
             id
             email
+            token
             username
             createdAt
-            token
         }
     }
-`
+`;
 
-export default LoginModal
+export default RegisterModal
