@@ -10,6 +10,7 @@ import DayBoard from '../Components/dayBoardCopy';
 import DatePicker from '../Components/datePicker';
 import PlaceAutoComplete from '../Components/placeAutoComplete';
 import { SpotContext } from '../Store/SpotContext';
+import { AuthContext } from '../Store/AuthContext'
 
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
@@ -56,6 +57,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function Planner(props) {
+
+  const { authState } = useContext(AuthContext);
+  const {spotState, dispatch} = useContext(SpotContext)
+
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [categoryChips, setCategoryChips] = useState([]);
@@ -63,8 +68,6 @@ function Planner(props) {
   const [startedSearch, setStartedSearch] = useState(false)
   const [newSearchItem, setNewSearchItem] = useState({})
   const [tripId, setTripId] = useState(props.match.params.tripId)
-
-  const {spotState, dispatch} = useContext(SpotContext)
 
   const iconDict = {
       Retail: <LocalMallIcon />,
@@ -75,6 +78,7 @@ function Planner(props) {
   }
 
   console.log('tripId :', tripId)
+  console.log('user exists? ', authState.user)
   //temporary for testing
   const guideId = props.match.params.guideBookId;
   console.log(props.match.params);
@@ -122,6 +126,7 @@ function Planner(props) {
       // categories in trip are clicked
       setQueriedVariables(trip.categoriesInTrip)
       getCategories(trip.guide.categories, trip.categoriesInTrip)
+      setStartedSearch(trip.googlePlacesInTrip.length > 0)
       dispatch({type:'LOAD_TRIP', payload:{trip}})
     },
     onError(err){
@@ -214,8 +219,10 @@ function Planner(props) {
       place: {
         id: searchedItem.id,
         location: [searchedItem.location.lat, searchedItem.location.lng],
-        name: searchedItem.content,
-        rating: searchedItem.rating
+        name: searchedItem.name,
+        rating: searchedItem.rating,
+        businessStatus: searchedItem.businessStatus,
+        hours: searchedItem.hours
       }
     }
 
@@ -303,6 +310,10 @@ function Planner(props) {
     }
 
     if (!tripId) {
+      if (!authState.user) {
+        enqueueSnackbar("You have to be logged in to save itinerary", {variant: 'error'})
+        return
+      }
       submitTrip({    
         variables: {
           guide: guideId,

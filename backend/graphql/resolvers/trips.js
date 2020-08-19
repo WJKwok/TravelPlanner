@@ -52,13 +52,12 @@ module.exports = {
                 const filteredSpots = spotIds.filter(id => !flattenedDayLists.includes(id));
 
                 const result = {
-                    // so that _id cant be read by graphql query id
+                    // so _id cant be read by graphql query id
                     // ...trip._doc is not enough
                     ...trip.toObject({ virtuals: true }),
                     spotsArray: [...spots, ...places],
                     filteredSpots
                 }
-                // console.log(result);
                 return result
             } catch(err) {
                 throw new Error(err)

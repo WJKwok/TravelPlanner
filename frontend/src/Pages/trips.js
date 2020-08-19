@@ -12,7 +12,7 @@ import {Card, CardMedia, CardContent, Typography, IconButton, makeStyles} from '
 import moment from 'moment';
 
 const useStyles = makeStyles({
-    itineraryCard: {
+    tripCard: {
         marginBottom: 15,
         display: 'flex',
     },
@@ -39,61 +39,61 @@ function Trips() {
 
     const {
         loading,
-        data: { getUserTrips : itineraries } = {}
+        data: { getUserTrips : trips } = {}
     } = useQuery(GET_USER_TRIPS, {
         variables: {
             userId: authState.user.id
         }
     });
 
-    const [deleteItinerary] = useMutation(DELETE_ITINERARY, {
-        update(proxy, result){
-            console.log('done:', result.data.deleteItinerary)
+    // const [deleteItinerary] = useMutation(DELETE_ITINERARY, {
+    //     update(proxy, result){
+    //         console.log('done:', result.data.deleteItinerary)
 
-            const data = proxy.readQuery({
-                query: GET_USER_TRIPS,
-                variables: {
-                    userId: authState.user.id
-                }
-            })
+    //         const data = proxy.readQuery({
+    //             query: GET_USER_TRIPS,
+    //             variables: {
+    //                 userId: authState.user.id
+    //             }
+    //         })
 
-            proxy.writeQuery({
-                query: GET_USER_TRIPS,
-                variables: {
-                    userId: authState.user.id
-                },
-                data: {
-                    getUserItineraries: data.getUserItineraries.filter(i => i.id !== result.data.deleteItinerary)
-                }
-            })
+    //         proxy.writeQuery({
+    //             query: GET_USER_TRIPS,
+    //             variables: {
+    //                 userId: authState.user.id
+    //             },
+    //             data: {
+    //                 getUserItineraries: data.getUserItineraries.filter(i => i.id !== result.data.deleteItinerary)
+    //             }
+    //         })
 
-        },
-        onError(err){
-            console.log(err)
-        }
-    })
+    //     },
+    //     onError(err){
+    //         console.log(err)
+    //     }
+    // })
 
-    const deleteHandler = (itineraryId) => {
-        deleteItinerary({ variables: { itineraryId } })
-    }
+    // const deleteHandler = (itineraryId) => {
+    //     deleteItinerary({ variables: { itineraryId } })
+    // }
 
-    console.log(itineraries);
-    const itineraryCards = loading ?
+    console.log(trips);
+    const tripCards = loading ?
         ""
-        : itineraries.map((itinerary) => {
+        : trips.map((trip) => {
             return (
-                <Card className={classes.itineraryCard} key={itinerary.id}>
+                <Card className={classes.tripCard} key={trip.id}>
                     <CardMedia
                         className={classes.headerThumbnail}
-                        image={itinerary.guide.coverImage}
+                        image={trip.guide.coverImage}
                     />
-                    <Link to={`/planner/${itinerary.guide.id}/${itinerary.id}`}>
+                    <Link to={`/planner/${trip.guide.id}/${trip.id}`}>
                         <CardContent className={classes.headerTitle}>
                             <Typography variant="h5">
-                                {itinerary.guide.city}
+                                {trip.guide.city}
                             </Typography>
                             <Typography variant="subtitle1">
-                                {moment(itinerary.startDate).format("DD MMM")} - {moment(itinerary.startDate).add(itinerary.dayLists.length - 1, 'days').format("DD MMM")}
+                                {moment(trip.startDate).format("DD MMM")} - {moment(trip.startDate).add(trip.dayLists.length - 1, 'days').format("DD MMM")}
                             </Typography>
                         </CardContent>
                     
@@ -102,7 +102,7 @@ function Trips() {
                         className={classes.nextButton}
                         disableRipple={true}
                         disableFocusRipple={true}
-                        onClick={() => deleteHandler(itinerary.id)}
+                        // onClick={() => deleteHandler(itinerary.id)}
                     >
                         <HighlightOffIcon />
                     </IconButton>
@@ -111,8 +111,8 @@ function Trips() {
     
     return (
         <div>
-            {itineraryCards}
-            <Link to={'/planner'}>
+            {tripCards}
+            <Link to={'/'}>
                 <IconButton 
                     disableRipple={true}
                     disableFocusRipple={true}
@@ -144,11 +144,11 @@ const GET_USER_TRIPS = gql`
     }
 `
 
-const DELETE_ITINERARY =  gql`
-    mutation deleteItinerary($itineraryId: ID!){
-        deleteItinerary(itineraryId: $itineraryId)
-    }
-`
+// const DELETE_ITINERARY =  gql`
+//     mutation deleteItinerary($itineraryId: ID!){
+//         deleteItinerary(itineraryId: $itineraryId)
+//     }
+// `
 
 /* with parameters ^, without parameters
 const GET_USER_ITINERARIES = gql`

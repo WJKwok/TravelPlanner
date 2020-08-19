@@ -14,14 +14,17 @@ export const fetchOnePlaceId = async (placeId) => {
     const response = await fetch(`/place/details/json?placeid=${placeId}&key=${googlePlacesApi}`)
     const placeData = await response.json();
     
+
     console.log('place data: ', placeData);
     let placeObject = {};
     placeObject['id'] = placeId
-    placeObject['content'] = placeData.result.name;
+    placeObject['name'] = placeData.result.name;
     placeObject['rating'] = placeData.result.rating;
     placeObject['photoRef'] = placeData.result.photos ? placeData.result.photos[0].photo_reference : "0";
     placeObject['location'] = placeData.result.geometry.location;
     placeObject['address'] = placeData.result.formatted_address;
+    placeObject['businessStatus'] = placeData.result.business_status;
+    placeObject['hours'] = placeData.result.opening_hours ? placeData.result.opening_hours.weekday_text : null;
     
     return placeObject
 }
