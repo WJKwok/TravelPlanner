@@ -21,7 +21,7 @@ const useStyles = makeStyles({
 })
 
 
-function PlaceAutoComplete({clickFunction, city}) {
+function PlaceAutoComplete({clickFunction, city, placeHolderText}) {
 
     const [searchState, setSearchState] = useState("");
     const [sugestionsState, setSuggestionState] = useState([]);
@@ -66,11 +66,13 @@ function PlaceAutoComplete({clickFunction, city}) {
 
     const classes = useStyles();
 
+    const textLabel = placeHolderText ? placeHolderText : `Searching in ${city} ...`
+
     return(
         <div>
             <TextField 
                 className={classes.textField}
-                label={`Searching in ${city} ...`}
+                label={textLabel}
                 value={searchState} 
                 variant="outlined" 
                 onChange={searchHandler}

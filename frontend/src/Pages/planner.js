@@ -157,6 +157,7 @@ function Planner(props) {
             category: itemCategory
         }})
         enqueueSnackbar(`item is in ${itemCategory} :)`, {variant: 'info'})
+        chipClickedTrue(itemCategory)
       }
     },
   })
@@ -174,7 +175,16 @@ function Planner(props) {
     setCategoryChips(categories)
   }
 
-  const toggleClick = clickedChip => {
+  const chipClickedTrue = chipName => {
+    const chipsClone = [...categoryChips];
+    const objectIndex = categoryChips.findIndex(
+      chip => chip.key === chipName
+    );
+    chipsClone[objectIndex].clicked = true;
+    setCategoryChips(chipsClone);
+  }
+
+  const toggleChip = clickedChip => {
     const chipsClone = [...categoryChips];
     const objectIndex = categoryChips.findIndex(
       chip => chip.key === clickedChip.key
@@ -448,16 +458,18 @@ function Planner(props) {
     dispatch({type:'REORDER', payload:{newOrder}});
   }
 
+  const placeAutoCompletePlaceHolderText = "Google a place of interest if you don't find it in this guide book 🙌"
+
   return (
     <div>
       <div>
-        <PlaceAutoComplete clickFunction={searchedItemClicked} city='Berlin'/>
+        <PlaceAutoComplete clickFunction={searchedItemClicked} city='Berlin' placeHolderText={placeAutoCompletePlaceHolderText}/>
       </div>
       <Paper component="ul" className={classes.categoryChipBoard}>
         {categoryChips.map(data => {
           return (
             <li key={data.key}>
-              <CategoryChip data={data} toggleClick={toggleClick} />
+              <CategoryChip data={data} toggleChip={toggleChip} />
             </li>
           );
         })}

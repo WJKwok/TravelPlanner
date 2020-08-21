@@ -44,13 +44,17 @@ function RegisterModal({registerOpen, setRegisterOpen}) {
     })
 
     return (
-        <Dialog open={registerOpen} onClose={()=> setRegisterOpen(false)} aria-labelledby="form-dialog-title">
+        <Dialog 
+            maxWidth='xs' 
+            open={registerOpen} 
+            onClose={()=> setRegisterOpen(false)} 
+            aria-labelledby="form-dialog-title">
             <DialogTitle id="form-dialog-title">Register</DialogTitle>
             <DialogContent>
-                <DialogContentText>
+                {/* <DialogContentText>
                     To subscribe to this website, please enter your email address here. We will send updates
                     occasionally.
-                </DialogContentText>
+                </DialogContentText> */}
                 <TextField
                     autoFocus
                     margin="dense"

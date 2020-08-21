@@ -12,6 +12,7 @@ const useStyles = makeStyles(theme => ({
       display: "flex",
       flexDirection: "column",
       minWidth: 336,
+      maxWidth: 336,
       marginRight: 30,
       boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)',
     },
@@ -46,7 +47,9 @@ function DayBoard(props) {
       // console.dir(myref);
       // myref.scrollLeft = pixel;
       console.log('hi')
-  }
+    }
+
+    const placeHolderText = <p>Drag cards from above into this space to plan your day 😊</p>
 
     return (
       <div className={classes.root} >
@@ -62,7 +65,7 @@ function DayBoard(props) {
               className={classes.droppable}
               ref={(ref) => setRef(provided.innerRef, ref)}
               {...provided.droppableProps}>
-                {spots.map((spot, index) => <SpotCard key={spot.place.id} spot={spot} index={index} day={dateTitle.day()} expanded={false}/>)}
+                {spots.length > 0 ? spots.map((spot, index) => <SpotCard key={spot.place.id} spot={spot} index={index} day={dateTitle.day()} expanded={false}/>) : placeHolderText}
                 {provided.placeholder}
             </div>
           )}

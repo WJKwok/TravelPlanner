@@ -8,7 +8,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function CategoryChip({ data, toggleClick }) {
+function CategoryChip({ data, toggleChip }) {
   const classes = useStyles();
 
   return (
@@ -16,7 +16,7 @@ function CategoryChip({ data, toggleClick }) {
       icon={data.icon}
       label={data.label}
       variant={data.clicked ? "default" : "outlined"}
-      onClick={() => toggleClick(data)}
+      onClick={() => toggleChip(data)}
       className={classes.chip}
     />
   );

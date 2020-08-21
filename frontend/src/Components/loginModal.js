@@ -41,13 +41,17 @@ function LoginModal({loginOpen, setLoginOpen}) {
     })
 
     return (
-        <Dialog open={loginOpen} onClose={() =>  setLoginOpen(false)} aria-labelledby="form-dialog-title">
+        <Dialog 
+            maxWidth='50' 
+            open={loginOpen} 
+            onClose={() =>  setLoginOpen(false)} 
+            aria-labelledby="form-dialog-title">
             <DialogTitle id="form-dialog-title">Login</DialogTitle>
             <DialogContent>
-                <DialogContentText>
+                {/* <DialogContentText>
                     To subscribe to this website, please enter your email address here. We will send updates
                     occasionally.
-                </DialogContentText>
+                </DialogContentText> */}
                 <TextField
                     autoFocus
                     margin="dense"
