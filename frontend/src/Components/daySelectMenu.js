@@ -9,9 +9,10 @@ import Select from '@material-ui/core/Select';
 const useStyles = makeStyles({
     formControl: {
       minWidth: 170,
-      backgroundColor: '#e8e8e8',
-      border: '5px solid #e8e8e8',
-      borderRadius: '10px 10px 0px 0px'
+      backgroundColor: '#fff',
+      border: '5px solid #fff',
+      borderRadius: '10px 10px 0px 0px',
+      boxShadow: '-2px -1px 8px -2px rgba(0,0,0,0.2);'
     },
 });
 

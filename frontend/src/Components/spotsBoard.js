@@ -17,12 +17,6 @@ const useStyles = makeStyles(theme => ({
       boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)',
       padding: 10,
     },
-    formControl: {
-      minWidth: 170,
-      backgroundColor: '#e8e8e8',
-      border: '5px solid #e8e8e8',
-      borderRadius: '10px 10px 0px 0px'
-    },
   }));
 
 function SpotsBoard(props) {
