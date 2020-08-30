@@ -41,8 +41,7 @@ function LoginModal({loginOpen, setLoginOpen}) {
     })
 
     return (
-        <Dialog 
-            maxWidth='50' 
+        <Dialog
             open={loginOpen} 
             onClose={() =>  setLoginOpen(false)} 
             aria-labelledby="form-dialog-title">
