@@ -22,6 +22,7 @@ const useStyles = makeStyles(theme => ({
 function SpotsBoard(props) {
     const classes = useStyles();
     const {boardId, spots} = props
+    const [selectedIndex, setSelectedIndex] = useState(undefined)
 
     const [day, setDay] = useState(moment().startOf('date').day())
 
@@ -33,7 +34,7 @@ function SpotsBoard(props) {
 
     const executeScroll = (index) => {
         const pixel = index * 320 + 10
-        console.dir(myref);
+        setSelectedIndex(index)
         myref.scrollLeft = pixel;
     }
 
@@ -52,7 +53,7 @@ function SpotsBoard(props) {
             ref={(ref) => setRef(provided.innerRef, ref)}
             {...provided.droppableProps}
             >
-              {spots.length > 0 ? spots.map((spot, index) => <SpotCard key={spot.id} spot={spot} day={day} index={index} expanded={true}/>) : placeHolderText}
+              {spots.length > 0 ? spots.map((spot, index) => <SpotCard key={spot.id} spot={spot} day={day} index={index} expanded={true} highlight={selectedIndex === index}/>) : placeHolderText}
             {provided.placeholder}
           </div>)}
         </Droppable>

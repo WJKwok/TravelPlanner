@@ -11,9 +11,15 @@ import {Draggable} from 'react-beautiful-dnd'
 
 const useStyles = makeStyles((theme) => ({
     root: {
-      minWidth: 300,
-      maxWidth: 300,
-      margin: 10,
+        minWidth: 300,
+        maxWidth: 300,
+        margin: 10,
+    },
+    rootHighlighted: {
+        minWidth: 300,
+        maxWidth: 300,
+        margin: 10,
+        border: '1px solid grey'
     },
     openStatus: {
         fontSize: 12,
@@ -80,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
 
 function SpotCard(props) {
 
-    const {spot, index, day} = props;
+    const {spot, index, day, highlight} = props;
     //const placeImgUrl = "/place/photo?maxheight=400&photoreference=" + place.photoRef + "&key=" + process.env.REACT_APP_GOOGLE_PLACES_API_KEY; 
 
     const classes = useStyles();
@@ -115,7 +121,7 @@ function SpotCard(props) {
         >
             {(provided) => (
                 <Card 
-                    className={classes.root}
+                    className={highlight ? classes.rootHighlighted : classes.root}
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
