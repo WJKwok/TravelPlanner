@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Suspense} from 'react';
 import {useQuery} from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import { Link } from 'react-router-dom';
@@ -37,10 +37,12 @@ function Landing() {
         <div className={classes.root}>
             {guides && guides.map(guide => 
                 <Card className={classes.card} key={guide.id}>
-                    <CardMedia
-                    component="img"
-                    image={guide.coverImage}
-                    />
+                    <Suspense fallback={<h1>Loading img</h1>}>
+                        <CardMedia
+                        component="img"
+                        image={guide.coverImage}
+                        />
+                    </Suspense>
                     <CardContent>
                         <Link to={`/planner/${guide.id}`}>
                             <Typography gutterBottom variant="h5">

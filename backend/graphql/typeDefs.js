@@ -32,6 +32,8 @@ module.exports = gql`
         category: String!
         imgUrl: String!
         content: String!
+        date: String
+        eventName: String
     }
     input SpotInput {
         guide: String!
@@ -39,6 +41,8 @@ module.exports = gql`
         category: String!
         imgUrl: String!
         content: String!
+        date: String
+        eventName: String
     }
     type Trip {
         id: ID

@@ -35,6 +35,8 @@ function Logger(){
     const [category, setCategory] = useState("")
     const [placeId, setPlaceId] = useState("")
     const [name, setName] = useState("")
+    const [date, setDate] = useState("")
+    const [eventName, setEventName] = useState("")
     const [rating, setRating] = useState("")
     const [address, setAddress] = useState("")
     const [location, setLocation] = useState([])
@@ -74,6 +76,8 @@ function Logger(){
             category,
             imgUrl,
             content,
+            date,
+            eventName
         }
     })
 
@@ -115,7 +119,7 @@ function Logger(){
     const getDetails = (placeObject) => {
         console.log(placeObject)
         setPlaceId(placeObject.id)
-        setName(placeObject.content)
+        setName(placeObject.name)
         setRating(placeObject.rating)
         setAddress(placeObject.address)
         setLocation([placeObject.location.lat, placeObject.location.lng])
@@ -183,6 +187,20 @@ function Logger(){
                         value={name} 
                         variant="outlined" 
                         disabled
+                    />
+                    <TextField 
+                        className={classes.textField}
+                        label="EventName" 
+                        value={eventName} 
+                        variant="outlined" 
+                        onChange={(e) => setEventName(e.target.value)}
+                    />
+                    <TextField 
+                        className={classes.textField}
+                        label="Date" 
+                        value={date} 
+                        variant="outlined"
+                        onChange={(e) => setDate(e.target.value)}
                     />
                     <TextField 
                         className={classes.textField}
@@ -284,6 +302,8 @@ const SAVE_SPOT = gql`
         $category: String!
         $imgUrl: String!
         $content: String!
+        $eventName: String
+        $date: String
     ){
         saveSpot(
             spotInput: {
@@ -292,6 +312,8 @@ const SAVE_SPOT = gql`
                 category: $category
                 imgUrl: $imgUrl
                 content: $content
+                eventName: $eventName
+                date: $date
             }
         ){
             guide

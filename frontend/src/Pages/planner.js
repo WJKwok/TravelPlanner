@@ -5,6 +5,7 @@ import {DragDropContext} from 'react-beautiful-dnd'
 import moment from 'moment';
 
 import CategoryChip from '../Components/categoryChip';
+import { iconDict } from '../Components/spotIcons';
 import SpotsBoard from '../Components/spotsBoard';
 import DayBoard from '../Components/dayBoardCopy';
 import DatePicker from '../Components/datePicker';
@@ -14,16 +15,8 @@ import { AuthContext } from '../Store/AuthContext'
 
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
-import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
-import LocalCafeIcon from "@material-ui/icons/LocalCafe";
-import RestaurantIcon from "@material-ui/icons/Restaurant";
-import LocalMallIcon from "@material-ui/icons/LocalMall";
-import SearchIcon from '@material-ui/icons/Search';
 import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
-// import BookIcon from "@material-ui/icons/Book";
-// import LocalMoviesIcon from "@material-ui/icons/LocalMovies";
-// import StorefrontIcon from "@material-ui/icons/Storefront";
 
 import { useSnackbar } from 'notistack'
 
@@ -68,14 +61,6 @@ function Planner(props) {
   const [startedSearch, setStartedSearch] = useState(false)
   const [newSearchItem, setNewSearchItem] = useState({})
   const [tripId, setTripId] = useState(props.match.params.tripId)
-
-  const iconDict = {
-      Retail: <LocalMallIcon />,
-      Cafe: <LocalCafeIcon />,
-      Restaurant: <RestaurantIcon />,
-      Museum: <AccountBalanceIcon />,
-      Searched: <SearchIcon />
-  }
 
   console.log('tripId :', tripId)
   console.log('user exists? ', authState.user)
@@ -379,9 +364,10 @@ function Planner(props) {
     
   }
 
+
   const onDragEnd = (result) => {
     const { destination, source, draggableId } = result;
-
+    
     if (!destination) {
         return;
     }
@@ -655,6 +641,8 @@ const GET_SPOTS = gql`
       category
       imgUrl
       content
+      eventName
+      date
     }
   }
 `

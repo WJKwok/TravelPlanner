@@ -11,7 +11,9 @@ const spotSchema = new Schema({
     },
     category: String,
     imgUrl: String,
-    content: String
+    content: String,
+    date: String,
+    eventName: String,
 });
 
 module.exports = model('Spot', spotSchema);

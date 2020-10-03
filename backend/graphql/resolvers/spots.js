@@ -25,7 +25,7 @@ module.exports = {
     Mutation: {
         async saveSpot(
             _, 
-            {spotInput: {guide, place, category, imgUrl, content}}){
+            {spotInput: {guide, place, category, imgUrl, content, date, eventName}}){
                 console.log(guide, place)
                 try {
                     let spot = await Spot.findOne({guide, place});
@@ -40,7 +40,9 @@ module.exports = {
                             place,
                             category,
                             imgUrl,
-                            content
+                            content,
+                            date, 
+                            eventName
                         })
     
                         await newSpot.save();

@@ -8,7 +8,17 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function CategoryChip({ data, toggleChip }) {
+type Props = {
+  data: {
+    key: string,
+    label: string,
+    icon: JSX.Element,
+    clicked: boolean
+  },
+  toggleChip: (data: object) => void,
+}
+
+function CategoryChip({ data, toggleChip } : Props) {
   const classes = useStyles();
 
   return (

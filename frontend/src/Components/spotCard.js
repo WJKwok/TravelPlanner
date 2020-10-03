@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
+import moment from 'moment';
 
+import { iconDict } from './spotIcons'
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import {Card, CardMedia, CardContent, Collapse, Typography, IconButton} from '@material-ui/core';
@@ -8,6 +10,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Badge from '@material-ui/core/Badge';
 
 import {Draggable} from 'react-beautiful-dnd'
+import { findAllByTestId } from '@testing-library/react';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -20,6 +23,11 @@ const useStyles = makeStyles((theme) => ({
         maxWidth: 300,
         margin: 10,
         border: '1px solid grey'
+    },
+    wrongDay: {
+        backgroundColor: 'red',
+        color: 'white',
+        textAlign: 'center'
     },
     openStatus: {
         fontSize: 12,
@@ -46,11 +54,12 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center'
     },
     indexCircle: {
-        backgroundColor: 'grey',
-        color: 'white',
-        borderRadius: 5,
-        padding: "0px 5px",
-        marginRight: 5
+        // backgroundColor: 'grey',
+        // color: 'white',
+        // borderRadius: 5,
+        padding: "0px 5px 0px 0px",
+        fontSize: 18,
+        fontWeight: 900
     },
     rating: {
         display: "flex",
@@ -84,9 +93,10 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 
-function SpotCard(props) {
-
-    const {spot, index, day, highlight} = props;
+const SpotCard = React.memo((props) => {
+    
+    const {spot, index, dateTitle, day, highlight} = props;
+    console.log(`me am rendered ${index}`)
     //const placeImgUrl = "/place/photo?maxheight=400&photoreference=" + place.photoRef + "&key=" + process.env.REACT_APP_GOOGLE_PLACES_API_KEY; 
 
     const classes = useStyles();
@@ -100,6 +110,28 @@ function SpotCard(props) {
         const dayAndHoursArray = dayText.split('day')
         const trimmedDayText = dayAndHoursArray[0].slice(0,3) + dayAndHoursArray[1]
         return trimmedDayText
+    }
+
+
+    const eventCardRightDayBoard = (dateTitle, spot) => {
+        // if in spotsBoard
+        if(!dateTitle){
+            return true
+        }
+
+        // if not an event card
+        if(spot.category !== 'Event'){
+            return true
+        }
+
+        if(spot.category === 'Event' && moment(dateTitle).isSame(spot.date, 'day')){
+            return true
+        }
+
+        if(spot.category === 'Event' && !moment(dateTitle).isSame(spot.date, 'day')){
+            return false
+        }
+
     }
 
     const dayToArrayIndex = day === 0 ? 6 : day -1
@@ -133,11 +165,19 @@ function SpotCard(props) {
                         />}
                         <div>
                         <CardContent className={classes.headerTitle}>
+                            <Typography className={classes.wrongDay}>
+                                {eventCardRightDayBoard(dateTitle, spot) ? null : 'WRONG DAY'}
+                            </Typography>
                             <Typography className={classes.rowOne}>
-                                <span className={classes.indexCircle}>{index+1}</span> {businessStatus}
+                                {iconDict[spot.category]}
+                                <span className={classes.indexCircle}>{index+1}</span> 
+                                {spot.category === 'Event' ? moment(spot.date).format("Do MMM YYYY") : businessStatus}
                             </Typography>
                             <Typography variant="h6">
-                                {spot.place.name}
+                                {spot.category === 'Event' ? spot.eventName : spot.place.name}
+                            </Typography>
+                            <Typography className={classes.ratingNumber}>
+                                {spot.category === 'Event' ? spot.place.name : null}
                             </Typography>
                             <div className={classes.rating}>
                                 <Typography className={classes.ratingNumber}>
@@ -173,6 +213,6 @@ function SpotCard(props) {
             )}
         </Draggable>
     );
-}
+})
 
 export default SpotCard;
