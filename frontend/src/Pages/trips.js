@@ -6,6 +6,7 @@ import gql from 'graphql-tag';
 import { AuthContext } from '../Store/AuthContext';
 import { SpotContext } from '../Store/SpotContext';
 
+import Button from '@material-ui/core/Button';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import AddCircleOutlineRoundedIcon from '@material-ui/icons/AddCircleOutlineRounded';
 import {Card, CardMedia, CardContent, Typography, IconButton, makeStyles} from '@material-ui/core';
@@ -33,8 +34,8 @@ const useStyles = makeStyles({
 
 function Trips() {
 
-    const { authState } = useContext(AuthContext);
-    const { dispatch } = useContext(SpotContext);
+    const { authState, dispatch : authDispatch } = useContext(AuthContext);
+    const { dispatch : placeDispatch } = useContext(SpotContext);
     const classes = useStyles();
 
     const {
@@ -45,6 +46,11 @@ function Trips() {
             userId: authState.user.id
         }
     });
+
+    const handleLogout = () => {
+        authDispatch({type:"LOGOUT"});
+        placeDispatch({type:"CLEAR_STATE"});
+    }
 
     const [deleteTrip] = useMutation(DELETE_TRIP, {
         update(proxy, result){
@@ -112,12 +118,20 @@ function Trips() {
     
     return (
         <div>
+            <Button
+                variant="contained"
+                color="default"
+                className={classes.button}
+                onClick={handleLogout}
+            >
+                Logout 👋🏻
+            </Button>
             {tripCards}
             <Link to={'/'}>
                 <IconButton 
                     disableRipple={true}
                     disableFocusRipple={true}
-                    onClick={() => dispatch({type:"CLEAR_STATE"})}>
+                    onClick={() => placeDispatch({type:"CLEAR_STATE"})}>
                     <AddCircleOutlineRoundedIcon fontSize="large" />
                 </IconButton>
             </Link>

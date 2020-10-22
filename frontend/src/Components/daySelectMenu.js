@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from '@material-ui/core/InputLabel';
@@ -30,7 +30,7 @@ function DaySelectMenu({day, dayChangeHandler}) {
             onChange={(e) => dayChangeHandler(e.target.value)}
           >
             {daysOfWeek.map((day, index) => 
-              <MenuItem value={index}>{day}</MenuItem>
+              <MenuItem key={index} value={index}>{day}</MenuItem>
             )}
           </Select>
         </FormControl>

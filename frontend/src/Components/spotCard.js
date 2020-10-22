@@ -10,18 +10,25 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Badge from '@material-ui/core/Badge';
 
 import {Draggable} from 'react-beautiful-dnd'
-import { findAllByTestId } from '@testing-library/react';
+
+import GoogleDirectionLink from './googleDirectionLink'
 
 const useStyles = makeStyles((theme) => ({
     root: {
         minWidth: 300,
         maxWidth: 300,
-        margin: 10,
+        margin: 5,
+        [theme.breakpoints.down('sm')]: {
+            minWidth: '90%'
+        },
     },
     rootHighlighted: {
         minWidth: 300,
         maxWidth: 300,
-        margin: 10,
+        margin: 5,
+        [theme.breakpoints.down('sm')]: {
+            minWidth: '90%'
+        },
         border: '1px solid grey'
     },
     wrongDay: {
@@ -95,7 +102,7 @@ const useStyles = makeStyles((theme) => ({
 
 const SpotCard = React.memo((props) => {
     
-    const {spot, index, dateTitle, day, highlight} = props;
+    const {spot, index, date, day, highlight} = props;
     console.log(`me am rendered ${index}`)
     //const placeImgUrl = "/place/photo?maxheight=400&photoreference=" + place.photoRef + "&key=" + process.env.REACT_APP_GOOGLE_PLACES_API_KEY; 
 
@@ -113,9 +120,9 @@ const SpotCard = React.memo((props) => {
     }
 
 
-    const eventCardRightDayBoard = (dateTitle, spot) => {
-        // if in spotsBoard
-        if(!dateTitle){
+    const eventCardRightDayBoard = (date, spot) => {
+        // no date prop if in spotsBoard
+        if(!date){
             return true
         }
 
@@ -124,11 +131,11 @@ const SpotCard = React.memo((props) => {
             return true
         }
 
-        if(spot.category === 'Event' && moment(dateTitle).isSame(spot.date, 'day')){
+        if(spot.category === 'Event' && moment(date).isSame(spot.date, 'day')){
             return true
         }
 
-        if(spot.category === 'Event' && !moment(dateTitle).isSame(spot.date, 'day')){
+        if(spot.category === 'Event' && !moment(date).isSame(spot.date, 'day')){
             return false
         }
 
@@ -166,7 +173,7 @@ const SpotCard = React.memo((props) => {
                         <div>
                         <CardContent className={classes.headerTitle}>
                             <Typography className={classes.wrongDay}>
-                                {eventCardRightDayBoard(dateTitle, spot) ? null : 'WRONG DAY'}
+                                {eventCardRightDayBoard(date, spot) ? null : 'WRONG DAY'}
                             </Typography>
                             <Typography className={classes.rowOne}>
                                 {iconDict[spot.category]}
@@ -209,6 +216,7 @@ const SpotCard = React.memo((props) => {
                         </Typography>
                         </CardContent>
                     </Collapse>
+                    <GoogleDirectionLink place={spot.place}/>
                 </Card>
             )}
         </Draggable>

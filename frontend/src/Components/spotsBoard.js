@@ -33,7 +33,7 @@ function SpotsBoard(props) {
     }
 
     const executeScroll = (index) => {
-        const pixel = index * 320 + 10
+        const pixel = index * 310 + 5
         setSelectedIndex(index)
         myref.scrollLeft = pixel;
     }

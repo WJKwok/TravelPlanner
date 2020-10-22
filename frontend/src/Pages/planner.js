@@ -11,7 +11,9 @@ import DayBoard from '../Components/dayBoardCopy';
 import DatePicker from '../Components/datePicker';
 import PlaceAutoComplete from '../Components/placeAutoComplete';
 import { SpotContext } from '../Store/SpotContext';
-import { AuthContext } from '../Store/AuthContext'
+import { AuthContext } from '../Store/AuthContext';
+import RegisterModel from '../Components/registerModal'
+import ConfirmNavPrompt from '../Components/confirmNavPrompt'
 
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
@@ -19,6 +21,8 @@ import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
 
 import { useSnackbar } from 'notistack'
+
+
 
 const useStyles = makeStyles(theme => ({
   categoryChipBoard: {
@@ -61,19 +65,46 @@ function Planner(props) {
   const [startedSearch, setStartedSearch] = useState(false)
   const [newSearchItem, setNewSearchItem] = useState({})
   const [tripId, setTripId] = useState(props.match.params.tripId)
+  const [registerOpen, setRegisterOpen] = useState(false);
+  const [navModalOpen, setNavModalOpen] = useState(false);
+  const guideId = props.match.params.guideBookId
 
   console.log('tripId :', tripId)
   console.log('user exists? ', authState.user)
   //temporary for testing
-  const guideId = props.match.params.guideBookId;
-  console.log(props.match.params);
+  console.log("props:", props);
+
+  // const onUnload = e => { 
+  //   e.preventDefault();
+  //   e.returnValue = '';
+  //   console.log('unlaoding')
+  // }
+  // window.addEventListener("beforeunload", onUnload);
+
   useEffect(() => {
+
+    //props.history.push('/trips')
     if (tripId === undefined){
       dispatch({type:"CLEAR_STATE"})
-      // console.log('fetch trip')
-      // getTrip({variables:{tripId}})
-      // console.log('trip categories', spotState.categoriesInTrip)
-    } 
+    }
+
+    //Check if guideId exist, is the same, else clear state
+
+    // if (guideId === spotState.guideId) {
+    //   console.log('it is the same guidebook!')
+    //   return
+    // } 
+    // console.log('is there guideid?', spotState.guideId)
+    // if (!spotState.guideId){
+    //   console.log("there's no guide Id!")
+    //   dispatch({type:"SET_GUIDEID", payload:{guideId}})
+    //   return
+    // }
+    // if (guideId !== spotState.guideId) {
+    //   console.log('checking if guide the same:', spotState.guideId)
+    //   dispatch({type:"CLEAR_STATE"})
+    //   return
+    // } 
   }, [])
 
   useEffect(() => {
@@ -233,6 +264,7 @@ function Planner(props) {
     onCompleted({submitTrip}){
       console.log(submitTrip);
       setTripId(submitTrip.id);
+      dispatch({type:"TRIP_SAVED"})
       enqueueSnackbar("Your trip has been saved:)", {variant: 'success'})
     },
     update(proxy, result){
@@ -271,6 +303,7 @@ function Planner(props) {
     onCompleted({editTrip}){
       console.log("Trip edited",editTrip);
       setTripId(editTrip.id);
+      dispatch({type:"TRIP_SAVED"})
       enqueueSnackbar("Your trip has been saved:)", {variant: 'success'})
     },
     update(proxy, result){
@@ -335,6 +368,7 @@ function Planner(props) {
     } else {
       if (!tripId) {
         if (!authState.user) {
+          setRegisterOpen(true)
           enqueueSnackbar("You have to be logged in to save itinerary", {variant: 'error'})
           return
         }
@@ -363,7 +397,6 @@ function Planner(props) {
     
     
   }
-
 
   const onDragEnd = (result) => {
     const { destination, source, draggableId } = result;
@@ -448,6 +481,7 @@ function Planner(props) {
 
   return (
     <div>
+      <ConfirmNavPrompt when={spotState.unsavedChanges} navigate={(path) => props.history.push(path)}/>
       <div>
         <PlaceAutoComplete clickFunction={searchedItemClicked} city='Berlin' placeHolderText={placeAutoCompletePlaceHolderText}/>
       </div>
@@ -490,13 +524,13 @@ function Planner(props) {
           {spotState.dayBoard.map((columnId, index) => {
             const column = spotState.columns[columnId];
             const spots = column.spotIds.map(spotId => spotState.spots[spotId])
-            let dateTitle = moment(spotState.startDate).add(index, 'days');
- 
+            let date = moment(spotState.startDate).add(index, 'days');
 
-            return <DayBoard key={columnId} boardId={columnId} dateTitle={dateTitle} spots={spots}/>
+            return <DayBoard key={columnId} boardId={columnId} date={date} spots={spots}/>
           })}
         </div>
       </DragDropContext>
+      <RegisterModel registerOpen={registerOpen} setRegisterOpen={setRegisterOpen}/>
     </div>
   );
 }

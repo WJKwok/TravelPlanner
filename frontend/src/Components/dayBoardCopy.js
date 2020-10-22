@@ -14,9 +14,13 @@ const useStyles = makeStyles(theme => ({
       minWidth: 336,
       maxWidth: 336,
       marginRight: 30,
+      [theme.breakpoints.down('sm')]: {
+        minWidth: '90%',
+        marginRight: '5%'
+      },
       boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)',
     },
-    dateTitle: {
+    date: {
       padding: 8,
       backgroundColor: 'grey',
       color: 'white',
@@ -32,9 +36,8 @@ const useStyles = makeStyles(theme => ({
 
 function DayBoard(props) {
 
-    const {boardId, dateTitle, spots} = props
+    const {boardId, date, spots} = props
     const classes = useStyles();
-
 
     let myref = useRef(null)
     const setRef = (dragRefFunction, ref) => {
@@ -53,8 +56,8 @@ function DayBoard(props) {
 
     return (
       <div className={classes.root} >
-        <div className={classes.dateTitle}>
-          <p>{dateTitle.format("DD MMM")} ({dateTitle.format("ddd")})</p>
+        <div className={classes.date}>
+          <p>{date.format("DD MMM")} ({date.format("ddd")})</p>
         </div>
         <Droppable 
           droppableId={boardId}
@@ -65,7 +68,7 @@ function DayBoard(props) {
               className={classes.droppable}
               ref={(ref) => setRef(provided.innerRef, ref)}
               {...provided.droppableProps}>
-                {spots.length > 0 ? spots.map((spot, index) => <SpotCard key={spot.place.id} spot={spot} index={index} dateTitle={dateTitle} day={dateTitle.day()} expanded={false}/>) : placeHolderText}
+                {spots.length > 0 ? spots.map((spot, index) => <SpotCard key={spot.id} spot={spot} index={index} date={date} day={date.day()} expanded={false}/>) : placeHolderText}
                 {provided.placeholder}
             </div>
           )}

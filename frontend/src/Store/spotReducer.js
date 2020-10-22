@@ -5,9 +5,20 @@ export const spotReducer = (state, action) => {
         case 'CLEAR_STATE':
             const defaultState = clearState()
             return defaultState
+        case 'SET_GUIDEID':
+            const {guideId} = action.payload
+            const guideIdSet = {
+                ...state,
+                guideId
+            }
+            return guideIdSet
         case 'LOAD_TRIP':
             const {trip} = action.payload
-            const tripLoaded = loadTrip(trip)
+            const loadedTrip = loadTrip(trip)
+            const tripLoaded = {
+                ...loadedTrip,
+                unsavedChanges: false
+            }
             return tripLoaded
         case 'ADD_SPOTS':
             const {newSpots} = action.payload
@@ -22,13 +33,27 @@ export const spotReducer = (state, action) => {
             return newSearchAdded;
         case 'REORDER':
             const {newOrder} = action.payload
-            console.log('Reordered: ', newOrder);
-            return newOrder
+            const reordered = {
+                ...newOrder,
+                unsavedChanges: true
+            }
+            console.log('Reordered: ', reordered);
+            return reordered
         case 'CHANGE_DATE':
             const {startDate, numberOfDays} = action.payload
             const newDate = changeDateAndDays(state, startDate, numberOfDays)
-            console.log('Date Changed: ', newDate)
-            return newDate
+            const dateChanged = {
+                ...newDate,
+                unsavedChanges: true
+            }
+            console.log('Date Changed: ', dateChanged)
+            return dateChanged
+        case 'TRIP_SAVED':
+            const tripSaved = {
+                ...state,
+                unsavedChanges: false
+            }
+            return tripSaved
         default:
             return state;
     }
@@ -37,6 +62,7 @@ export const spotReducer = (state, action) => {
 const clearState = () => {
     const newState = {
         spots: {},
+        unsavedChanges: false,
         startDate: moment().startOf('date'),
         numberOfDays: 1,
         destination: 'Berlin',
