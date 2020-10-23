@@ -1,7 +1,6 @@
 import React, {useState, useContext} from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import { useSnackbar } from 'notistack'
 
 import { AuthContext } from '../Store/AuthContext';
 import { SnackBarContext } from '../Store/SnackBarContext'
@@ -24,15 +23,13 @@ function RegisterModal({registerOpen, setRegisterOpen}) {
     const [confirmPassword, setConfirmPassword] = useState("")
 
     const [loginBoolean, setLoginBoolean] = useState(true)
- 
-    const { enqueueSnackbar } = useSnackbar();
 
     const [registerUser] = useMutation(REGISTER_USER,{
         update(_, result){
             console.log(result.data.register);
             dispatch({type:"LOGIN", payload:result.data.register});
             setRegisterOpen(false);
-            enqueueSnackbar("Registration Success", {variant: 'success'})
+            setSnackMessage({text:'Registration Success!', code: 'Confirm'})
         },
         onError(err){
             console.log(err);
@@ -50,12 +47,10 @@ function RegisterModal({registerOpen, setRegisterOpen}) {
             console.log("login success: ", result.data.login);
             dispatch({ type: 'LOGIN', payload: result.data.login});
             setRegisterOpen(false);
-            enqueueSnackbar("Login Success", {variant: 'success'})
-            setSnackMessage('Login Success!')
+            setSnackMessage({text:'Login Success!', code: 'Confirm'})
         },
         onError(err){
             console.log(err.graphQLErrors[0].message);
-            // enqueueSnackbar(err.graphQLErrors[0].message, {variant: 'error'})
         },
         variables: {
             username,

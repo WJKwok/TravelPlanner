@@ -19,11 +19,11 @@ import PlaceContextProvider from './Store/PlaceContext';
 import SnackBarContextProvider from './Store/SnackBarContext'
 import { AuthContextProvider } from './Store/AuthContext';
 import SpotContextProvider from './Store/SpotContext';
-import { SnackbarProvider } from 'notistack';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-      margin: '10px 0px 56px 0px'
+      marginTop: 10, 
+      marginBottom: 56,
   },
 }));
 
@@ -35,8 +35,7 @@ function App() {
       <AuthContextProvider>
         <PlaceContextProvider>
           <SpotContextProvider>
-            <SnackbarProvider maxSnack={3} >
-              <SnackBarContextProvider>
+            <SnackBarContextProvider>
               <BrowserRouter>
                 <NavHeader/>
                 <Container className={classes.container}>
@@ -51,8 +50,7 @@ function App() {
                   <UnAuthRoute exact path='/planner/:guideBookId/:tripId' component={Planner}/>
                 </Container>
               </BrowserRouter>
-              </SnackBarContextProvider>
-            </SnackbarProvider>
+            </SnackBarContextProvider>
           </SpotContextProvider>
         </PlaceContextProvider>
       </AuthContextProvider>

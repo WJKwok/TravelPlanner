@@ -16,17 +16,17 @@ import GoogleDirectionLink from './googleDirectionLink'
 const useStyles = makeStyles((theme) => ({
     root: {
         minWidth: 300,
-        maxWidth: 300,
+        // maxWidth: 300,
         margin: 5,
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down(430)]: {
             minWidth: '90%'
         },
     },
     rootHighlighted: {
         minWidth: 300,
-        maxWidth: 300,
+        // maxWidth: 300,
         margin: 5,
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down(430)]: {
             minWidth: '90%'
         },
         border: '1px solid grey'

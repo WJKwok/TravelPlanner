@@ -64,7 +64,7 @@ const clearState = () => {
         spots: {},
         unsavedChanges: false,
         startDate: moment().startOf('date'),
-        numberOfDays: 1,
+        numberOfDays: 2,
         destination: 'Berlin',
         columns:{
             'filtered-spots': {
@@ -77,9 +77,14 @@ const clearState = () => {
                 title: 'day1',
                 spotIds: []
             },
+            'day2': {
+                id: 'day2',
+                title: 'day2',
+                spotIds: []
+            },
         },
         filteredBoard: ['filtered-spots'],
-        dayBoard:['day1']
+        dayBoard:['day1', 'day2']
     }
 
     return newState

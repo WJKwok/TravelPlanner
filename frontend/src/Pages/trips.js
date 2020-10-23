@@ -5,6 +5,7 @@ import gql from 'graphql-tag';
 
 import { AuthContext } from '../Store/AuthContext';
 import { SpotContext } from '../Store/SpotContext';
+import { SnackBarContext } from '../Store/SnackBarContext'
 
 import Button from '@material-ui/core/Button';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
@@ -36,6 +37,8 @@ function Trips() {
 
     const { authState, dispatch : authDispatch } = useContext(AuthContext);
     const { dispatch : placeDispatch } = useContext(SpotContext);
+    const { setSnackMessage } = useContext(SnackBarContext)
+
     const classes = useStyles();
 
     const {
@@ -50,6 +53,7 @@ function Trips() {
     const handleLogout = () => {
         authDispatch({type:"LOGOUT"});
         placeDispatch({type:"CLEAR_STATE"});
+        setSnackMessage({text: 'Logout Success!', code:'Confirm'})
     }
 
     const [deleteTrip] = useMutation(DELETE_TRIP, {

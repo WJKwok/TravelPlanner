@@ -12,6 +12,8 @@ import DatePicker from '../Components/datePicker';
 import PlaceAutoComplete from '../Components/placeAutoComplete';
 import { SpotContext } from '../Store/SpotContext';
 import { AuthContext } from '../Store/AuthContext';
+import { SnackBarContext } from '../Store/SnackBarContext'
+
 import RegisterModel from '../Components/registerModal'
 import ConfirmNavPrompt from '../Components/confirmNavPrompt'
 
@@ -19,9 +21,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
-
-import { useSnackbar } from 'notistack'
-
 
 
 const useStyles = makeStyles(theme => ({
@@ -57,8 +56,8 @@ function Planner(props) {
 
   const { authState } = useContext(AuthContext);
   const {spotState, dispatch} = useContext(SpotContext)
+  const { setSnackMessage } = useContext(SnackBarContext)
 
-  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const [categoryChips, setCategoryChips] = useState([]);
   const [queriedVariables, setQueriedVariables] = useState([])
@@ -165,14 +164,14 @@ function Planner(props) {
       if (!getSpot) {
         dispatch({ type:'ADD_SEARCH_ITEM', payload:{newSearchItem}})
         setStartedSearch(true)
-        enqueueSnackbar("Spot has been added in 'Searched' :)", {variant: 'success'})
+        setSnackMessage({text:"Spot has been added in 'Searched' :)", code: 'Confirm'})
       } else {
         const itemCategory = getSpot.category;
         getSpots({variables: {
             guideId,
             category: itemCategory
         }})
-        enqueueSnackbar(`item is in ${itemCategory} :)`, {variant: 'info'})
+        setSnackMessage({text:`item is in ${itemCategory} :)`, code: 'Info'})
         chipClickedTrue(itemCategory)
       }
     },
@@ -231,7 +230,7 @@ function Planner(props) {
     for (var key in spotState.spots) {
       if (spotState.spots[key].place.id === searchedItem.id) {
         console.log("STOP DO NOT ADD")
-        enqueueSnackbar("Item already exists", { variant: "info" });
+        setSnackMessage({text:'Item already exists', code: 'Info'})
         return
       }
     }
@@ -265,7 +264,7 @@ function Planner(props) {
       console.log(submitTrip);
       setTripId(submitTrip.id);
       dispatch({type:"TRIP_SAVED"})
-      enqueueSnackbar("Your trip has been saved:)", {variant: 'success'})
+      setSnackMessage({text:'Your trip has been saved:)', code: 'Success'})
     },
     update(proxy, result){
 
@@ -304,7 +303,7 @@ function Planner(props) {
       console.log("Trip edited",editTrip);
       setTripId(editTrip.id);
       dispatch({type:"TRIP_SAVED"})
-      enqueueSnackbar("Your trip has been saved:)", {variant: 'success'})
+      setSnackMessage({text:'Your trip has been saved:)', code: 'Success'})
     },
     update(proxy, result){
       try {
@@ -364,12 +363,12 @@ function Planner(props) {
       }
     }
     if (daySpotsArrayFlattened.length === 0) {
-      enqueueSnackbar("Your itinerary is empty", {variant: 'error'})
+      setSnackMessage({text:'Your itinerary is empty', code: 'Error'})
     } else {
       if (!tripId) {
         if (!authState.user) {
           setRegisterOpen(true)
-          enqueueSnackbar("You have to be logged in to save itinerary", {variant: 'error'})
+          setSnackMessage({text:'You have to be logged in to save itinerary', code: 'Error'})
           return
         }
         submitTrip({    
