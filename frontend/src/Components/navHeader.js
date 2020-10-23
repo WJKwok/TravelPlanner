@@ -21,6 +21,9 @@ const useStyles = makeStyles((theme) => ({
         bottom: 0,
         zIndex: 200
     },
+    navBar: {
+        backgroundColor: 'red',
+    }
   }));
 
 function NavHeader() {
@@ -36,7 +39,7 @@ function NavHeader() {
 
     const navBar = user ? (
         <div className={classes.root}>
-            <BottomNavigation value={navTab} onChange={handleNavChange}>
+            <BottomNavigation className={classes.navBar} value={navTab} onChange={handleNavChange}>
                 <BottomNavigationAction component={Link} to='/trips' label="Trips" value="Trips" icon={<FaceIcon/>} />
                 <BottomNavigationAction component={Link} to='/' label="Planner" value="Planner" icon={<FlightTakeoffIcon />} />
             </BottomNavigation>
@@ -44,7 +47,7 @@ function NavHeader() {
         </div>
     ) : (
         <div className={classes.root}>
-            <BottomNavigation value={navTab} onChange={handleNavChange} >
+            <BottomNavigation className={classes.navBar} value={navTab} onChange={handleNavChange} >
                 <BottomNavigationAction onClick={() => setRegisterOpen(true)} label="Trips" value="Trips" icon={<FaceIcon/>} />
                 <BottomNavigationAction component={Link} to='/' label="Planner" value="Planner" icon={<FlightTakeoffIcon />} />
                 <RegisterModel registerOpen={registerOpen} setRegisterOpen={setRegisterOpen}/>
