@@ -6,6 +6,7 @@ import SpotCard from './spotCard';
 import GoogleMap from './googleMapCopy';
 
 import { makeStyles } from "@material-ui/core/styles";
+import Paper from '@material-ui/core/Paper';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -18,7 +19,7 @@ const useStyles = makeStyles(theme => ({
         minWidth: '90%',
         marginRight: '5%'
       },
-      boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)',
+      // boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)',
     },
     date: {
       padding: 8,
@@ -55,7 +56,8 @@ function DayBoard(props) {
     const placeHolderText = <p>Drag cards from above into this space to plan your day 😊</p>
 
     return (
-      <div className={classes.root} >
+      <Paper className={classes.root} variant="outlined"> 
+      {/* <div className={classes.root} > */}
         <div className={classes.date}>
           <p>{date.format("DD MMM")} ({date.format("ddd")})</p>
         </div>
@@ -74,7 +76,8 @@ function DayBoard(props) {
           )}
         </Droppable>
         <GoogleMap city='Berlin' spots={spots} pinClicked={executeScroll}/>
-      </div>
+      {/* </div> */}
+      </Paper>
     )
 }
 

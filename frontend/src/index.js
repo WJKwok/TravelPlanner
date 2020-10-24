@@ -1,5 +1,4 @@
 import ReactDOM from 'react-dom';
-import './Styles/index.scss';
 import 'semantic-ui-css/semantic.min.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ApolloProvider from './ApolloProvider';

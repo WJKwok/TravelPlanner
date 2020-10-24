@@ -1,13 +1,22 @@
 import React from 'react';
 import GoogleMapReact from 'google-map-react';
 
+import { makeStyles } from "@material-ui/core/styles";
 import { iconStyles, iconDict } from './spotIcons'
 import Badge from '@material-ui/core/Badge';
+
+const useStyles = makeStyles({
+    gMap: {
+        width: '100%',
+        height: 220
+    },
+});
 
 
 function GoogleMap({spots, city, pinClicked}) {
 
     const classes = iconStyles();
+    const mapClass = useStyles();
 
     const coordinates = {
         "Berlin": {
@@ -52,7 +61,7 @@ function GoogleMap({spots, city, pinClicked}) {
     })
     
     return (
-        <div className="map">
+        <div className={mapClass.gMap}>
             <GoogleMapReact
                 bootstrapURLKeys={{ 
                     key: process.env.REACT_APP_GOOGLE_PLACES_API_KEY, 

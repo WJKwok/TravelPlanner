@@ -7,6 +7,7 @@ import GoogleMap from './googleMapCopy';
 import DaySelectMenu from './daySelectMenu'
 
 import { makeStyles } from "@material-ui/core/styles";
+import Paper from '@material-ui/core/Paper';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -14,7 +15,7 @@ const useStyles = makeStyles(theme => ({
       overflowX: "auto",
       alignItems: "flex-start",
       minHeight: 300,
-      boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)',
+      // boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)',
       padding: 10,
     },
   }));
@@ -41,7 +42,7 @@ function SpotsBoard(props) {
     const placeHolderText = <p>Click on the category chips above 👆 to display cards.</p>
 
     return (
-      <div>
+      <Paper variant="outlined"> 
         <DaySelectMenu day={day} dayChangeHandler={setDay}/>
         <Droppable 
           droppableId={boardId}
@@ -58,7 +59,7 @@ function SpotsBoard(props) {
           </div>)}
         </Droppable>
         <GoogleMap city='Berlin' spots={spots} pinClicked={executeScroll}/>
-      </div>
+      </Paper>
     )
 }
 

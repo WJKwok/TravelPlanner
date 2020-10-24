@@ -3,7 +3,8 @@ import moment from 'moment';
 import MomentUtils from "@date-io/moment";
 import {
   MuiPickersUtilsProvider,
-  KeyboardDatePicker
+  KeyboardDatePicker,
+  DatePicker as DatePickerUI
 } from "@material-ui/pickers";
 
 import TextField from '@material-ui/core/TextField';
@@ -22,13 +23,10 @@ https://stackoverflow.com/questions/58540364/material-ui-overide-disabled-styles
 const useStyles = makeStyles({
     datePicker: {
         marginRight: 5,
-        "& .Mui-disabled": {
-            color: 'black',
-            backgroundColor: 'transparent'
-        }
-    },
-    inputRoot: {
-        color: 'red',
+        // "& .Mui-disabled": {
+        //     color: 'black',
+        //     backgroundColor: 'transparent'
+        // }
     },
 })
 
@@ -96,12 +94,10 @@ function DatePicker() {
 
     return (
         <MuiPickersUtilsProvider utils={MomentUtils}>
-            <KeyboardDatePicker
+            <DatePickerUI
                 className={classes.datePicker}
                 disableToolbar
-                // disablePast='true'
                 inputVariant="outlined"
-                variant="inline"
                 format="DD MMM YYYY"
                 margin="normal"
                 id="start"
@@ -109,16 +105,12 @@ function DatePicker() {
                 value={startDate}
                 autoOk={true}
                 onChange={startDateHandler}
-                TextFieldComponent={TextFieldComponent}
-                KeyboardButtonProps={{
-                "aria-label": "change date"
-                }}
+                size="small"
             />
-            <KeyboardDatePicker
+            <DatePickerUI
                 className={classes.datePicker}
                 disableToolbar
                 inputVariant="outlined"
-                variant="inline"
                 format="DD MMM YYYY"
                 margin="normal"
                 id="end"
@@ -127,10 +119,7 @@ function DatePicker() {
                 value={endDate}
                 autoOk={true}
                 onChange={endDateHandler}
-                TextFieldComponent={TextFieldComponent}
-                KeyboardButtonProps={{
-                "aria-label": "change date"
-                }}
+                size="small"
             />
         </MuiPickersUtilsProvider>
     );

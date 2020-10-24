@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
   dayBoardContainer: {
     display: 'flex',
     borderRadius: 5,
-    padding: '10px 0 20px 4px',
+    padding: '10px 0px 20px 0px',
     overflowX: 'auto',
   },
   explanation: {
@@ -481,10 +481,8 @@ function Planner(props) {
   return (
     <div>
       <ConfirmNavPrompt when={spotState.unsavedChanges} navigate={(path) => props.history.push(path)}/>
-      <div>
-        <PlaceAutoComplete clickFunction={searchedItemClicked} city='Berlin' placeHolderText={placeAutoCompletePlaceHolderText}/>
-      </div>
-      <Paper component="ul" className={classes.categoryChipBoard}>
+      <PlaceAutoComplete clickFunction={searchedItemClicked} city='Berlin' placeHolderText={placeAutoCompletePlaceHolderText}/>
+      <Paper component="ul" className={classes.categoryChipBoard} variant="outlined" >
         {categoryChips.map(data => {
           return (
             <li key={data.key}>

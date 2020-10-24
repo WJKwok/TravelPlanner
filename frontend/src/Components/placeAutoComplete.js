@@ -1,21 +1,22 @@
 import React, {useState, useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { List, ListItem, ListItemText, TextField }  from '@material-ui/core/';
-
+import Paper from '@material-ui/core/Paper';
 
 import {fetchOnePlaceId, fetchPredictions} from '../Services/googlePlaceApi';
 
 const useStyles = makeStyles({
     root: {
         width: '100%',
-        //minWidth: 400,
         backgroundColor: '#f8f8f8',
         '&:hover': {
             backgroundColor: '#e3e3e3'
         }
     },
+    blankPadding: {
+        paddingBottom: '15px',
+    },
     textField: {
-        //minWidth: 400,
         width: '100%',
     },
 })
@@ -69,7 +70,7 @@ function PlaceAutoComplete({clickFunction, city, placeHolderText}) {
     const textLabel = placeHolderText ? placeHolderText : `Searching in ${city} ...`
 
     return(
-        <div>
+        <>
             <TextField 
                 className={classes.textField}
                 label={textLabel}
@@ -77,7 +78,8 @@ function PlaceAutoComplete({clickFunction, city, placeHolderText}) {
                 variant="outlined" 
                 onChange={searchHandler}
             />
-            <List>
+            { sugestionsState.length !== 0 ? 
+                <List>
                 {sugestionsState.map((suggestion) => {
                     return <ListItem
                             className={classes.root}
@@ -86,9 +88,10 @@ function PlaceAutoComplete({clickFunction, city, placeHolderText}) {
                             >
                                 <ListItemText primary={suggestion.description}/>
                             </ListItem>
-                })}
-            </List>
-        </div>
+                    })}
+                </List> : <Paper className={classes.blankPadding} elevation={0} />
+            }
+        </>
         
     );
 }

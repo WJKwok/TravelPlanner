@@ -16,7 +16,7 @@ import GoogleDirectionLink from './googleDirectionLink'
 const useStyles = makeStyles((theme) => ({
     root: {
         minWidth: 300,
-        // maxWidth: 300,
+        maxWidth: 300,
         margin: 5,
         [theme.breakpoints.down(430)]: {
             minWidth: '90%'
