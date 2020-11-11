@@ -20,8 +20,8 @@ const getNewToken = () => {
 };
 
 const errorLink = onError(({ graphQLErrors, operation, forward }) => {
-    graphQLErrors.map(({ message }) => console.log(message))
     if (graphQLErrors) {
+        graphQLErrors.map(({ message }) => console.log(message))
         for (let err of graphQLErrors) {
             switch (err.extensions.code) {
                 case "UNAUTHENTICATED":
