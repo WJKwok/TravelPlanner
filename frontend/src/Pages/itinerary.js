@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
-import { useQuery, useMutation } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import { useQuery, useMutation, gql } from '@apollo/client';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, IconButton} from '@material-ui/core/';

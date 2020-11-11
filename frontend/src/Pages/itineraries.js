@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery, useMutation } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import { useQuery, useMutation, gql } from '@apollo/client';
 
 import { AuthContext } from '../Store/AuthContext';
 import { PlaceContext } from '../Store/PlaceContext';

@@ -23,12 +23,14 @@ const authReducer = (state, action) => {
     switch(action.type) {
         case 'LOGIN':
             localStorage.setItem('jwtToken', action.payload.token);
+            localStorage.setItem('refreshToken', action.payload.refreshToken);
             return {
                 ...state,
                 user: action.payload
             }
         case 'LOGOUT':
             localStorage.removeItem('jwtToken');
+            localStorage.removeItem('refreshToken');
             return {
                 ...state,
                 user: null

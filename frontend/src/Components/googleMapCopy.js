@@ -2,7 +2,7 @@ import React from 'react';
 import GoogleMapReact from 'google-map-react';
 
 import { makeStyles } from "@material-ui/core/styles";
-import { iconStyles, iconDict } from './spotIcons'
+import { badgeStyles, iconDict } from './spotIcons'
 import Badge from '@material-ui/core/Badge';
 
 const useStyles = makeStyles({
@@ -15,7 +15,7 @@ const useStyles = makeStyles({
 
 function GoogleMap({spots, city, pinClicked}) {
 
-    const classes = iconStyles();
+    const classes = badgeStyles();
     const mapClass = useStyles();
 
     const coordinates = {

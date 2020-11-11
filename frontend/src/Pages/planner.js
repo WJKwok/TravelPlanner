@@ -1,6 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react'
-import { useQuery, useLazyQuery, useMutation} from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import { useQuery, useLazyQuery, useMutation, gql} from '@apollo/client';
 import {DragDropContext} from 'react-beautiful-dnd'
 import moment from 'moment';
 
@@ -30,12 +29,18 @@ const useStyles = makeStyles(theme => ({
     listStyle: "none",
     padding: theme.spacing(0.5),
     alignItems: "flex-start",
+    '&::-webkit-scrollbar':{
+      display: 'none',
+    }
   },
   dayBoardContainer: {
     display: 'flex',
     borderRadius: 5,
     padding: '10px 0px 20px 0px',
     overflowX: 'auto',
+    '&::-webkit-scrollbar':{
+      display: 'none',
+  }
   },
   explanation: {
     backgroundColor: 'grey',
@@ -60,12 +65,11 @@ function Planner(props) {
 
   const classes = useStyles();
   const [categoryChips, setCategoryChips] = useState([]);
-  const [queriedVariables, setQueriedVariables] = useState([])
+  const [queriedVariables, setQueriedVariables] = useState(['Liked'])
   const [startedSearch, setStartedSearch] = useState(false)
   const [newSearchItem, setNewSearchItem] = useState({})
   const [tripId, setTripId] = useState(props.match.params.tripId)
   const [registerOpen, setRegisterOpen] = useState(false);
-  const [navModalOpen, setNavModalOpen] = useState(false);
   const guideId = props.match.params.guideBookId
 
   console.log('tripId :', tripId)
@@ -139,9 +143,10 @@ function Planner(props) {
     onCompleted({getTrip : trip}){ 
       console.log("get trip: ", trip)
       // categories in trip are clicked
-      setQueriedVariables(trip.categoriesInTrip)
+      const hasGooglePlacesInTrip = trip.googlePlacesInTrip.length > 0
+      setQueriedVariables([...queriedVariables, ...trip.categoriesInTrip, hasGooglePlacesInTrip ? 'Searched' : null])
       getCategories(trip.guide.categories, trip.categoriesInTrip)
-      setStartedSearch(trip.googlePlacesInTrip.length > 0)
+      setStartedSearch(hasGooglePlacesInTrip)
       dispatch({type:'LOAD_TRIP', payload:{trip}})
     },
     onError(err){
@@ -165,6 +170,7 @@ function Planner(props) {
         dispatch({ type:'ADD_SEARCH_ITEM', payload:{newSearchItem}})
         setStartedSearch(true)
         setSnackMessage({text:"Spot has been added in 'Searched' :)", code: 'Confirm'})
+        setQueriedVariables([...queriedVariables, 'Searched'])
       } else {
         const itemCategory = getSpot.category;
         getSpots({variables: {
@@ -186,8 +192,16 @@ function Planner(props) {
             clicked: clickedCategories.includes(category) ? true : false
         }
     })
+
+    let likedCategory = {
+      key: 'Liked',
+      label: 'Liked',
+      icon: iconDict['Liked'],
+      clicked: false
+    }
+
     console.log('building chips... :', categories)
-    setCategoryChips(categories)
+    setCategoryChips([...categories, likedCategory])
   }
 
   const chipClickedTrue = chipName => {
@@ -208,6 +222,7 @@ function Planner(props) {
     setCategoryChips(chipsClone);
 
     if (chipsClone[objectIndex].clicked && !queriedVariables.includes(clickedChip.label)) {
+        console.log('querying:', clickedChip.label)
         getSpots({variables: {
             guideId,
             category: clickedChip.label
@@ -264,7 +279,7 @@ function Planner(props) {
       console.log(submitTrip);
       setTripId(submitTrip.id);
       dispatch({type:"TRIP_SAVED"})
-      setSnackMessage({text:'Your trip has been saved:)', code: 'Success'})
+      setSnackMessage({text:'Your trip has been saved:)', code: 'Confirm'})
     },
     update(proxy, result){
 
@@ -303,7 +318,7 @@ function Planner(props) {
       console.log("Trip edited",editTrip);
       setTripId(editTrip.id);
       dispatch({type:"TRIP_SAVED"})
-      setSnackMessage({text:'Your trip has been saved:)', code: 'Success'})
+      setSnackMessage({text:'Your trip has been saved:)', code: 'Confirm'})
     },
     update(proxy, result){
       try {
@@ -343,9 +358,10 @@ function Planner(props) {
 
   const saveItinerary = () => {
     const dayKeyArray = spotState.dayBoard;
-    let categoriesInTrip = []
+    let categoriesInDayBoard = []
     let googlePlacesInTrip = []
     let daySpotsArray = []
+
     for (let i=0; i < dayKeyArray.length; i++) {
       daySpotsArray.push(spotState.columns[dayKeyArray[i]].spotIds)
     }
@@ -358,10 +374,20 @@ function Planner(props) {
       if (category === 'Searched'){
         googlePlacesInTrip.push(daySpotsArrayFlattened[j])
       }
-      else if (!categoriesInTrip.includes(category)) {
-        categoriesInTrip.push(category)
+      else if (!categoriesInDayBoard.includes(category)) {
+        categoriesInDayBoard.push(category)
       }
     }
+
+    const allspots = spotState.spots
+    const likedSpots = Object.keys(allspots).filter(id => allspots[id].liked)
+    const likedCategory = []
+    for (let k=0; k<likedSpots.length; k++) {
+      likedCategory.push(allspots[likedSpots[k]].category)
+    }
+
+    const categoriesInTrip = [...new Set([...likedCategory, ...categoriesInDayBoard])]
+
     if (daySpotsArrayFlattened.length === 0) {
       setSnackMessage({text:'Your itinerary is empty', code: 'Error'})
     } else {
@@ -377,6 +403,7 @@ function Planner(props) {
             startDate: spotState.startDate.format("YYYY-MM-DD"),
             dayLists: daySpotsArray,
             categoriesInTrip,
+            likedSpots,
             googlePlacesInTrip
           }
         })
@@ -388,6 +415,7 @@ function Planner(props) {
             startDate: spotState.startDate.format("YYYY-MM-DD"),
             dayLists: daySpotsArray,
             categoriesInTrip,
+            likedSpots,
             googlePlacesInTrip
           }
         })
@@ -476,6 +504,27 @@ function Planner(props) {
     dispatch({type:'REORDER', payload:{newOrder}});
   }
 
+  const renderSpotsBoard = () => {
+      const columnId = spotState.filteredBoard[0]
+      const column = spotState.columns[columnId];
+      const unfilteredSpots = column.spotIds.map(spotId => spotState.spots[spotId])
+
+      const likedChipIndex = categoryChips.findIndex(
+        chip => chip.key === 'Liked'
+      );
+      const isLikedChipClicked = categoryChips.length > 0 ? categoryChips[likedChipIndex].clicked : false
+
+      const selectedCategories = currentlySelectedChips();
+      const filteredSpots = unfilteredSpots.filter((spot) => selectedCategories.includes(spot.category))
+      const likedSpots = unfilteredSpots.filter((spot) => spot.liked)
+      const spots = isLikedChipClicked ? [...new Set([...filteredSpots, ...likedSpots])] : filteredSpots
+      
+      console.log('filtering spots: ', spots);
+      
+      return <SpotsBoard key={columnId} boardId={columnId} spots={spots} />
+
+  }
+
   const placeAutoCompletePlaceHolderText = "Google a place of interest if you don't find it in this guide book 🙌"
 
   return (
@@ -493,16 +542,7 @@ function Planner(props) {
       </Paper>
       <DragDropContext onDragEnd={onDragEnd}>
         <div>
-          {spotState.filteredBoard.map(columnId => {
-            const column = spotState.columns[columnId];
-            const unfilteredSpots = column.spotIds.map(spotId => spotState.spots[spotId])
-
-            const selectedCategories = currentlySelectedChips();
-            const spots = unfilteredSpots.filter((spot) => selectedCategories.includes(spot.category))
-            // console.log('filtering spots: ', spots);
-            
-            return <SpotsBoard key={columnId} boardId={columnId} spots={spots} />
-          })}
+          {renderSpotsBoard()}
         </div>
         <div className={classes.dateAndSave}>
           <DatePicker/>
@@ -559,8 +599,11 @@ const GET_TRIP = gql`
         category
         imgUrl
         content
+        date
+        eventName
       }
       filteredSpots
+      likedSpots
     }
   }
 `
@@ -571,6 +614,7 @@ const SUBMIT_TRIP = gql`
     $startDate: String!
     $dayLists: [[String]]!
     $categoriesInTrip: [String]!
+    $likedSpots: [String]!
     $googlePlacesInTrip: [String]!
   ){
     submitTrip(
@@ -578,6 +622,7 @@ const SUBMIT_TRIP = gql`
       startDate: $startDate
       dayLists: $dayLists
       categoriesInTrip: $categoriesInTrip
+      likedSpots: $likedSpots
       googlePlacesInTrip: $googlePlacesInTrip
     ){
       id
@@ -591,6 +636,7 @@ const EDIT_TRIP = gql`
     $startDate: String!
     $dayLists: [[String]]!
     $categoriesInTrip: [String]!
+    $likedSpots: [String]!
     $googlePlacesInTrip: [String]!
   ){
     editTrip(
@@ -598,6 +644,7 @@ const EDIT_TRIP = gql`
       startDate: $startDate
       dayLists: $dayLists
       categoriesInTrip: $categoriesInTrip
+      likedSpots: $likedSpots
       googlePlacesInTrip: $googlePlacesInTrip
     ){
       id

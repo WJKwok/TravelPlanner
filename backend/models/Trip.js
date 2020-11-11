@@ -12,6 +12,7 @@ const tripSchema = new Schema({
     startDate: String,
     dayLists: [],
     categoriesInTrip: [],
+    likedSpots: [],
     googlePlacesInTrip: [],
 });
 

@@ -65,7 +65,7 @@ module.exports = {
         }
     },
     Mutation: {
-        async submitTrip(_, {guide, startDate, dayLists, categoriesInTrip, googlePlacesInTrip}, context) {
+        async submitTrip(_, {guide, startDate, dayLists, categoriesInTrip, likedSpots, googlePlacesInTrip}, context) {
             const user = checkAuth(context);
             
             const newTrip = new Trip({
@@ -74,13 +74,14 @@ module.exports = {
                 startDate,
                 dayLists,
                 categoriesInTrip,
+                likedSpots,
                 googlePlacesInTrip,
             })
 
             const submitted = await newTrip.save();
             return submitted;
         },
-        async editTrip(_, {tripId, startDate, dayLists, categoriesInTrip, googlePlacesInTrip}, context) {
+        async editTrip(_, {tripId, startDate, dayLists, categoriesInTrip, likedSpots, googlePlacesInTrip}, context) {
             const user = checkAuth(context);
             try{
                 let trip = await Trip.findById(tripId);
@@ -89,6 +90,7 @@ module.exports = {
                     trip.dayLists = dayLists
                     trip.categoriesInTrip = categoriesInTrip
                     trip.googlePlacesInTrip = googlePlacesInTrip
+                    trip.likedSpots = likedSpots
 
                     await trip.save()
                     return trip;

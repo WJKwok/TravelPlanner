@@ -1,6 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import { deepPurple, indigo, blue} from '@material-ui/core/colors/';
+import { deepPurple, indigo, blue, pink} from '@material-ui/core/colors/';
 
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import SearchIcon from '@material-ui/icons/Search';
@@ -8,35 +8,63 @@ import RestaurantIcon from "@material-ui/icons/Restaurant";
 import LocalMallIcon from "@material-ui/icons/LocalMall";
 import LocalCafeIcon from "@material-ui/icons/LocalCafe";
 import FlareIcon from '@material-ui/icons/Flare';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 
-export const iconStyles = makeStyles({
+
+export const iconColour = {
+    Retail: deepPurple[500],
+    Restaurant: indigo[500],
+    Museum: blue[500],
+    Searched: blue[900],
+    Event: blue[900],
+    Liked: pink[500]
+}
+
+export const badgeStyles = makeStyles({
     Retail: {
-        backgroundColor: deepPurple[500],
+        backgroundColor: iconColour.Retail,
         color: "white"
     },
     Restaurant: {
-        backgroundColor: indigo[500],
+        backgroundColor: iconColour.Restaurant,
         color: "white"
     },
     Museum: {
-        backgroundColor: blue[500],
+        backgroundColor: iconColour.Museum,
         color: "white"
     },
     Searched: {
-        backgroundColor: blue[900],
+        backgroundColor: iconColour.Searched,
         color: "white"
     },
     Event: {
-        backgroundColor: blue[900],
+        backgroundColor: iconColour.Event,
         color: "white"
-    }
+    },
+    Liked: {
+        backgroundColor: iconColour.Liked,
+        color: "white"
+    },
 });
 
+
+
 export const iconDict = {
-    Retail: <LocalMallIcon style={{ color: deepPurple[500] }}/>,
-    Restaurant: <RestaurantIcon style={{ color: indigo[500] }}/>,
-    Museum: <AccountBalanceIcon style={{ color: blue[500] }}/>,
-    Searched: <SearchIcon style={{ color: blue[900] }}/>,
-    Cafe: <LocalCafeIcon />,
-    Event: <FlareIcon style={{ color: blue[900] }}/>
+    Retail: <LocalMallIcon fontSize="small" style={{ color: iconColour.Retail }}/>,
+    Restaurant: <RestaurantIcon fontSize="small" style={{ color: iconColour.Restaurant }}/>,
+    Museum: <AccountBalanceIcon fontSize="small" style={{ color: iconColour.Museum }}/>,
+    Searched: <SearchIcon fontSize="small" style={{ color: iconColour.Searched }}/>,
+    Cafe: <LocalCafeIcon fontSize="small" />,
+    Event: <FlareIcon fontSize="small" style={{ color: iconColour.Event }}/>,
+    Liked: <FavoriteIcon fontSize="small" style={{ color: iconColour.Liked }}/>
+}
+
+export const iconDictWhite = {
+    Retail: <LocalMallIcon fontSize="small"/>,
+    Restaurant: <RestaurantIcon fontSize="small"/>,
+    Museum: <AccountBalanceIcon fontSize="small"/>,
+    Searched: <SearchIcon fontSize="small"/>,
+    Cafe: <LocalCafeIcon fontSize="small"/>,
+    Event: <FlareIcon fontSize="small"/>,
+    Liked: <FavoriteIcon fontSize="small"/>
 }

@@ -4,20 +4,33 @@ const { UserInputError } = require('apollo-server');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-//const { SECRET_KEY } = require('../../config')
+//const { ACCESS_TOKEN_SECRET } = require('../../config')
 const User = require('../../models/User');
 const { validateRegisterInput, validateLoginInput} = require('../../utils/validators');
 
 function generateToken(user) {
-    return jwt.sign(
+
+    const refreshToken =  jwt.sign(
         {
             id: user.id,
             email: user.email,
             username: user.username
         },
-        process.env.SECRET_KEY,
+        process.env.REFRESH_TOKEN_SECRET,
+        { expiresIn: '7d' }
+    );
+
+    const accessToken = jwt.sign(
+        {
+            id: user.id,
+            email: user.email,
+            username: user.username
+        },
+        process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: '1h' }
     );
+
+    return { refreshToken, accessToken }
 }
 
 module.exports = {
@@ -32,6 +45,27 @@ module.exports = {
         }
     },
     Mutataion: {
+        async refreshToken(_, {refreshToken}){
+            let data;
+
+            try {
+                data = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
+            } catch {
+                console.log('verification error')
+            }  
+
+            const user = await User.findOne({username: data.username});
+
+            if (user) {
+                const { accessToken, refreshToken } = generateToken(user)
+                return {
+                    ...user._doc,
+                    id: user._id,
+                    token: accessToken,
+                    refreshToken
+                };
+            }
+        },
         //parent, args, context, info
         async register(
             _, 
@@ -65,12 +99,13 @@ module.exports = {
             })
 
             const res = await newUser.save();
-            const token = generateToken(res);
+            const { refreshToken, accessToken } = generateToken(res);
 
             return {
                 ...res._doc,
                 id: res._id,
-                token
+                token: accessToken,
+                refreshToken
             }
         },
 
@@ -95,12 +130,13 @@ module.exports = {
                 throw new UserInputError('Wrong credentials', {errors});
             }
             
-            const token = generateToken(user);
+            const { refreshToken, accessToken } = generateToken(user);
 
             return {
                 ...user._doc,
                 id: user._id,
-                token
+                token: accessToken,
+                refreshToken
             };
         }
     }

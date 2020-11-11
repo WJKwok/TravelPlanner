@@ -1,6 +1,5 @@
 import React, {Suspense} from 'react';
-import {useQuery} from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import {useQuery, gql} from '@apollo/client';
 import { Link } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';

@@ -15,6 +15,7 @@ const useStyles = makeStyles({
     },
     blankPadding: {
         paddingBottom: '15px',
+        backgroundColor: 'transparent',
     },
     textField: {
         width: '100%',

@@ -14,9 +14,12 @@ const useStyles = makeStyles(theme => ({
       display: "flex",
       overflowX: "auto",
       alignItems: "flex-start",
-      minHeight: 300,
+      // minHeight: 300,
       // boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)',
       padding: 10,
+      '&::-webkit-scrollbar':{
+        display: 'none',
+      },
     },
   }));
 

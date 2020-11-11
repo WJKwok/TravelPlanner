@@ -3,8 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import {TextField, MenuItem, Button} from '@material-ui/core/';
 import PlaceAutoComplete from '../Components/placeAutoComplete'
 
-import {useQuery, useMutation} from '@apollo/react-hooks'
-import gql from 'graphql-tag';
+import {useQuery, useMutation, gql} from '@apollo/client';
 
 const useStyles = makeStyles({
     root: {

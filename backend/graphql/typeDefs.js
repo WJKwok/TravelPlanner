@@ -4,7 +4,8 @@ module.exports = gql`
     type User {
         id: ID!
         email: String!
-        token: String!
+        token: String
+        refreshToken: String
         username: String!
         createdAt: String!
     }
@@ -54,6 +55,7 @@ module.exports = gql`
         googlePlacesInTrip: [String]!
         spotsArray:[Spot]
         filteredSpots:[ID]
+        likedSpots: [ID]
     }
     type Place {
         id: ID!
@@ -93,11 +95,12 @@ module.exports = gql`
     type Mutation {
         register(registerInput: RegisterInput): User!
         login(username: String!, password: String!): User!
+        refreshToken(refreshToken: String!): User!
         submitItinerary(dayPlans: [DayPlanInput], city: String!): Itinerary!
         saveItinerary(id: ID!, dayPlans: [DayPlanInput]): Itinerary!
         deleteItinerary(itineraryId: ID!): String!
-        submitTrip(guide: ID!, startDate: String!, dayLists: [[String]]!, categoriesInTrip: [String]!, googlePlacesInTrip: [String]!): Trip!
-        editTrip(tripId: ID!, startDate: String!, dayLists: [[String]]!, categoriesInTrip: [String]!, googlePlacesInTrip: [String]!): Trip!
+        submitTrip(guide: ID!, startDate: String!, dayLists: [[String]]!, categoriesInTrip: [String]!, likedSpots:[String], googlePlacesInTrip: [String]!): Trip!
+        editTrip(tripId: ID!, startDate: String!, dayLists: [[String]]!, categoriesInTrip: [String]!, likedSpots:[String], googlePlacesInTrip: [String]!): Trip!
         deleteTrip(tripId: ID!): String!
         savePlace(placeInput: PlaceInput!): Place!
         updatePlaces: Boolean!

@@ -54,6 +54,11 @@ export const spotReducer = (state, action) => {
                 unsavedChanges: false
             }
             return tripSaved
+        case 'LIKE_TOGGLE':
+            const { spotId } = action.payload
+            const updatedLikes = updateLikes(state, spotId)
+            console.log("updatedLikes: ", updatedLikes);
+            return updatedLikes
         default:
             return state;
     }
@@ -92,9 +97,16 @@ const clearState = () => {
 
 const loadTrip = (trip) => {
 
-    const spots = {}
+    let spots = {}
     trip.spotsArray.forEach(spot => {
-        spots[spot.id] = spot
+        if (trip.likedSpots.includes(spot.id)) {
+            spots[spot.id] = {
+                ...spot,
+                liked: true
+            }
+        } else {
+            spots[spot.id] = spot
+        }
     });
 
     const columns = {}
@@ -245,4 +257,27 @@ const changeDateAndDays = (state, startDate, numberOfDays) =>{
         }
         return newState
     }
+}
+
+const updateLikes = (state, spotId) => {
+
+    const newLikeState = state.spots[spotId].liked ? !state.spots[spotId].liked : true
+
+    const spotToToggle = {
+        ...state.spots[spotId], 
+        liked: newLikeState
+    }
+
+    console.log("spotToToggle", spotToToggle)
+    const newState = {
+        ...state,
+        spots: {
+            ...state.spots,
+            [spotId]: {
+                ...spotToToggle
+            }
+        }
+    }
+
+    return newState
 }
