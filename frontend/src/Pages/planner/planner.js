@@ -3,18 +3,18 @@ import { useQuery, useLazyQuery, useMutation, gql } from '@apollo/client';
 import { DragDropContext } from 'react-beautiful-dnd';
 import moment from 'moment';
 
-import CategoryChip from '../Components/categoryChip';
-import { iconDict } from '../Components/spotIcons';
-import SpotsBoard from '../Components/spotsBoard';
-import DayBoard from '../Components/dayBoard';
-import DatePicker from '../Components/datePicker';
-import PlaceAutoComplete from '../Components/placeAutoComplete';
-import { SpotContext } from '../Store/SpotContext';
-import { AuthContext } from '../Store/AuthContext';
-import { SnackBarContext } from '../Store/SnackBarContext';
+import CategoryChip from '../../Components/categoryChip';
+import { iconDict } from '../../Components/spotIcons';
+import SpotsBoard from '../../Components/spotsBoard';
+import DayBoard from '../../Components/dayBoard';
+import DatePicker from '../../Components/datePicker';
+import PlaceAutoComplete from '../../Components/placeAutoComplete';
+import { SpotContext } from '../../Store/SpotContext';
+import { AuthContext } from '../../Store/AuthContext';
+import { SnackBarContext } from '../../Store/SnackBarContext';
 
-import RegisterModel from '../Components/registerModal';
-import ConfirmNavPrompt from '../Components/confirmNavPrompt';
+import RegisterModel from '../../Components/registerModal';
+import ConfirmNavPrompt from '../../Components/confirmNavPrompt';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -70,8 +70,8 @@ function Planner(props) {
 	const [registerOpen, setRegisterOpen] = useState(false);
 	const guideId = props.match.params.guideBookId;
 
-	console.log('tripId :', tripId);
-	console.log('user exists? ', authState.user);
+	console.log('tripId :', tripId, guideId);
+	console.log('user exists? ', authState);
 	//temporary for testing
 	console.log('props:', props);
 
@@ -138,6 +138,7 @@ function Planner(props) {
 	useQuery(GET_TRIP, {
 		skip: tripId === undefined,
 		onCompleted({ getTrip: trip }) {
+			//console.log(JSON.stringify(trip));
 			console.log('get trip: ', trip);
 			// categories in trip are clicked
 			const hasGooglePlacesInTrip = trip.googlePlacesInTrip.length > 0;
@@ -158,7 +159,7 @@ function Planner(props) {
 
 	const [getSpots] = useLazyQuery(GET_SPOTS, {
 		onCompleted({ getSpots }) {
-			//deconstruct from data
+			console.log('getspots:', getSpots);
 			dispatch({ type: 'ADD_SPOTS', payload: { newSpots: getSpots } });
 			if (getSpots.length > 0) {
 				setQueriedVariables([...queriedVariables, getSpots[0].category]);

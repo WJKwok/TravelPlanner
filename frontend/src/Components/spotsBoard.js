@@ -47,7 +47,7 @@ function SpotsBoard(props) {
 	);
 
 	return (
-		<Paper variant="outlined">
+		<Paper variant="outlined" data-testid="spots-board">
 			<DaySelectMenu day={day} dayChangeHandler={setDay} />
 			<Droppable droppableId={boardId} direction="horizontal">
 				{(provided) => (

@@ -9,7 +9,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 
 const useStyles = makeStyles((theme) => ({
-	root: {
+	dayBoard: {
 		display: 'flex',
 		flexDirection: 'column',
 		minWidth: 336,
@@ -57,7 +57,11 @@ function DayBoard(props) {
 	);
 
 	return (
-		<Paper className={classes.root} variant="outlined">
+		<Paper
+			className={classes.dayBoard}
+			variant="outlined"
+			data-testid="day-board"
+		>
 			{/* <div className={classes.root} > */}
 			<div className={classes.date}>
 				<p>
@@ -70,6 +74,7 @@ function DayBoard(props) {
 						className={classes.droppable}
 						ref={(ref) => setRef(provided.innerRef, ref)}
 						{...provided.droppableProps}
+						data-testid={boardId}
 					>
 						{spots.length > 0
 							? spots.map((spot, index) => (
