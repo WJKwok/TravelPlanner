@@ -583,6 +583,7 @@ function Planner(props) {
 						className={classes.saveButton}
 						startIcon={<SaveIcon />}
 						onClick={saveItinerary}
+						id="save"
 					>
 						Save
 					</Button>

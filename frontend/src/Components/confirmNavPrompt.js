@@ -53,10 +53,14 @@ export const ConfirmNavPrompt = ({ when, navigate }) => {
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={handleConfirmNavigationClick} color="primary">
+					<Button
+						id="leave"
+						onClick={handleConfirmNavigationClick}
+						color="primary"
+					>
 						Discard Changes
 					</Button>
-					<Button onClick={closeModal} color="primary" autoFocus>
+					<Button id="stay" onClick={closeModal} color="primary" autoFocus>
 						Stay
 					</Button>
 				</DialogActions>

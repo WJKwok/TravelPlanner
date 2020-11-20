@@ -234,6 +234,7 @@ const SpotCard = React.memo((props) => {
 						</div>
 					</div>
 					<Collapse
+						data-testid={`collapseContent-${spot.id}`}
 						className={classes.collapseContent}
 						in={expanded}
 						timeout="auto"

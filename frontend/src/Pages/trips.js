@@ -4,169 +4,177 @@ import { useQuery, useMutation, gql } from '@apollo/client';
 
 import { AuthContext } from '../Store/AuthContext';
 import { SpotContext } from '../Store/SpotContext';
-import { SnackBarContext } from '../Store/SnackBarContext'
+import { SnackBarContext } from '../Store/SnackBarContext';
 
 import Button from '@material-ui/core/Button';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import AddCircleOutlineRoundedIcon from '@material-ui/icons/AddCircleOutlineRounded';
-import {Card, CardMedia, CardContent, Typography, IconButton, makeStyles} from '@material-ui/core';
+import {
+	Card,
+	CardMedia,
+	CardContent,
+	Typography,
+	IconButton,
+	makeStyles,
+} from '@material-ui/core';
 import moment from 'moment';
 
 const useStyles = makeStyles({
-    tripCard: {
-        marginBottom: 15,
-        display: 'flex',
-    },
-    headerThumbnail: {
-        width: 100,
-    },
-    headerTitle: {
-        flex: '1 0 auto',
-    },
-    nextButton: {
-        marginLeft: "auto",
-        "&:hover": {
-            backgroundColor: "transparent",
-            color: 'red'
-        },
-    },
-})
+	tripCard: {
+		marginBottom: 15,
+		display: 'flex',
+	},
+	headerThumbnail: {
+		width: 100,
+	},
+	headerTitle: {
+		flex: '1 0 auto',
+	},
+	nextButton: {
+		marginLeft: 'auto',
+		'&:hover': {
+			backgroundColor: 'transparent',
+			color: 'red',
+		},
+	},
+});
 
 function Trips() {
+	const { authState, dispatch: authDispatch } = useContext(AuthContext);
+	const { dispatch: placeDispatch } = useContext(SpotContext);
+	const { setSnackMessage } = useContext(SnackBarContext);
 
-    const { authState, dispatch : authDispatch } = useContext(AuthContext);
-    const { dispatch : placeDispatch } = useContext(SpotContext);
-    const { setSnackMessage } = useContext(SnackBarContext)
+	const classes = useStyles();
 
-    const classes = useStyles();
+	const { loading, data: { getUserTrips: trips } = {} } = useQuery(
+		GET_USER_TRIPS,
+		{
+			variables: {
+				userId: authState.user.id,
+			},
+		}
+	);
 
-    const {
-        loading,
-        data: { getUserTrips : trips } = {}
-    } = useQuery(GET_USER_TRIPS, {
-        variables: {
-            userId: authState.user.id
-        }
-    });
+	const handleLogout = () => {
+		authDispatch({ type: 'LOGOUT' });
+		placeDispatch({ type: 'CLEAR_STATE' });
+		setSnackMessage({ text: 'Logout Success!', code: 'Confirm' });
+	};
 
-    const handleLogout = () => {
-        authDispatch({type:"LOGOUT"});
-        placeDispatch({type:"CLEAR_STATE"});
-        setSnackMessage({text: 'Logout Success!', code:'Confirm'})
-    }
+	const [deleteTrip] = useMutation(DELETE_TRIP, {
+		update(proxy, result) {
+			console.log('done:', result.data.deleteTrip);
 
-    const [deleteTrip] = useMutation(DELETE_TRIP, {
-        update(proxy, result){
-            console.log('done:', result.data.deleteTrip)
+			const data = proxy.readQuery({
+				query: GET_USER_TRIPS,
+				variables: {
+					userId: authState.user.id,
+				},
+			});
 
-            const data = proxy.readQuery({
-                query: GET_USER_TRIPS,
-                variables: {
-                    userId: authState.user.id
-                }
-            })
+			proxy.writeQuery({
+				query: GET_USER_TRIPS,
+				variables: {
+					userId: authState.user.id,
+				},
+				data: {
+					getUserTrips: data.getUserTrips.filter(
+						(i) => i.id !== result.data.deleteTrip
+					),
+				},
+			});
+		},
+		onError(err) {
+			console.log(err);
+		},
+	});
 
-            proxy.writeQuery({
-                query: GET_USER_TRIPS,
-                variables: {
-                    userId: authState.user.id
-                },
-                data: {
-                    getUserTrips: data.getUserTrips.filter(i => i.id !== result.data.deleteTrip)
-                }
-            })
+	const deleteHandler = (tripId) => {
+		console.log('is there a trip id?', tripId);
+		deleteTrip({ variables: { tripId } });
+	};
 
-        },
-        onError(err){
-            console.log(err)
-        }
-    })
+	console.log(trips);
+	const tripCards = loading
+		? ''
+		: trips.map((trip) => {
+				return (
+					<Card
+						className={classes.tripCard}
+						key={trip.id}
+						data-testid={`tripCard-${trip.id}`}
+					>
+						<CardMedia
+							className={classes.headerThumbnail}
+							image={trip.guide.coverImage}
+						/>
+						<Link to={`/planner/${trip.guide.id}/${trip.id}`}>
+							<CardContent className={classes.headerTitle}>
+								<Typography variant="h5">{trip.guide.city}</Typography>
+								<Typography variant="subtitle1">
+									{moment(trip.startDate).format('DD MMM')} -{' '}
+									{moment(trip.startDate)
+										.add(trip.dayLists.length - 1, 'days')
+										.format('DD MMM')}
+								</Typography>
+							</CardContent>
+						</Link>
+						<IconButton
+							className={classes.nextButton}
+							disableRipple={true}
+							disableFocusRipple={true}
+							onClick={() => deleteHandler(trip.id)}
+						>
+							<HighlightOffIcon />
+						</IconButton>
+					</Card>
+				);
+		  });
 
-    const deleteHandler = (tripId) => {
-        console.log("is there a trip id?", tripId)
-        deleteTrip({ variables: { tripId } })
-    }
-
-    console.log(trips);
-    const tripCards = loading ?
-        ""
-        : trips.map((trip) => {
-            return (
-                <Card className={classes.tripCard} key={trip.id}>
-                    <CardMedia
-                        className={classes.headerThumbnail}
-                        image={trip.guide.coverImage}
-                    />
-                    <Link to={`/planner/${trip.guide.id}/${trip.id}`}>
-                        <CardContent className={classes.headerTitle}>
-                            <Typography variant="h5">
-                                {trip.guide.city}
-                            </Typography>
-                            <Typography variant="subtitle1">
-                                {moment(trip.startDate).format("DD MMM")} - {moment(trip.startDate).add(trip.dayLists.length - 1, 'days').format("DD MMM")}
-                            </Typography>
-                        </CardContent>
-                    
-                    </Link>
-                    <IconButton
-                        className={classes.nextButton}
-                        disableRipple={true}
-                        disableFocusRipple={true}
-                        onClick={() => deleteHandler(trip.id)}
-                    >
-                        <HighlightOffIcon />
-                    </IconButton>
-                </Card>
-            )})
-    
-    return (
-        <div>
-            <Button
-                variant="contained"
-                color="default"
-                className={classes.button}
-                onClick={handleLogout}
-            >
-                Logout 👋🏻
-            </Button>
-            {tripCards}
-            <Link to={'/'}>
-                <IconButton 
-                    disableRipple={true}
-                    disableFocusRipple={true}
-                    onClick={() => placeDispatch({type:"CLEAR_STATE"})}>
-                    <AddCircleOutlineRoundedIcon fontSize="large" />
-                </IconButton>
-            </Link>
-        </div>
-        
-    );
+	return (
+		<div>
+			<Button
+				variant="contained"
+				color="default"
+				className={classes.button}
+				onClick={handleLogout}
+			>
+				Logout 👋🏻
+			</Button>
+			{tripCards}
+			<Link to={'/'}>
+				<IconButton
+					disableRipple={true}
+					disableFocusRipple={true}
+					onClick={() => placeDispatch({ type: 'CLEAR_STATE' })}
+				>
+					<AddCircleOutlineRoundedIcon fontSize="large" />
+				</IconButton>
+			</Link>
+		</div>
+	);
 }
 
 const GET_USER_TRIPS = gql`
-    query getUserTrips(
-        $userId: ID!
-    ){
-        getUserTrips(
-            userId: $userId
-        ){
-            id
-            guide{
-                id
-                coverImage
-                city
-            }
-            dayLists
-            startDate
-        }
-    }
-`
+	query getUserTrips($userId: ID!) {
+		getUserTrips(userId: $userId) {
+			id
+			guide {
+				id
+				coverImage
+				city
+			}
+			dayLists
+			startDate
+		}
+	}
+`;
 
 const DELETE_TRIP = gql`
-    mutation deleteTrip($tripId: ID!){
-        deleteTrip(tripId: $tripId)
-    }
-`
+	mutation deleteTrip($tripId: ID!) {
+		deleteTrip(tripId: $tripId)
+	}
+`;
 
 // const DELETE_ITINERARY =  gql`
 //     mutation deleteItinerary($itineraryId: ID!){
