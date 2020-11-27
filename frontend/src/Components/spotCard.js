@@ -173,7 +173,10 @@ const SpotCard = React.memo((props) => {
 		) : (
 			<>
 				<Typography className={classes.spotTitle}>{spot.place.name}</Typography>
-				<Typography className={classes.spotSubtitle}>
+				<Typography
+					data-testid="business-status"
+					className={classes.spotSubtitle}
+				>
 					{businessStatus}
 				</Typography>
 				<div className={classes.ratingDiv}>

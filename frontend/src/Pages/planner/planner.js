@@ -13,7 +13,7 @@ import { SpotContext } from '../../Store/SpotContext';
 import { AuthContext } from '../../Store/AuthContext';
 import { SnackBarContext } from '../../Store/SnackBarContext';
 
-import RegisterModel from '../../Components/registerModal';
+import AuthModal from '../../Components/AuthModal';
 import ConfirmNavPrompt from '../../Components/confirmNavPrompt';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -404,8 +404,11 @@ function Planner(props) {
 			...new Set([...likedCategory, ...categoriesInDayBoard]),
 		];
 
-		if (daySpotsArrayFlattened.length === 0) {
-			setSnackMessage({ text: 'Your itinerary is empty', code: 'Error' });
+		if (daySpotsArrayFlattened.length === 0 && likedSpots.length === 0) {
+			setSnackMessage({
+				text: 'Your itinerary is empty or you have no liked spots',
+				code: 'Error',
+			});
 		} else {
 			if (!tripId) {
 				if (!authState.user) {
@@ -607,7 +610,7 @@ function Planner(props) {
 					})}
 				</div>
 			</DragDropContext>
-			<RegisterModel
+			<AuthModal
 				registerOpen={registerOpen}
 				setRegisterOpen={setRegisterOpen}
 			/>

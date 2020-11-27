@@ -84,7 +84,7 @@ function PlaceAutoComplete({ clickFunction, city, placeHolderText }) {
 					{sugestionsState.map((suggestion) => {
 						return (
 							<ListItem
-								data-testId="google-search-suggestion"
+								data-testid="google-search-suggestion"
 								className={classes.root}
 								key={suggestion.place_id}
 								onClick={() => addCard(suggestion.place_id)}

@@ -20,6 +20,11 @@ import {
 import moment from 'moment';
 
 const useStyles = makeStyles({
+	greeting: {
+		display: 'flex',
+		justifyContent: 'space-between',
+		paddingBottom: 20,
+	},
 	tripCard: {
 		marginBottom: 15,
 		display: 'flex',
@@ -55,6 +60,7 @@ function Trips() {
 		}
 	);
 
+	const greetingName = authState.user.username;
 	const handleLogout = () => {
 		authDispatch({ type: 'LOGOUT' });
 		placeDispatch({ type: 'CLEAR_STATE' });
@@ -111,7 +117,7 @@ function Trips() {
 						<Link to={`/planner/${trip.guide.id}/${trip.id}`}>
 							<CardContent className={classes.headerTitle}>
 								<Typography variant="h5">{trip.guide.city}</Typography>
-								<Typography variant="subtitle1">
+								<Typography data-testid="trip-date" variant="subtitle1">
 									{moment(trip.startDate).format('DD MMM')} -{' '}
 									{moment(trip.startDate)
 										.add(trip.dayLists.length - 1, 'days')
@@ -120,6 +126,7 @@ function Trips() {
 							</CardContent>
 						</Link>
 						<IconButton
+							data-testid="delete-trip"
 							className={classes.nextButton}
 							disableRipple={true}
 							disableFocusRipple={true}
@@ -133,14 +140,20 @@ function Trips() {
 
 	return (
 		<div>
-			<Button
-				variant="contained"
-				color="default"
-				className={classes.button}
-				onClick={handleLogout}
-			>
-				Logout 👋🏻
-			</Button>
+			<div className={classes.greeting}>
+				<Typography variant="h4">
+					Hi {greetingName.charAt(0).toUpperCase() + greetingName.slice(1)} 🙃
+				</Typography>
+				<Button
+					variant="outlined"
+					color="default"
+					className={classes.button}
+					onClick={handleLogout}
+				>
+					Logout 👋🏻
+				</Button>
+			</div>
+
 			{tripCards}
 			<Link to={'/'}>
 				<IconButton

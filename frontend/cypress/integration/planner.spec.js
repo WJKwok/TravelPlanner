@@ -1,12 +1,9 @@
+// describe isn't needed, if you only have one it test
+
 describe('Planner', function () {
-	beforeEach(function () {
-		cy.visit('http://localhost:3000/');
-	});
-
-	it('test as non-user', () => {});
-
 	it('test as a user', () => {
 		//logging in
+		cy.visit('http://localhost:3000/');
 		cy.get('[data-testid="nav-trips"]').click();
 		cy.get('#username').type('wen');
 		cy.get('#password').type('123456');
@@ -40,7 +37,7 @@ describe('Planner', function () {
 			.contains('Katz Orange')
 			.parent()
 			.within(() => {
-				cy.get('[data-testid="hollow-heart"]').first().click();
+				cy.get('[data-testid="hollow-heart"]').click();
 			});
 		cy.get('[data-testid="filled-heart"]').should('have.length', 4);
 
@@ -67,7 +64,7 @@ describe('Planner', function () {
 		cy.get('#save')
 			.click()
 			.then(() => {
-				cy.get('[data-testId=snackBar]')
+				cy.get('[data-testid=snackBar]')
 					.contains('Your trip has been saved')
 					.should('have.length', 1);
 			});
@@ -127,11 +124,11 @@ describe('Planner', function () {
 		cy.get('#google-search')
 			.type('Burgermeister Schlesisches Tor')
 			.then(() => {
-				cy.get('[data-testId="google-search-suggestion"]')
+				cy.get('[data-testid="google-search-suggestion"]')
 					.first()
 					.click()
 					.then(() => {
-						cy.get('[data-testId=snackBar]')
+						cy.get('[data-testid=snackBar]')
 							.contains('Item already exists')
 							.should('have.length', 1);
 					});
@@ -140,11 +137,11 @@ describe('Planner', function () {
 		cy.get('#google-search')
 			.type('1990 Vegan Living')
 			.then(() => {
-				cy.get('[data-testId="google-search-suggestion"]')
+				cy.get('[data-testid="google-search-suggestion"]')
 					.first()
 					.click()
 					.then(() => {
-						cy.get('[data-testId=snackBar]')
+						cy.get('[data-testid=snackBar]')
 							.contains('Spot has been added')
 							.should('have.length', 1);
 						cy.get('[data-testid*=chip-clicked]').each(($clickedChip) => {

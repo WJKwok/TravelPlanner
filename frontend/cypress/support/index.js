@@ -49,11 +49,12 @@ Cypress.Commands.add('dragAndDrop', (subject, target) => {
 							clientX: coordsDrag.x + SLOPPY_CLICK_THRESHOLD,
 							clientY: coordsDrag.y,
 							force: true,
-						})
+						});
+					cy.get('body')
 						.trigger('mousemove', {
 							button: BUTTON_INDEX,
-							clientX: coordsDrop.x,
-							clientY: coordsDrop.y,
+							clientX: coordsDrop.x + 10,
+							clientY: coordsDrop.y + 10,
 							force: true,
 						})
 						.trigger('mouseup');

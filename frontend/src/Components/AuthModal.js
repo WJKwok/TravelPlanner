@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useMutation, gql } from '@apollo/client';
 
 import { AuthContext } from '../Store/AuthContext';
@@ -11,8 +11,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-function RegisterModal({ registerOpen, setRegisterOpen }) {
-	const { dispatch } = useContext(AuthContext);
+function AuthModal({ registerOpen, setRegisterOpen, navgiateTo }) {
+	const { authState, dispatch } = useContext(AuthContext);
 	const { setSnackMessage } = useContext(SnackBarContext);
 
 	const [username, setUsername] = useState('');
@@ -23,9 +23,9 @@ function RegisterModal({ registerOpen, setRegisterOpen }) {
 	const [loginBoolean, setLoginBoolean] = useState(true);
 
 	const [registerUser] = useMutation(REGISTER_USER, {
-		update(_, result) {
-			console.log(result.data.register);
-			dispatch({ type: 'LOGIN', payload: result.data.register });
+		onCompleted({ register }) {
+			console.log(register);
+			dispatch({ type: 'LOGIN', payload: register });
 			setRegisterOpen(false);
 			setSnackMessage({ text: 'Registration Success!', code: 'Confirm' });
 		},
@@ -41,14 +41,15 @@ function RegisterModal({ registerOpen, setRegisterOpen }) {
 	});
 
 	const [loginUser] = useMutation(LOGIN_MUTATION, {
-		update(_, result) {
-			console.log('login success: ', result.data.login);
-			dispatch({ type: 'LOGIN', payload: result.data.login });
+		onCompleted({ login }) {
+			console.log('login success: ', login);
+			dispatch({ type: 'LOGIN', payload: login });
 			setRegisterOpen(false);
 			setSnackMessage({ text: 'Login Success!', code: 'Confirm' });
+			navgiateTo();
 		},
 		onError(err) {
-			console.log(err.graphQLErrors[0].message);
+			console.log(err);
 		},
 		variables: {
 			username,
@@ -62,6 +63,7 @@ function RegisterModal({ registerOpen, setRegisterOpen }) {
 
 	return (
 		<Dialog
+			data-testid="auth-modal"
 			maxWidth="xs"
 			open={registerOpen}
 			onClose={() => setRegisterOpen(false)}
@@ -163,4 +165,4 @@ const LOGIN_MUTATION = gql`
 	}
 `;
 
-export default RegisterModal;
+export default AuthModal;

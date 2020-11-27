@@ -27,7 +27,7 @@ const SnackBar = () => {
 	const classes = useStyles(props);
 
 	return (
-		<Zoom in={!!snackMessage.text} data-testId="snackBar">
+		<Zoom in={!!snackMessage.text} data-testid="snackBar">
 			<p className={classes.snackBar}>{snackMessage.text}</p>
 		</Zoom>
 	);
