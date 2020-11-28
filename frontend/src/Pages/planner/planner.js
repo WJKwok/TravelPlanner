@@ -548,8 +548,7 @@ function Planner(props) {
 		return <SpotsBoard key={columnId} boardId={columnId} spots={spots} />;
 	};
 
-	const placeAutoCompletePlaceHolderText =
-		"Google a place of interest if you don't find it in this guide book 🙌";
+	const placeAutoCompletePlaceHolderText = 'Google a place of interest 🙌';
 
 	return (
 		<div>

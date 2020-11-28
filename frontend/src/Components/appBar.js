@@ -6,25 +6,30 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import FaceIcon from '@material-ui/icons/Face';
+import Box from '@material-ui/core/Box';
 
 import { AuthContext } from '../Store/AuthContext';
 import AuthModal from './AuthModal';
 import SnackBar from './snackBar';
-import { Snackbar } from '@material-ui/core';
+import { Button, Snackbar } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
-	root: {
-		flexGrow: 1,
-	},
 	toolbar: {
 		width: '100%',
 		maxWidth: 1280,
 		margin: 'auto',
 	},
-	menuButton: {
-		marginRight: theme.spacing(2),
+	logo: {
+		color: '#000',
+		'&:hover': {
+			color: '#000',
+			textDecoration: 'none',
+		},
 	},
-	title: {
+	iconButton: {
+		cursor: 'pointer',
+	},
+	sizedBox: {
 		flexGrow: 1,
 	},
 }));
@@ -48,19 +53,21 @@ const MenuAppBar = () => {
 	};
 
 	return (
-		<div className={classes.root}>
+		<div>
 			<AppBar position="fixed" color="white" elevation={1}>
 				<Toolbar className={classes.toolbar}>
 					<Typography
-						variant="h6"
-						className={classes.title}
-						data-testid={`nav-planner${user ? '-user' : ''}`}
 						component={Link}
 						to="/"
+						className={classes.logo}
+						variant="h4"
+						data-testid={`nav-planner${user ? '-user' : ''}`}
 					>
 						Planners
 					</Typography>
+					<Box className={classes.sizedBox} />
 					<FaceIcon
+						className={classes.iconButton}
 						data-testid={`nav-trips${user ? '-user' : ''}`}
 						onClick={iconClickHandler}
 					/>
