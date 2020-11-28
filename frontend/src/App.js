@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { AuthRoute, UnAuthRoute } from './utils/AuthRoute';
 
@@ -16,6 +16,8 @@ import SnackBarContextProvider from './Store/SnackBarContext';
 import { AuthContextProvider } from './Store/AuthContext';
 import SpotContextProvider from './Store/SpotContext';
 
+import ReactGA from 'react-ga';
+
 const useStyles = makeStyles((theme) => ({
 	container: {
 		marginTop: 100,
@@ -25,6 +27,11 @@ const useStyles = makeStyles((theme) => ({
 
 function App() {
 	const classes = useStyles();
+
+	useEffect(() => {
+		ReactGA.initialize('UA-184129626-1');
+		ReactGA.pageview(window.location.pathname + window.location.search);
+	}, []);
 
 	return (
 		<AuthContextProvider>

@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import ReactGA from 'react-ga';
 
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -45,6 +46,11 @@ const MenuAppBar = () => {
 	const [modalOpen, setModalOpen] = useState(false);
 
 	const iconClickHandler = () => {
+		ReactGA.event({
+			category: 'Button',
+			action: 'AppBar Profile clicked',
+		});
+
 		if (user) {
 			history.push('/trips');
 		} else {
