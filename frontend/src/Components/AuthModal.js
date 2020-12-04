@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useMutation, gql } from '@apollo/client';
+import { GoogleLogin } from 'react-google-login';
 
 import { AuthContext } from '../Store/AuthContext';
 import { SnackBarContext } from '../Store/SnackBarContext';
@@ -30,7 +31,7 @@ function AuthModal({ registerOpen, setRegisterOpen, navgiateTo }) {
 			setSnackMessage({ text: 'Registration Success!', code: 'Confirm' });
 		},
 		onError(err) {
-			console.log(err);
+			console.log(err.graphQLErrors);
 		},
 		variables: {
 			username,
@@ -61,6 +62,10 @@ function AuthModal({ registerOpen, setRegisterOpen, navgiateTo }) {
 		loginBoolean ? loginUser() : registerUser();
 	};
 
+	const responseGoogle = (response) => {
+		console.log(response);
+	};
+
 	return (
 		<Dialog
 			data-testid="auth-modal"
@@ -72,6 +77,13 @@ function AuthModal({ registerOpen, setRegisterOpen, navgiateTo }) {
 			<DialogTitle id="form-dialog-title">
 				{loginBoolean ? 'Login' : 'Register'}
 			</DialogTitle>
+			<GoogleLogin
+				clientId="1086730577702-datk765t1m7g2u26p2egevn7fj9ngic1.apps.googleusercontent.com"
+				buttonText="Login"
+				onSuccess={responseGoogle}
+				onFailure={responseGoogle}
+				cookiePolicy={'single_host_origin'}
+			/>
 			<DialogContent>
 				{/* <DialogContentText>
                     To subscribe to this website, please enter your email address here. We will send updates
@@ -144,7 +156,7 @@ const REGISTER_USER = gql`
 		) {
 			id
 			email
-			token
+			accessToken
 			refreshToken
 			username
 			createdAt
@@ -159,7 +171,7 @@ const LOGIN_MUTATION = gql`
 			email
 			username
 			createdAt
-			token
+			accessToken
 			refreshToken
 		}
 	}

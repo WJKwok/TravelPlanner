@@ -23,6 +23,7 @@ https://stackoverflow.com/questions/58540364/material-ui-overide-disabled-styles
 const useStyles = makeStyles({
 	datePicker: {
 		marginRight: 5,
+		width: '12ch',
 		// "& .Mui-disabled": {
 		//     color: 'black',
 		//     backgroundColor: 'transparent'

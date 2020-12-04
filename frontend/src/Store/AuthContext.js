@@ -22,7 +22,7 @@ const authReducer = (state, action) => {
 	switch (action.type) {
 		case 'LOGIN':
 			console.log('am I called?');
-			localStorage.setItem('jwtToken', action.payload.token);
+			localStorage.setItem('jwtToken', action.payload.accessToken);
 			localStorage.setItem('refreshToken', action.payload.refreshToken);
 			return {
 				...state,

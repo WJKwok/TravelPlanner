@@ -25,7 +25,7 @@ const getNewToken = () => {
 		.then((response) => {
 			// extract your accessToken from your response data and return it
 			console.log('is there a response?', response);
-			return response.data.refreshToken.token;
+			return response.data.refreshToken.accessToken;
 		});
 };
 

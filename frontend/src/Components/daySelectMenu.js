@@ -9,7 +9,7 @@ import TextField from '@material-ui/core/TextField';
 
 const useStyles = makeStyles({
 	formControl: {
-		minWidth: 170,
+		width: 170,
 		margin: '15px 0px 0px 10px',
 	},
 });
