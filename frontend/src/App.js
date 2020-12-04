@@ -20,7 +20,7 @@ import ReactGA from 'react-ga';
 
 const useStyles = makeStyles((theme) => ({
 	container: {
-		marginTop: 100,
+		marginTop: 80,
 		marginBottom: 10,
 	},
 }));

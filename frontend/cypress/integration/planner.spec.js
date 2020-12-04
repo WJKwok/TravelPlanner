@@ -121,6 +121,7 @@ describe('Planner', function () {
 
 		// Google search for an item
 		// item that already exits
+		cy.get('[data-testid=google-search-button]').click();
 		cy.get('#google-search')
 			.type('Burgermeister Schlesisches Tor')
 			.then(() => {
@@ -134,6 +135,7 @@ describe('Planner', function () {
 					});
 			});
 		// item that does not exist yet
+		cy.get('[data-testid=google-search-button]').click();
 		cy.get('#google-search')
 			.type('1990 Vegan Living')
 			.then(() => {

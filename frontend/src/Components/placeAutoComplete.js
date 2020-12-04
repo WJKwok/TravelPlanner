@@ -78,6 +78,7 @@ function PlaceAutoComplete({ clickFunction, city, placeHolderText }) {
 				value={searchState}
 				variant="outlined"
 				onChange={searchHandler}
+				autoFocus="true"
 			/>
 			{sugestionsState.length !== 0 ? (
 				<List>

@@ -20,8 +20,35 @@ import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
+import CardMedia from '@material-ui/core/CardMedia';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 const useStyles = makeStyles((theme) => ({
+	headerImage: {
+		position: 'relative',
+		width: '100%',
+		height: 200,
+		marginBottom: 30,
+	},
+	searchDialogSize: {
+		minHeight: 300,
+		padding: '13px',
+	},
+	searchButton: {
+		marginBottom: 5,
+	},
+	searchAndChips: {
+		position: 'absolute',
+		bottom: -45,
+		left: 0,
+		right: 0,
+		padding: 10,
+		margin: '0 auto',
+		alignItems: 'baseline',
+	},
 	categoryChipBoard: {
 		display: 'flex',
 		overflowX: 'auto',
@@ -31,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
 		'&::-webkit-scrollbar': {
 			display: 'none',
 		},
+		backgroundColor: 'rgba(255,255,255)',
 	},
 	dayBoardContainer: {
 		display: 'flex',
@@ -40,12 +68,6 @@ const useStyles = makeStyles((theme) => ({
 		'&::-webkit-scrollbar': {
 			display: 'none',
 		},
-	},
-	explanation: {
-		backgroundColor: 'grey',
-		color: 'white',
-		padding: 5,
-		marginBottom: 10,
 	},
 	dateAndSave: {
 		display: 'flex',
@@ -68,6 +90,7 @@ function Planner(props) {
 	const [newSearchItem, setNewSearchItem] = useState({});
 	const [tripId, setTripId] = useState(props.match.params.tripId);
 	const [registerOpen, setRegisterOpen] = useState(false);
+	const [searchModalOpen, setSearchModalOpen] = useState(false);
 	const guideId = props.match.params.guideBookId;
 
 	console.log('tripId :', tripId, guideId);
@@ -258,6 +281,7 @@ function Planner(props) {
 	};
 
 	const searchedItemClicked = (searchedItem) => {
+		setSearchModalOpen(false);
 		for (var key in spotState.spots) {
 			if (spotState.spots[key].place.id === searchedItem.id) {
 				console.log('STOP DO NOT ADD');
@@ -556,24 +580,51 @@ function Planner(props) {
 				when={spotState.unsavedChanges}
 				navigate={(path) => props.history.push(path)}
 			/>
-			<PlaceAutoComplete
-				clickFunction={searchedItemClicked}
-				city="Berlin"
-				placeHolderText={placeAutoCompletePlaceHolderText}
-			/>
-			<Paper
-				component="ul"
-				className={classes.categoryChipBoard}
-				variant="outlined"
+			<Dialog
+				open={searchModalOpen}
+				onClose={() => setSearchModalOpen(false)}
+				fullWidth="true"
 			>
-				{categoryChips.map((data) => {
-					return (
-						<li key={data.key}>
-							<CategoryChip data={data} toggleChip={toggleChip} />
-						</li>
-					);
-				})}
-			</Paper>
+				<div className={classes.searchDialogSize}>
+					<PlaceAutoComplete
+						clickFunction={searchedItemClicked}
+						city="Berlin"
+						placeHolderText={placeAutoCompletePlaceHolderText}
+					/>
+				</div>
+			</Dialog>
+
+			<CardMedia
+				className={classes.headerImage}
+				image="https://i.imgur.com/xwQnz8w.jpg"
+			>
+				<div className={classes.searchAndChips}>
+					<Button
+						className={classes.searchButton}
+						variant="contained"
+						color="primary"
+						size="medium"
+						data-testid="google-search-button"
+						onClick={() => setSearchModalOpen(true)}
+					>
+						Search
+					</Button>
+					<Paper
+						component="ul"
+						className={classes.categoryChipBoard}
+						variant="outlined"
+					>
+						{categoryChips.map((data) => {
+							return (
+								<li key={data.key}>
+									<CategoryChip data={data} toggleChip={toggleChip} />
+								</li>
+							);
+						})}
+					</Paper>
+				</div>
+			</CardMedia>
+
 			<DragDropContext onDragEnd={onDragEnd}>
 				<div>{renderSpotsBoard()}</div>
 				<div className={classes.dateAndSave}>

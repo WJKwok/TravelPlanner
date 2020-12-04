@@ -4,8 +4,6 @@ const { UserInputError, AuthenticationError } = require('apollo-server');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const client = new OAuth2Client(process.env.OAUTH_CLIENT_ID);
-
 //const { ACCESS_TOKEN_SECRET } = require('../../config')
 const User = require('../../models/User');
 const {
@@ -13,8 +11,9 @@ const {
 	validateLoginInput,
 } = require('../../utils/validators');
 
+const client = new OAuth2Client(process.env.OAUTH_CLIENT_ID);
+
 function generateToken(user) {
-	console.log('gjwt:', user);
 	const refreshToken = jwt.sign(
 		{
 			id: user.id,

@@ -60,7 +60,7 @@ function Trips() {
 		}
 	);
 
-	const greetingName = authState.user.username;
+	const greetingName = authState.user.username.split(' ')[0];
 	const handleLogout = () => {
 		authDispatch({ type: 'LOGOUT' });
 		placeDispatch({ type: 'CLEAR_STATE' });
