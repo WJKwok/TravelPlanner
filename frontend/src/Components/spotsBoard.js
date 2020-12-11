@@ -12,6 +12,7 @@ import Paper from '@material-ui/core/Paper';
 const useStyles = makeStyles((theme) => ({
 	root: {
 		display: 'flex',
+		alignItems: 'flex-start',
 		overflowX: 'auto',
 		alignItems: 'flex-start',
 		// minHeight: 300,
@@ -21,12 +22,16 @@ const useStyles = makeStyles((theme) => ({
 			display: 'none',
 		},
 	},
+	paddingRight: {
+		padding: 5,
+		backgroundColor: 'transparent',
+	},
 }));
 
 function SpotsBoard(props) {
 	const classes = useStyles();
-	const { boardId, spots } = props;
-	const [selectedIndex, setSelectedIndex] = useState(undefined);
+	const { boardId, spots, coordinates } = props;
+	const [mouseOverCard, setMouseOverCard] = useState(undefined);
 
 	const [day, setDay] = useState(moment().startOf('date').day());
 
@@ -36,9 +41,10 @@ function SpotsBoard(props) {
 		dropRefFunction(ref);
 	};
 
-	const executeScroll = (index) => {
+	const executeScroll = (index, key) => {
 		const pixel = index * 310 + 5;
-		setSelectedIndex(index);
+		console.log('map marker:', key);
+		setMouseOverCard(key);
 		myref.scrollLeft = pixel;
 	};
 
@@ -64,15 +70,22 @@ function SpotsBoard(props) {
 										day={day}
 										index={index}
 										expanded={true}
-										highlight={selectedIndex === index}
+										highlight={mouseOverCard === spot.id}
+										mouseOver={(id) => setMouseOverCard(id)}
 									/>
 							  ))
 							: placeHolderText}
+						<Paper className={classes.paddingRight} elevation={0} />
 						{provided.placeholder}
 					</div>
 				)}
 			</Droppable>
-			<GoogleMap city="Berlin" spots={spots} pinClicked={executeScroll} />
+			<GoogleMap
+				coordinates={coordinates}
+				spots={spots}
+				pinClicked={executeScroll}
+				mouseOverCard={mouseOverCard}
+			/>
 		</Paper>
 	);
 }

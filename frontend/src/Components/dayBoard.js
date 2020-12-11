@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
 		maxWidth: 336,
 		marginRight: 30,
 		[theme.breakpoints.down(430)]: {
-			minWidth: '90%',
+			minWidth: '80%',
 			marginRight: '5%',
 		},
 		// boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)',
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function DayBoard(props) {
-	const { boardId, date, spots } = props;
+	const { boardId, date, spots, coordinates } = props;
 	const classes = useStyles();
 
 	let myref = useRef(null);
@@ -92,7 +92,11 @@ function DayBoard(props) {
 					</div>
 				)}
 			</Droppable>
-			<GoogleMap city="Berlin" spots={spots} pinClicked={executeScroll} />
+			<GoogleMap
+				coordinates={coordinates}
+				spots={spots}
+				pinClicked={executeScroll}
+			/>
 			{/* </div> */}
 		</Paper>
 	);

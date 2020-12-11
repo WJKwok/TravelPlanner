@@ -15,6 +15,9 @@ import SnackBar from './snackBar';
 import { Button, Snackbar } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
+	AppBar: (props) => ({
+		backgroundColor: props.transparent ? 'transparent' : 'white',
+	}),
 	toolbar: {
 		width: '100%',
 		maxWidth: 1280,
@@ -35,8 +38,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const MenuAppBar = () => {
-	const classes = useStyles();
+const MenuAppBar = ({ offset, transparent }) => {
+	const styleProps = { transparent };
+	const classes = useStyles(styleProps);
 
 	const {
 		authState: { user },
@@ -59,8 +63,8 @@ const MenuAppBar = () => {
 	};
 
 	return (
-		<div>
-			<AppBar position="fixed" color="white" elevation={1}>
+		<>
+			<AppBar position="fixed" className={classes.AppBar} elevation={0}>
 				<Toolbar className={classes.toolbar}>
 					<Typography
 						component={Link}
@@ -78,14 +82,14 @@ const MenuAppBar = () => {
 						onClick={iconClickHandler}
 					/>
 				</Toolbar>
-				<SnackBar />
 			</AppBar>
+			{offset ? <Toolbar /> : null}
 			<AuthModal
 				registerOpen={modalOpen}
 				setRegisterOpen={setModalOpen}
 				navgiateTo={() => history.push('/trips')}
 			/>
-		</div>
+		</>
 	);
 };
 

@@ -5,6 +5,7 @@ import moment from 'moment';
 
 import CategoryChip from '../../Components/categoryChip';
 import { iconDict } from '../../Components/spotIcons';
+import AppBar from '../../Components/appBar';
 import SpotsBoard from '../../Components/spotsBoard';
 import DayBoard from '../../Components/dayBoard';
 import DatePicker from '../../Components/datePicker';
@@ -18,13 +19,11 @@ import ConfirmNavPrompt from '../../Components/confirmNavPrompt';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
+import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
 import CardMedia from '@material-ui/core/CardMedia';
 import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 
 const useStyles = makeStyles((theme) => ({
 	headerImage: {
@@ -38,7 +37,10 @@ const useStyles = makeStyles((theme) => ({
 		padding: '13px',
 	},
 	searchButton: {
-		marginBottom: 5,
+		margin: '0px 0px 5px 0px',
+		[theme.breakpoints.down(430)]: {
+			margin: '0px 0px 10px 10px',
+		},
 	},
 	searchAndChips: {
 		position: 'absolute',
@@ -48,6 +50,9 @@ const useStyles = makeStyles((theme) => ({
 		padding: 10,
 		margin: '0 auto',
 		alignItems: 'baseline',
+		[theme.breakpoints.down(430)]: {
+			padding: '10px 0px',
+		},
 	},
 	categoryChipBoard: {
 		display: 'flex',
@@ -71,10 +76,12 @@ const useStyles = makeStyles((theme) => ({
 	},
 	dateAndSave: {
 		display: 'flex',
+		alignItems: 'baseline',
+		padding: '0px 10px',
 	},
 	saveButton: {
 		margin: '0 0 0 auto',
-		alignSelf: 'center',
+		backgroundColor: 'grey',
 	},
 }));
 
@@ -89,6 +96,8 @@ function Planner(props) {
 	const [startedSearch, setStartedSearch] = useState(false);
 	const [newSearchItem, setNewSearchItem] = useState({});
 	const [tripId, setTripId] = useState(props.match.params.tripId);
+	const [loaded, setLoaded] = useState(false);
+	const [guideData, setGuideData] = useState({});
 	const [registerOpen, setRegisterOpen] = useState(false);
 	const [searchModalOpen, setSearchModalOpen] = useState(false);
 	const guideId = props.match.params.guideBookId;
@@ -151,6 +160,8 @@ function Planner(props) {
 		onCompleted({ getGuide }) {
 			console.log('guide: ', getGuide);
 			getCategories(getGuide.categories);
+			setGuideData(getGuide);
+			setLoaded(true);
 		},
 		variables: {
 			guideId,
@@ -171,6 +182,8 @@ function Planner(props) {
 				hasGooglePlacesInTrip ? 'Searched' : null,
 			]);
 			getCategories(trip.guide.categories, trip.categoriesInTrip);
+			setGuideData(trip.guide);
+			setLoaded(true);
 			setStartedSearch(hasGooglePlacesInTrip);
 			dispatch({ type: 'LOAD_TRIP', payload: { trip } });
 		},
@@ -555,8 +568,7 @@ function Planner(props) {
 		const likedChipIndex = categoryChips.findIndex(
 			(chip) => chip.key === 'Liked'
 		);
-		const isLikedChipClicked =
-			categoryChips.length > 0 ? categoryChips[likedChipIndex].clicked : false;
+		const isLikedChipClicked = categoryChips[likedChipIndex].clicked;
 
 		const selectedCategories = currentlySelectedChips();
 		const filteredSpots = unfilteredSpots.filter((spot) =>
@@ -569,13 +581,21 @@ function Planner(props) {
 
 		console.log('filtering spots: ', spots);
 
-		return <SpotsBoard key={columnId} boardId={columnId} spots={spots} />;
+		return (
+			<SpotsBoard
+				key={columnId}
+				boardId={columnId}
+				spots={spots}
+				coordinates={guideData.coordinates}
+			/>
+		);
 	};
 
 	const placeAutoCompletePlaceHolderText = 'Google a place of interest 🙌';
 
-	return (
+	return loaded ? (
 		<div>
+			<AppBar offset={true} />
 			<ConfirmNavPrompt
 				when={spotState.unsavedChanges}
 				navigate={(path) => props.history.push(path)}
@@ -583,21 +603,19 @@ function Planner(props) {
 			<Dialog
 				open={searchModalOpen}
 				onClose={() => setSearchModalOpen(false)}
-				fullWidth="true"
+				fullWidth={true}
 			>
 				<div className={classes.searchDialogSize}>
 					<PlaceAutoComplete
 						clickFunction={searchedItemClicked}
-						city="Berlin"
+						city={guideData.city}
+						coordinates={guideData.coordinates}
 						placeHolderText={placeAutoCompletePlaceHolderText}
 					/>
 				</div>
 			</Dialog>
 
-			<CardMedia
-				className={classes.headerImage}
-				image="https://i.imgur.com/xwQnz8w.jpg"
-			>
+			<CardMedia className={classes.headerImage} image={guideData.plannerImage}>
 				<div className={classes.searchAndChips}>
 					<Button
 						className={classes.searchButton}
@@ -629,7 +647,15 @@ function Planner(props) {
 				<div>{renderSpotsBoard()}</div>
 				<div className={classes.dateAndSave}>
 					<DatePicker />
-					<Button
+					<IconButton
+						id="save"
+						color="secondary"
+						className={classes.saveButton}
+						onClick={saveItinerary}
+					>
+						<SaveIcon />
+					</IconButton>
+					{/* <Button
 						variant="outlined"
 						color="primary"
 						size="medium"
@@ -639,7 +665,7 @@ function Planner(props) {
 						id="save"
 					>
 						Save
-					</Button>
+					</Button> */}
 				</div>
 				<div className={classes.dayBoardContainer}>
 					{spotState.dayBoard.map((columnId, index) => {
@@ -655,6 +681,7 @@ function Planner(props) {
 								boardId={columnId}
 								date={date}
 								spots={spots}
+								coordinates={guideData.coordinates}
 							/>
 						);
 					})}
@@ -665,7 +692,7 @@ function Planner(props) {
 				setRegisterOpen={setRegisterOpen}
 			/>
 		</div>
-	);
+	) : null;
 }
 
 const GET_TRIP = gql`
@@ -673,8 +700,11 @@ const GET_TRIP = gql`
 		getTrip(tripId: $tripId) {
 			id
 			guide {
-				id
+				name
+				city
+				coordinates
 				categories
+				plannerImage
 			}
 			startDate
 			dayLists
@@ -809,7 +839,9 @@ const GET_GUIDE = gql`
 		getGuide(guideId: $guideId) {
 			name
 			city
+			coordinates
 			categories
+			plannerImage
 		}
 	}
 `;

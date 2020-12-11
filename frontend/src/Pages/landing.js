@@ -1,62 +1,77 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import CardMedia from '@material-ui/core/CardMedia';
+import AppBar from '../Components/appBar';
+import Paper from '@material-ui/core/Paper';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles({
-	root: {
-		display: 'flex',
-		overflowX: 'auto',
-		padding: 10,
-		alignItems: 'flex-start',
+	cardMedia: {
+		position: 'relative',
+		width: '100%',
+		height: '50vh',
 	},
-	card: {
-		maxWidth: 200,
-		marginRight: 5,
+	autocomplete: {
+		position: 'absolute',
+		bottom: -30,
+		left: '50%',
+		transform: 'translateX(-50%)',
+		width: '100%',
+		maxWidth: 300,
+		backgroundColor: 'white',
+		padding: '10px 10px 0px 10px',
+		borderRadius: 5,
 	},
 });
 
 function Landing() {
 	const classes = useStyles();
-	// deconstructing from data
-	const { data: { getGuides: guides } = {} } = useQuery(GET_GUIDES);
-
-	if (guides) {
-		console.log('hehe: ', guides);
-	}
+	const history = useHistory();
+	const [guides, setGuides] = useState([]);
+	useQuery(GET_GUIDES, {
+		onCompleted({ getGuides }) {
+			console.log('guides: ', getGuides);
+			setGuides(getGuides);
+		},
+	});
 
 	return (
-		<div className={classes.root}>
-			{guides &&
-				guides.map((guide) => (
-					<Card className={classes.card} key={guide.id}>
-						<Suspense fallback={<h1>Loading img</h1>}>
-							<CardMedia component="img" image={guide.coverImage} />
-						</Suspense>
-						<CardContent>
-							<Link to={`/planner/${guide.id}`}>
-								<Typography gutterBottom variant="h5">
-									{guide.name}
-								</Typography>
-							</Link>
-						</CardContent>
-					</Card>
-				))}
-		</div>
+		<>
+			<AppBar transparent={true} />
+			<CardMedia
+				className={classes.cardMedia}
+				image="https://i.imgur.com/8NSAUOS.png"
+			>
+				<Autocomplete
+					className={classes.autocomplete}
+					options={guides}
+					getOptionLabel={(option) => option.city}
+					onChange={(_, newValue) => {
+						if (newValue) {
+							history.push(`/planner/${newValue.id}`);
+						}
+					}}
+					renderInput={(params) => (
+						<TextField {...params} label="Select a City" variant="outlined" />
+					)}
+				/>
+			</CardMedia>
+		</>
 	);
 }
 
 const GET_GUIDES = gql`
 	query getGuides {
 		getGuides {
-			name
+			city
 			id
-			coverImage
 		}
 	}
 `;

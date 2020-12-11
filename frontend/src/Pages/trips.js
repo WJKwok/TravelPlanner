@@ -6,6 +6,7 @@ import { AuthContext } from '../Store/AuthContext';
 import { SpotContext } from '../Store/SpotContext';
 import { SnackBarContext } from '../Store/SnackBarContext';
 
+import AppBar from '../Components/appBar';
 import Button from '@material-ui/core/Button';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import AddCircleOutlineRoundedIcon from '@material-ui/icons/AddCircleOutlineRounded';
@@ -19,7 +20,13 @@ import {
 } from '@material-ui/core';
 import moment from 'moment';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
+	root: {
+		padding: 0,
+		[theme.breakpoints.down(430)]: {
+			padding: '0px 16px',
+		},
+	},
 	greeting: {
 		display: 'flex',
 		justifyContent: 'space-between',
@@ -42,7 +49,7 @@ const useStyles = makeStyles({
 			color: 'red',
 		},
 	},
-});
+}));
 
 function Trips() {
 	const { authState, dispatch: authDispatch } = useContext(AuthContext);
@@ -139,7 +146,8 @@ function Trips() {
 		  });
 
 	return (
-		<div>
+		<div className={classes.root}>
+			<AppBar offset={true} />
 			<div className={classes.greeting}>
 				<Typography variant="h4">
 					Hi {greetingName.charAt(0).toUpperCase() + greetingName.slice(1)} 🙃

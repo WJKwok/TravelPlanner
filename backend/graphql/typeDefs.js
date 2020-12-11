@@ -23,7 +23,9 @@ module.exports = gql`
 		id: ID!
 		name: String!
 		city: String!
+		coordinates: [Float]!
 		coverImage: String!
+		plannerImage: String!
 		categories: [String]!
 	}
 	type Spot {

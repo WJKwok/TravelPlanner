@@ -9,7 +9,7 @@ import Planner from './Pages/planner';
 import Logger from './Pages/logger';
 import Landing from './Pages/landing';
 import Trips from './Pages/trips';
-import AppBar from './Components/appBar';
+import SnackBar from './Components/snackBar';
 
 import PlaceContextProvider from './Store/PlaceContext';
 import SnackBarContextProvider from './Store/SnackBarContext';
@@ -17,11 +17,31 @@ import { AuthContextProvider } from './Store/AuthContext';
 import SpotContextProvider from './Store/SpotContext';
 
 import ReactGA from 'react-ga';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import teal from '@material-ui/core/colors/teal';
+import deepOrange from '@material-ui/core/colors/deepOrange';
+
+const theme = createMuiTheme({
+	palette: {
+		primary: {
+			main: deepOrange['A200'],
+			contrastText: '#fff',
+		},
+		secondary: {
+			main: teal['A700'],
+		},
+	},
+});
 
 const useStyles = makeStyles((theme) => ({
 	container: {
-		marginTop: 80,
-		marginBottom: 10,
+		width: '100%',
+		maxWidth: 1280,
+		margin: 'auto',
+		padding: '0px 16px',
+		[theme.breakpoints.down(430)]: {
+			padding: 0,
+		},
 	},
 }));
 
@@ -38,20 +58,26 @@ function App() {
 			<PlaceContextProvider>
 				<SpotContextProvider>
 					<SnackBarContextProvider>
-						<BrowserRouter>
-							<AppBar />
-							<Container className={classes.container}>
-								<Route exact path="/" component={Landing} />
-								<Route exact path="/planner/:guideBookId" component={Planner} />
-								<Route exact path="/logger" component={Logger} />
-								<UnAuthRoute exact path="/trips" component={Trips} />
-								<UnAuthRoute
-									exact
-									path="/planner/:guideBookId/:tripId"
-									component={Planner}
-								/>
-							</Container>
-						</BrowserRouter>
+						<ThemeProvider theme={theme}>
+							<BrowserRouter>
+								<div className={classes.container}>
+									<Route exact path="/" component={Landing} />
+									<Route
+										exact
+										path="/planner/:guideBookId"
+										component={Planner}
+									/>
+									<Route exact path="/logger" component={Logger} />
+									<UnAuthRoute exact path="/trips" component={Trips} />
+									<UnAuthRoute
+										exact
+										path="/planner/:guideBookId/:tripId"
+										component={Planner}
+									/>
+									<SnackBar />
+								</div>
+							</BrowserRouter>
+						</ThemeProvider>
 					</SnackBarContextProvider>
 				</SpotContextProvider>
 			</PlaceContextProvider>

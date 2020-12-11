@@ -26,18 +26,18 @@ const useStyles = makeStyles((theme) => ({
 		maxWidth: 300,
 		margin: 5,
 		[theme.breakpoints.down(430)]: {
-			minWidth: '90%',
+			minWidth: '75%',
 		},
 	},
-	rootHighlighted: {
-		position: 'relative',
-		minWidth: 300,
-		margin: 5,
-		[theme.breakpoints.down(430)]: {
-			minWidth: '90%',
-		},
-		border: '1px solid grey',
-	},
+	// rootHighlighted: {
+	// 	position: 'relative',
+	// 	minWidth: 300,
+	// 	margin: 5,
+	// 	[theme.breakpoints.down(430)]: {
+	// 		minWidth: '75%',
+	// 	},
+	// 	border: '1px solid grey',
+	// },
 	header: {
 		display: 'flex',
 	},
@@ -95,7 +95,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SpotCard = React.memo((props) => {
-	const { spot, index, date, day, highlight } = props;
+	const { spot, index, date, day, highlight, mouseOver } = props;
 	console.log(`me am rendered ${index}`);
 	//const placeImgUrl = "/place/photo?maxheight=400&photoreference=" + place.photoRef + "&key=" + process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
 
@@ -197,12 +197,15 @@ const SpotCard = React.memo((props) => {
 		<Draggable draggableId={spot.id} index={index}>
 			{(provided) => (
 				<Card
-					className={highlight ? classes.rootHighlighted : classes.root}
+					// className={highlight ? classes.rootHighlighted : classes.root}
+					className={classes.root}
 					data-testid={spot.id}
 					ref={provided.innerRef}
 					{...provided.draggableProps}
 					{...provided.dragHandleProps}
-					elevation={3}
+					elevation={highlight ? 24 : 1}
+					onMouseEnter={mouseOver ? () => mouseOver(spot.id) : null}
+					onMouseLeave={mouseOver ? () => mouseOver(null) : null}
 				>
 					<div
 						className={classes.header}

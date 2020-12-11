@@ -9,9 +9,12 @@ import { SnackBarContext } from '../Store/SnackBarContext';
 const useStyles = makeStyles({
 	snackBar: (props) => ({
 		width: '100%',
+		maxWidth: 1280,
 		textAlign: 'center',
 		color: 'white',
 		backgroundColor: props.backgroundColor,
+		position: 'absolute',
+		top: 0,
 	}),
 });
 

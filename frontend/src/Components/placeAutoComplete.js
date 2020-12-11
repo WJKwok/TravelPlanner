@@ -22,30 +22,35 @@ const useStyles = makeStyles({
 	},
 });
 
-function PlaceAutoComplete({ clickFunction, city, placeHolderText }) {
+function PlaceAutoComplete({
+	clickFunction,
+	city,
+	coordinates,
+	placeHolderText,
+}) {
 	const [searchState, setSearchState] = useState('');
 	const [sugestionsState, setSuggestionState] = useState([]);
 
-	const coordinates = {
-		Berlin: {
-			lat: 52.52,
-			lng: 13.4,
-		},
-		Zurich: {
-			lat: 47.37,
-			lng: 8.54,
-		},
-		'New+York': {
-			lat: 40.7128,
-			lng: -74.006,
-		},
-	};
+	// const coordinates = {
+	// 	Berlin: {
+	// 		lat: 52.52,
+	// 		lng: 13.4,
+	// 	},
+	// 	Zurich: {
+	// 		lat: 47.37,
+	// 		lng: 8.54,
+	// 	},
+	// 	'New+York': {
+	// 		lat: 40.7128,
+	// 		lng: -74.006,
+	// 	},
+	// };
 
 	console.log('Hi from placeAutoComplete: ', city);
 
 	const searchHandler = async (e) => {
 		setSearchState(e.target.value);
-		const locationCoords = `${coordinates[city].lat},${coordinates[city].lng}`;
+		const locationCoords = `${coordinates[0]},${coordinates[1]}`;
 		const data = await fetchPredictions(e.target.value, locationCoords);
 		setSuggestionState(data.predictions);
 		console.log(data);
@@ -78,7 +83,7 @@ function PlaceAutoComplete({ clickFunction, city, placeHolderText }) {
 				value={searchState}
 				variant="outlined"
 				onChange={searchHandler}
-				autoFocus="true"
+				autoFocus={true}
 			/>
 			{sugestionsState.length !== 0 ? (
 				<List>
