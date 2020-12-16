@@ -16,7 +16,10 @@ import { MockedProvider } from '@apollo/client/testing';
 import Planner from './planner';
 import NavHeader from '../../Components/navHeader';
 
-import { mocks, retailGetSpotsWasCalled } from './mockGraphql';
+import {
+	mocks,
+	retailGetSpotsForCategoryInGuideWasCalled,
+} from './mockGraphql';
 import { AuthContext, AuthContextProvider } from '../../Store/AuthContext';
 import SnackBarContextProvider from '../../Store/SnackBarContext';
 import SpotContextProvider from '../../Store/SpotContext';
@@ -97,14 +100,14 @@ test('test', async () => {
 		'spot-card'
 	);
 	expect(totalCardsInSpotBoardAfterRetailClick.length).toBe(8);
-	expect(retailGetSpotsWasCalled).toBe(1);
+	expect(retailGetSpotsForCategoryInGuideWasCalled).toBe(1);
 
 	//unclicking and clicking an already called category
 	await userEvent.click(retailChip);
 	expect(await screen.queryByText('The Store X Berlin')).toBeNull();
 	await userEvent.click(retailChip);
 	await screen.findByText('The Store X Berlin');
-	expect(retailGetSpotsWasCalled).toBe(1);
+	expect(retailGetSpotsForCategoryInGuideWasCalled).toBe(1);
 
 	const cardToMove = await screen.findByTestId('ChIJ2Uh9Bk5OqEcREoy9N1LxImw');
 	console.log('cardToMove', cardToMove);

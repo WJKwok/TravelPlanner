@@ -15,6 +15,7 @@ import PlaceContextProvider from './Store/PlaceContext';
 import SnackBarContextProvider from './Store/SnackBarContext';
 import { AuthContextProvider } from './Store/AuthContext';
 import SpotContextProvider from './Store/SpotContext';
+import { LoggerContextProvider } from './Store/LoggerContext';
 
 import ReactGA from 'react-ga';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
@@ -25,7 +26,7 @@ const theme = createMuiTheme({
 	palette: {
 		primary: {
 			main: deepOrange['A200'],
-			contrastText: '#fff',
+			// contrastText: '#fff',
 		},
 		secondary: {
 			main: teal['A700'],
@@ -58,26 +59,32 @@ function App() {
 			<PlaceContextProvider>
 				<SpotContextProvider>
 					<SnackBarContextProvider>
-						<ThemeProvider theme={theme}>
-							<BrowserRouter>
-								<div className={classes.container}>
-									<Route exact path="/" component={Landing} />
-									<Route
-										exact
-										path="/planner/:guideBookId"
-										component={Planner}
-									/>
-									<Route exact path="/logger" component={Logger} />
-									<UnAuthRoute exact path="/trips" component={Trips} />
-									<UnAuthRoute
-										exact
-										path="/planner/:guideBookId/:tripId"
-										component={Planner}
-									/>
-									<SnackBar />
-								</div>
-							</BrowserRouter>
-						</ThemeProvider>
+						<LoggerContextProvider>
+							<ThemeProvider theme={theme}>
+								<BrowserRouter>
+									<div className={classes.container}>
+										<Route exact path="/" component={Landing} />
+										<Route
+											exact
+											path="/planner/:guideBookId"
+											component={Planner}
+										/>
+										<Route
+											exact
+											path="/logger/:guideBookId"
+											component={Logger}
+										/>
+										<UnAuthRoute exact path="/trips" component={Trips} />
+										<UnAuthRoute
+											exact
+											path="/planner/:guideBookId/:tripId"
+											component={Planner}
+										/>
+										<SnackBar />
+									</div>
+								</BrowserRouter>
+							</ThemeProvider>
+						</LoggerContextProvider>
 					</SnackBarContextProvider>
 				</SpotContextProvider>
 			</PlaceContextProvider>

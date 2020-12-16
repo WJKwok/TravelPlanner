@@ -36,8 +36,8 @@ const GET_TRIP = gql`
 `;
 
 const GET_SPOTS = gql`
-	query getSpots($guideId: ID!, $category: String!) {
-		getSpots(guideId: $guideId, category: $category) {
+	query getSpotsForCategoryInGuide($guideId: ID!, $category: String!) {
+		getSpotsForCategoryInGuide(guideId: $guideId, category: $category) {
 			id
 			guide
 			place {
@@ -57,7 +57,7 @@ const GET_SPOTS = gql`
 	}
 `;
 
-export let retailGetSpotsWasCalled = 0;
+export let retailGetSpotsForCategoryInGuideWasCalled = 0;
 export const mocks = [
 	{
 		request: {
@@ -68,10 +68,10 @@ export const mocks = [
 			},
 		},
 		result: () => {
-			retailGetSpotsWasCalled++;
+			retailGetSpotsForCategoryInGuideWasCalled++;
 			return {
 				data: {
-					getSpots: [
+					getSpotsForCategoryInGuide: [
 						{
 							__typename: 'Spot',
 							id: '5ee1fbf4aa3118be4c682992',

@@ -193,12 +193,18 @@ function Planner(props) {
 		variables: { tripId },
 	});
 
-	const [getSpots] = useLazyQuery(GET_SPOTS, {
-		onCompleted({ getSpots }) {
-			console.log('getspots:', getSpots);
-			dispatch({ type: 'ADD_SPOTS', payload: { newSpots: getSpots } });
-			if (getSpots.length > 0) {
-				setQueriedVariables([...queriedVariables, getSpots[0].category]);
+	const [getSpotsForCategoryInGuide] = useLazyQuery(GET_SPOTS, {
+		onCompleted({ getSpotsForCategoryInGuide }) {
+			console.log('getSpotsForCategoryInGuide:', getSpotsForCategoryInGuide);
+			dispatch({
+				type: 'ADD_SPOTS',
+				payload: { newSpots: getSpotsForCategoryInGuide },
+			});
+			if (getSpotsForCategoryInGuide.length > 0) {
+				setQueriedVariables([
+					...queriedVariables,
+					getSpotsForCategoryInGuide[0].category,
+				]);
 			}
 		},
 	});
@@ -216,7 +222,7 @@ function Planner(props) {
 				setQueriedVariables([...queriedVariables, 'Searched']);
 			} else {
 				const itemCategory = getSpot.category;
-				getSpots({
+				getSpotsForCategoryInGuide({
 					variables: {
 						guideId,
 						category: itemCategory,
@@ -274,7 +280,7 @@ function Planner(props) {
 			!queriedVariables.includes(clickedChip.label)
 		) {
 			console.log('querying:', clickedChip.label);
-			getSpots({
+			getSpotsForCategoryInGuide({
 				variables: {
 					guideId,
 					category: clickedChip.label,
@@ -813,8 +819,8 @@ const GET_SPOT = gql`
 `;
 
 const GET_SPOTS = gql`
-	query getSpots($guideId: ID!, $category: String!) {
-		getSpots(guideId: $guideId, category: $category) {
+	query getSpotsForCategoryInGuide($guideId: ID!, $category: String!) {
+		getSpotsForCategoryInGuide(guideId: $guideId, category: $category) {
 			id
 			guide
 			place {
@@ -862,7 +868,7 @@ const getFilteredData = () => {
                 guideId,
                 category : categoryChips[i].label}
           })
-          freshFilteredData = freshFilteredData.concat(cachedData.getSpots)
+          freshFilteredData = freshFilteredData.concat(cachedData.getSpotsForCategoryInGuide)
         }
     }
     setFilteredData(freshFilteredData)

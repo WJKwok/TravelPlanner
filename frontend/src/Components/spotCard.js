@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { SpotContext } from '../Store/SpotContext';
+import { LoggerContext } from '../Store/LoggerContext';
 import moment from 'moment';
 
 import { iconDictWhite, iconColour } from './spotIcons';
@@ -100,6 +101,7 @@ const SpotCard = React.memo((props) => {
 	//const placeImgUrl = "/place/photo?maxheight=400&photoreference=" + place.photoRef + "&key=" + process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
 
 	const { dispatch } = useContext(SpotContext);
+	const { setClickedCard } = useContext(LoggerContext);
 	const cssProps = { backgroundColor: iconColour[spot.category] };
 	const classes = useStyles(cssProps);
 	const [expanded, setExpanded] = useState(props.expanded);
@@ -107,6 +109,7 @@ const SpotCard = React.memo((props) => {
 
 	const handleExpandClick = () => {
 		setExpanded(!expanded);
+		setClickedCard(spot);
 	};
 
 	const likeClickHandler = (e) => {

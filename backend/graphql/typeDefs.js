@@ -65,6 +65,7 @@ module.exports = gql`
 		rating: Float!
 		location: [Float]!
 		businessStatus: String
+		address: String
 		hours: [String]
 	}
 	input PlaceInput {
@@ -94,8 +95,9 @@ module.exports = gql`
 		getTrip(tripId: ID!): Trip
 		getGuides: [Guide]!
 		getGuide(guideId: ID!): Guide!
-		getSpots(guideId: ID!, category: String!): [Spot]!
+		getSpotsForCategoryInGuide(guideId: ID!, category: String!): [Spot]!
 		getSpot(guideId: ID!, placeId: String!): Spot
+		getAllSpotsForGuide(guideId: ID!): [Spot]!
 	}
 	type Mutation {
 		register(registerInput: RegisterInput): User!
