@@ -589,6 +589,7 @@ function Planner(props) {
 
 		return (
 			<SpotsBoard
+				dragAndDroppable={true}
 				key={columnId}
 				boardId={columnId}
 				spots={spots}

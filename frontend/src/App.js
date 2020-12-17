@@ -23,6 +23,8 @@ import teal from '@material-ui/core/colors/teal';
 import deepOrange from '@material-ui/core/colors/deepOrange';
 
 const theme = createMuiTheme({
+	cardWidth: 300,
+	maxMobileWidth: 430,
 	palette: {
 		primary: {
 			main: deepOrange['A200'],

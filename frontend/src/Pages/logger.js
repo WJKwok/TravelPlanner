@@ -17,6 +17,7 @@ import { useQuery, useMutation, gql } from '@apollo/client';
 const useStyles = makeStyles((theme) => ({
 	root: {
 		display: 'flex',
+		paddingTop: 15,
 	},
 	autoComplete: {
 		flex: 2,
@@ -179,7 +180,7 @@ function Logger(props) {
 	useQuery(GET_GUIDE, {
 		onCompleted({ getGuide }) {
 			console.log('guide: ', getGuide);
-			getCategories(getGuide.categories);
+			getCategories(getGuide.categories, getGuide.categories);
 			setGuide(getGuide);
 		},
 		variables: {
@@ -230,6 +231,7 @@ function Logger(props) {
 
 		return (
 			<SpotsBoard
+				dragAndDroppable={false}
 				key={guideId}
 				boardId={guideId}
 				spots={filteredSpots}

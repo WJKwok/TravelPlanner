@@ -6,31 +6,30 @@ import SpotCard from './spotCard';
 import GoogleMap from './googleMap';
 import DaySelectMenu from './daySelectMenu';
 
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Paper from '@material-ui/core/Paper';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
 		display: 'flex',
-		alignItems: 'flex-start',
 		overflowX: 'auto',
 		alignItems: 'flex-start',
 		// minHeight: 300,
 		// boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)',
-		padding: 10,
+		// padding: 10,
 		'&::-webkit-scrollbar': {
 			display: 'none',
 		},
-	},
-	paddingRight: {
-		padding: 5,
-		backgroundColor: 'transparent',
 	},
 }));
 
 function SpotsBoard(props) {
 	const classes = useStyles();
-	const { boardId, spots, coordinates } = props;
+	const theme = useTheme();
+	const isMobile = useMediaQuery(`(max-width:${theme.maxMobileWidth}px)`);
+	const { boardId, spots, coordinates, dragAndDroppable } = props;
+
 	const [mouseOverCard, setMouseOverCard] = useState(undefined);
 
 	const [day, setDay] = useState(moment().startOf('date').day());
@@ -41,11 +40,16 @@ function SpotsBoard(props) {
 		dropRefFunction(ref);
 	};
 
+	console.log('children spotcard', window.innerWidth);
+
+	const cardWith = isMobile ? window.innerWidth * 0.75 : theme.cardWidth;
+	console.log('cardWith', cardWith);
 	const executeScroll = (index, key) => {
-		const pixel = index * 310 + 5;
+		const pixel = index * cardWith + 10;
+		console.log('pixel', pixel);
 		console.log('map marker:', key);
-		setMouseOverCard(key);
 		myref.scrollLeft = pixel;
+		setMouseOverCard(key);
 	};
 
 	const placeHolderText = (
@@ -53,14 +57,14 @@ function SpotsBoard(props) {
 	);
 
 	return (
-		<Paper elevation={0} data-testid="spots-board">
+		<Paper variant="outlined" data-testid="spots-board">
 			<DaySelectMenu day={day} dayChangeHandler={setDay} />
 			<Droppable droppableId={boardId} direction="horizontal">
 				{(provided) => (
 					<div
-						className={classes.root}
 						ref={(ref) => setRef(provided.innerRef, ref)}
 						{...provided.droppableProps}
+						className={classes.root}
 					>
 						{spots.length > 0
 							? spots.map((spot, index) => (
@@ -72,6 +76,7 @@ function SpotsBoard(props) {
 										expanded={true}
 										highlight={mouseOverCard === spot.id}
 										mouseOver={(id) => setMouseOverCard(id)}
+										dragAndDroppable={dragAndDroppable}
 									/>
 							  ))
 							: placeHolderText}
@@ -84,7 +89,6 @@ function SpotsBoard(props) {
 				coordinates={coordinates}
 				spots={spots}
 				pinClicked={executeScroll}
-				mouseOverCard={mouseOverCard}
 			/>
 		</Paper>
 	);

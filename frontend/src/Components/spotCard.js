@@ -16,6 +16,7 @@ import {
 import Rating from '@material-ui/lab/Rating';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 
 import { Draggable } from 'react-beautiful-dnd';
 
@@ -23,11 +24,12 @@ import GoogleDirectionLink from './googleDirectionLink';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
-		minWidth: 300,
-		maxWidth: 300,
+		minWidth: theme.cardWidth,
+		maxWidth: theme.cardWidth,
 		margin: 5,
-		[theme.breakpoints.down(430)]: {
+		[theme.breakpoints.down(theme.maxMobileWidth)]: {
 			minWidth: '75%',
+			maxWidth: '75%',
 		},
 	},
 	// rootHighlighted: {
@@ -44,6 +46,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 	iconsRow: {
 		display: 'flex',
+	},
+	editButton: {
+		cursor: 'pointer',
 	},
 	catIndex: (props) => ({
 		backgroundColor: props.backgroundColor,
@@ -96,7 +101,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SpotCard = React.memo((props) => {
-	const { spot, index, date, day, highlight, mouseOver } = props;
+	const {
+		spot,
+		index,
+		date,
+		day,
+		highlight,
+		mouseOver,
+		dragAndDroppable,
+	} = props;
 	console.log(`me am rendered ${index}`);
 	//const placeImgUrl = "/place/photo?maxheight=400&photoreference=" + place.photoRef + "&key=" + process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
 
@@ -109,6 +122,10 @@ const SpotCard = React.memo((props) => {
 
 	const handleExpandClick = () => {
 		setExpanded(!expanded);
+	};
+
+	const editClickHandler = (e) => {
+		e.stopPropagation();
 		setClickedCard(spot);
 	};
 
@@ -197,15 +214,19 @@ const SpotCard = React.memo((props) => {
 		);
 
 	return (
-		<Draggable draggableId={spot.id} index={index}>
+		<Draggable
+			draggableId={spot.id}
+			index={index}
+			isDragDisabled={!dragAndDroppable}
+		>
 			{(provided) => (
 				<Card
-					// className={highlight ? classes.rootHighlighted : classes.root}
-					className={classes.root}
-					data-testid={spot.id}
+					id="spot-card"
 					ref={provided.innerRef}
 					{...provided.draggableProps}
 					{...provided.dragHandleProps}
+					className={classes.root}
+					data-testid={spot.id}
 					elevation={highlight ? 24 : 1}
 					onMouseEnter={mouseOver ? () => mouseOver(spot.id) : null}
 					onMouseLeave={mouseOver ? () => mouseOver(null) : null}
@@ -230,13 +251,25 @@ const SpotCard = React.memo((props) => {
 										{iconDictWhite[spot.category]}
 										<span className={classes.index}>{index + 1}</span>
 									</div>
-									<div onClick={likeClickHandler}>
-										{liked ? (
-											<FavoriteIcon color="error" data-testid="filled-heart" />
-										) : (
-											<FavoriteBorderIcon data-testid="hollow-heart" />
-										)}
-									</div>
+									{dragAndDroppable ? (
+										<div onClick={likeClickHandler}>
+											{liked ? (
+												<FavoriteIcon
+													color="error"
+													data-testid="filled-heart"
+												/>
+											) : (
+												<FavoriteBorderIcon data-testid="hollow-heart" />
+											)}
+										</div>
+									) : (
+										<div
+											className={classes.editButton}
+											onClick={editClickHandler}
+										>
+											<EditOutlinedIcon />
+										</div>
+									)}
 								</div>
 								{cardHeader}
 							</CardContent>
