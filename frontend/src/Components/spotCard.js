@@ -29,7 +29,6 @@ const useStyles = makeStyles((theme) => ({
 		margin: 5,
 		[theme.breakpoints.down(theme.maxMobileWidth)]: {
 			minWidth: '75%',
-			maxWidth: '75%',
 		},
 	},
 	// rootHighlighted: {
@@ -94,9 +93,27 @@ const useStyles = makeStyles((theme) => ({
 			display: 'none',
 		},
 	},
+	onlyMedia: {
+		width: '100%',
+		height: theme.cardWidth * 0.5,
+		objectFit: 'cover',
+	},
 	media: {
-		height: 0,
-		paddingTop: '56.25%', // 16:9
+		// height: 0,
+		width: '90%',
+		height: theme.cardWidth * 0.5,
+		objectFit: 'cover',
+		marginRight: 3,
+		// paddingBottom: '75%',
+		// paddingTop: '56.25%', // 16:9
+	},
+	mediaCards: {
+		display: 'flex',
+		overflowX: 'auto',
+		overflowX: 'scroll',
+		'&::-webkit-scrollbar': {
+			display: 'none',
+		},
 	},
 }));
 
@@ -241,7 +258,7 @@ const SpotCard = React.memo((props) => {
 						) : (
 							<CardMedia
 								className={classes.headerThumbnail}
-								image={spot.imgUrl}
+								image={spot.imgUrl[0]}
 							/>
 						)}
 						<div>
@@ -282,7 +299,17 @@ const SpotCard = React.memo((props) => {
 						timeout="auto"
 						unmountOnExit
 					>
-						<CardMedia className={classes.media} image={spot.imgUrl} />
+						<div className={classes.mediaCards}>
+							{spot.imgUrl.length > 1 ? (
+								spot.imgUrl.map((img) => {
+									return <img className={classes.media} key={img} src={img} />;
+								})
+							) : (
+								<img className={classes.onlyMedia} src={spot.imgUrl[0]} />
+							)}
+						</div>
+						{/* <CardMedia className={classes.media} image={spot.imgUrl[0]} /> */}
+						{/*  <CardMedia key={img} className={classes.media} image={img} /> */}
 						<CardContent>
 							<Typography variant="body2" color="textSecondary" component="p">
 								{spot.content}

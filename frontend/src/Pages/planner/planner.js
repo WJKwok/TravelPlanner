@@ -314,7 +314,7 @@ function Planner(props) {
 			content: 'hello',
 			guide: 'Searched',
 			id: searchedItem.id,
-			imgUrl: 'https://i.imgur.com/zbBglmB.jpg',
+			imgUrl: ['https://i.imgur.com/zbBglmB.jpg'],
 			place: {
 				id: searchedItem.id,
 				location: [searchedItem.location.lat, searchedItem.location.lng],

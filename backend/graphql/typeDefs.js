@@ -33,7 +33,7 @@ module.exports = gql`
 		guide: ID!
 		place: Place!
 		category: String!
-		imgUrl: String!
+		imgUrl: [String]!
 		content: String!
 		date: String
 		eventName: String
@@ -126,6 +126,7 @@ module.exports = gql`
 		savePlace(placeInput: PlaceInput!): Place!
 		updatePlaces: Boolean!
 		saveSpot(spotInput: SpotInput!): Spot!
+		editSchemaOfSpots: Boolean!
 		authGoogle(input: AuthInput!): User
 	}
 `;

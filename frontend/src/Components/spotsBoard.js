@@ -89,6 +89,7 @@ function SpotsBoard(props) {
 				coordinates={coordinates}
 				spots={spots}
 				pinClicked={executeScroll}
+				mouseOverCard={mouseOverCard}
 			/>
 		</Paper>
 	);

@@ -85,6 +85,7 @@ function DayBoard(props) {
 										date={date}
 										day={date.day()}
 										expanded={false}
+										dragAndDroppable={true}
 									/>
 							  ))
 							: placeHolderText}

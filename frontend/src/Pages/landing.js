@@ -47,7 +47,7 @@ function Landing() {
 			<AppBar transparent={true} />
 			<CardMedia
 				className={classes.cardMedia}
-				image="https://i.imgur.com/8NSAUOS.png"
+				image="https://i.imgur.com/rpw1Dol.jpg"
 			>
 				<Autocomplete
 					className={classes.autocomplete}

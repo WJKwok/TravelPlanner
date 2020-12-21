@@ -37,6 +37,15 @@ module.exports = {
 		},
 	},
 	Mutation: {
+		async editSchemaOfSpots() {
+			// await Spot.updateMany({ $unset: { randomData: '' } });
+			const spots = await Spot.find();
+			spots.forEach((spot) => {
+				console.log('spot:', spot);
+				Spot.update({ _id: spot._id }, { $set: { imgUrl: [spot.imgUrl] } });
+			});
+			return true;
+		},
 		async saveSpot(
 			_,
 			{
