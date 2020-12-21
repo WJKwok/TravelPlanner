@@ -11,6 +11,7 @@ import { LoggerContext } from '../Store/LoggerContext';
 import CategoryChip from '../Components/categoryChip';
 import { iconDict } from '../Components/spotIcons';
 import Paper from '@material-ui/core/Paper';
+import { Image } from 'cloudinary-react';
 
 import { useQuery, useMutation, gql } from '@apollo/client';
 
@@ -29,6 +30,21 @@ const useStyles = makeStyles((theme) => ({
 	textField: {
 		marginBottom: 8,
 		width: '100%',
+	},
+	mediaCards: {
+		paddingBottom: 10,
+		display: 'flex',
+		overflowX: 'auto',
+		overflowX: 'scroll',
+		'&::-webkit-scrollbar': {
+			display: 'none',
+		},
+	},
+	media: {
+		width: '90%',
+		height: 300,
+		objectFit: 'cover',
+		marginRight: 3,
 	},
 	submitButton: {
 		float: 'right',
@@ -76,7 +92,7 @@ function Logger(props) {
 	const [rating, setRating] = useState('');
 	const [address, setAddress] = useState('');
 	const [location, setLocation] = useState([]);
-	const [imgUrl, setImgUrl] = useState('');
+	const [imgUrl, setImgUrl] = useState([]);
 	const [content, setContent] = useState('');
 
 	const { data } = useQuery(GET_GUIDES, {
@@ -240,6 +256,51 @@ function Logger(props) {
 		);
 	};
 
+	const fileUploadClicked = async (event) => {
+		console.log('upload files', event.target.files);
+
+		// let file = event.target.files[0];
+		// const url = URL.createObjectURL(event.target.files[0]);
+		// console.log('url??', url);
+
+		// const formData = new FormData();
+		// formData.append('file', event.target.files[0]);
+		// formData.append('upload_preset', 'mtmsf9hg');
+		// formData.append('folder', `${guideId}/${placeId}`);
+
+		// const uploadedFiles = event.target.files;
+		const promises = [...event.target.files].map((imageFile) => {
+			const formData = new FormData();
+			formData.append('file', imageFile);
+			formData.append('upload_preset', 'mtmsf9hg');
+			formData.append('folder', `${guideId}/${placeId}`);
+
+			return fetch(
+				`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUD_NAME}/upload`,
+				{
+					method: 'POST',
+					body: formData,
+				}
+			)
+				.then((response) => response.json())
+				.then((data) => data)
+				.catch((err) => console.error(err));
+		});
+
+		let allData = await Promise.all(promises);
+
+		console.log('final data:', allData);
+		// fetch(
+		// 	`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUD_NAME}/upload`,
+		// 	{
+		// 		method: 'POST',
+		// 		body: formData,
+		// 	}
+		// )
+		// 	.then((response) => response.json())
+		// 	.then((data) =>  data)
+		// 	.catch((err) => console.error(err));
+	};
 	return (
 		<>
 			<AppBar offset={true} />
@@ -262,6 +323,12 @@ function Logger(props) {
 			<div className={classes.root}>
 				<div className={classes.autoComplete}>
 					<PlaceAutoComplete clickFunction={getDetails} city={city} />
+					<input
+						accept="image/*"
+						multiple
+						type="file"
+						onChange={fileUploadClicked}
+					/>
 				</div>
 
 				<div className={classes.form}>
@@ -337,7 +404,11 @@ function Logger(props) {
 						variant="outlined"
 						onChange={(e) => setImgUrl(e.target.value)}
 					/>
-					<img src={imgUrl} className={classes.textField} />
+					<div className={classes.mediaCards}>
+						{imgUrl.map((imgLink) => (
+							<img src={imgLink} className={classes.media} />
+						))}
+					</div>
 					<TextField
 						className={classes.textField}
 						label="Content "
