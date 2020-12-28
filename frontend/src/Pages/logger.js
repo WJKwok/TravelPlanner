@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useReducer } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { TextField, MenuItem, Button, IconButton } from '@material-ui/core/';
 import PlaceAutoComplete from '../Components/placeAutoComplete';
@@ -44,7 +44,6 @@ const useStyles = makeStyles((theme) => ({
 		width: '100%',
 		height: theme.cardWidth * 0.5,
 		objectFit: 'cover',
-		// marginRight: 3,
 	},
 	deleteButton: {
 		border: 'solid 1px white',
@@ -78,69 +77,81 @@ function Logger(props) {
 
 	const { clickedCard } = useContext(LoggerContext);
 
+	const initialSpotState = {
+		guide: {},
+		category: '',
+		placeId: '',
+		name: '',
+		date: '',
+		eventName: '',
+		rating: '',
+		address: '',
+		location: [],
+		imgUrl: [],
+		content: '',
+	};
+
+	const [spotInput, setSpotInput] = useReducer(
+		(state, newState) => ({ ...state, ...newState }),
+		initialSpotState
+	);
+
+	const spotFieldChangeHandler = (e) => {
+		const name = e.target.name;
+		const newValue = e.target.value;
+		setSpotInput({ [name]: newValue });
+	};
+
 	useEffect(() => {
 		if (Object.keys(clickedCard).length > 0) {
-			setCategory(clickedCard.category);
-			setPlaceId(clickedCard.place.id);
-			setName(clickedCard.place.name);
-			setRating(clickedCard.place.rating);
-			setAddress(clickedCard.place.address);
-			setLocation(clickedCard.place.location);
-			setImgUrl(clickedCard.imgUrl);
-			setContent(clickedCard.content);
-			setEventName(clickedCard.eventName);
-			setDate(clickedCard.date);
+			/* can't do 
+			setSpotInpoout({
+				...clickedCard,
+				...clickedCard['place'],
+				placeId: clickedCard.place.id,
+			})
+			becuase it would override 'guide'
+			*/
+			setSpotInput({
+				category: clickedCard.category,
+				placeId: clickedCard.place.id,
+				name: clickedCard.place.name,
+				date: clickedCard.date,
+				eventName: clickedCard.eventName,
+				rating: clickedCard.place.rating,
+				address: clickedCard.place.address,
+				location: clickedCard.place.location,
+				imgUrl: clickedCard.imgUrl,
+				content: clickedCard.content,
+			});
 		}
 	}, [clickedCard]);
 
-	const [guide, setGuide] = useState({});
-	const [category, setCategory] = useState('');
-	const [placeId, setPlaceId] = useState('');
-	const [name, setName] = useState('');
-	const [date, setDate] = useState('');
-	const [eventName, setEventName] = useState('');
-	const [rating, setRating] = useState('');
-	const [address, setAddress] = useState('');
-	const [location, setLocation] = useState([]);
-	const [imgUrl, setImgUrl] = useState([]);
-	const [content, setContent] = useState('');
 	const [tempImgUrls, setTempImgUrls] = useState([]);
-	const [imgFiles, setImgFiles] = useState({});
+	const [uploadedImgFiles, setUploadedImgFiles] = useState({});
 	const [uploadedImagesIds, setUploadedImagesIds] = useState([]);
 	const [uploadedImageBlobToFile, setUploadedImageBlobToFile] = useState({});
-
-	const { data } = useQuery(GET_GUIDES, {
-		onCompleted(data) {
-			console.log(data);
-		},
-	});
 
 	const { data: { getAllSpotsForGuide: allSpots } = [] } = useQuery(
 		GET_ALL_SPOTS_IN_GUIDE,
 		{
-			onCompleted({ getAllSpotsForGuide }) {
-				// console.log(getAllSpotsForGuide);
-			},
 			variables: {
 				guideId,
 			},
 		}
 	);
 
-	if (allSpots) {
-		console.log('getAllSpotsForGuide', allSpots);
-	}
-
 	const [savePlace] = useMutation(SAVE_PLACE, {
 		update(_, result) {
 			console.log(result);
 		},
 		variables: {
-			id: placeId,
-			name,
-			rating,
-			address,
-			location,
+			...spotInput,
+			id: spotInput.placeId,
+			// name: spotInput.name,
+			// rating: spotInput.rating,
+			// address: spotInput.address,
+			// location: spotInput.location,
 		},
 	});
 
@@ -153,13 +164,10 @@ function Logger(props) {
 			console.log(networkError);
 		},
 		variables: {
-			guide: guide.id,
-			place: placeId,
-			category,
-			imgUrl: [...imgUrl, ...uploadedImagesIds],
-			content,
-			date,
-			eventName,
+			...spotInput,
+			guide: spotInput.guide.id,
+			place: spotInput.placeId,
+			imgUrl: [...spotInput.imgUrl, ...uploadedImagesIds],
 		},
 	});
 
@@ -181,39 +189,33 @@ function Logger(props) {
 
 	const getDetails = (placeObject) => {
 		console.log(placeObject);
-		setPlaceId(placeObject.id);
-		setName(placeObject.name);
-		setRating(placeObject.rating);
-		setAddress(placeObject.address);
-		setLocation([placeObject.location.lat, placeObject.location.lng]);
+		setSpotInput({
+			...placeObject,
+			placeId: placeObject.id,
+			location: [placeObject.location.lat, placeObject.location.lng],
+		});
 	};
 
 	const submit = async () => {
-		if (!placeId) {
-			console.log('hello where is your placeId');
+		if (!spotInput.placeId) {
 			setSnackMessage({
 				text: "Can't save without a Place ID",
 				code: 'Error',
 			});
 			return;
 		}
-		await uploadedImagesPublicIds(imgFiles);
+
+		await uploadedImagesPublicIds(uploadedImgFiles);
 		savePlace();
 		saveSpot();
 		setSnackMessage({
 			text: 'Spot Saved!',
 			code: 'Confirm',
 		});
-		setCategory('');
-		setPlaceId('');
-		setName('');
-		setRating('');
-		setAddress('');
-		setLocation('');
-		setImgUrl([]);
-		setContent('');
+
+		setSpotInput(initialSpotState);
 		setTempImgUrls([]);
-		setImgFiles({});
+		setUploadedImgFiles({});
 		setUploadedImagesIds([]);
 	};
 
@@ -227,7 +229,7 @@ function Logger(props) {
 		onCompleted({ getGuide }) {
 			console.log('guide: ', getGuide);
 			getCategories(getGuide.categories, getGuide.categories);
-			setGuide(getGuide);
+			setSpotInput({ guide: getGuide });
 		},
 		variables: {
 			guideId,
@@ -295,12 +297,11 @@ function Logger(props) {
 			uploadedImageBlobToFileCopy[tempUrl] = { index, toUpload: true };
 		});
 		setUploadedImageBlobToFile(uploadedImageBlobToFileCopy);
-		// setTempImgUrls(temporaryUrls);
-		setImgFiles(event.target.files);
+		setUploadedImgFiles(event.target.files);
 	};
 
-	const uploadedImagesPublicIds = async (imgFiles) => {
-		if (!imgFiles.length) {
+	const uploadedImagesPublicIds = async (uploadedImgFiles) => {
+		if (!uploadedImgFiles.length) {
 			return;
 		}
 
@@ -312,41 +313,49 @@ function Logger(props) {
 		});
 
 		console.log('indexesToUpload', indexesToUpload);
-		const promises = [...imgFiles].reduce((result, imageFile, index) => {
-			if (indexesToUpload.includes(index)) {
-				const formData = new FormData();
-				formData.append('file', imageFile);
-				formData.append('upload_preset', 'mtmsf9hg');
-				formData.append('folder', `${guideId}/${placeId}`);
+		const promises = [...uploadedImgFiles].reduce(
+			(result, imageFile, index) => {
+				if (indexesToUpload.includes(index)) {
+					const formData = new FormData();
+					formData.append('file', imageFile);
+					formData.append('upload_preset', 'mtmsf9hg');
+					formData.append('folder', `${guideId}/${spotInput.placeId}`);
 
-				result.push(
-					fetch(
-						`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUD_NAME}/upload`,
-						{
-							method: 'POST',
-							body: formData,
-						}
-					)
-						.then((response) => response.json())
-						.then((data) => data.public_id)
-						.catch((err) => console.error(err))
-				);
-			}
-			return result;
-		}, []);
+					result.push(
+						fetch(
+							`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUD_NAME}/upload`,
+							{
+								method: 'POST',
+								body: formData,
+							}
+						)
+							.then((response) => response.json())
+							.then((data) => data.public_id)
+							.catch((err) => console.error(err))
+					);
+				}
+				return result;
+			},
+			[]
+		);
 
 		let uploadedPublicIds = await Promise.all(promises);
 		setUploadedImagesIds(uploadedPublicIds);
 	};
 
 	const deleteImageHandler = (imgUrlToRemove) => {
-		const copyImgurl = imgUrl;
+		const copyImgurl = spotInput.imgUrl;
 		const newImgUrl = copyImgurl.filter((item) => item !== imgUrlToRemove);
-		setImgUrl(newImgUrl);
+		setSpotInput({ imgUrl: newImgUrl });
 	};
 
 	const deleteUploadedImageHandler = async (imgUrl) => {
-		console.log({ imgUrl, tempImgUrls, imgFiles, uploadedImageBlobToFile });
+		console.log({
+			imgUrl,
+			tempImgUrls,
+			uploadedImgFiles,
+			uploadedImageBlobToFile,
+		});
 		const uploadedImageBlobToFileCopy = { ...uploadedImageBlobToFile };
 		uploadedImageBlobToFileCopy[imgUrl].toUpload = false;
 		setUploadedImageBlobToFile(uploadedImageBlobToFileCopy);
@@ -374,26 +383,25 @@ function Logger(props) {
 			<div className={classes.root}>
 				<PlaceAutoComplete
 					clickFunction={getDetails}
-					city={guide.city}
-					coordinates={guide.coordinates}
+					city={spotInput.guide.city}
+					coordinates={spotInput.guide.coordinates}
 				/>
 				<TextField
 					className={classes.textField}
 					label="Category"
-					value={category}
+					name="category"
+					value={spotInput.category}
 					variant="outlined"
 					select
-					onChange={(e) => {
-						setCategory(e.target.value);
-					}}
+					onChange={spotFieldChangeHandler}
 				>
-					{categoryMenu(guide)}
+					{categoryMenu(spotInput.guide)}
 				</TextField>
 				<TextField
 					className={classes.textField}
 					id="edit-placeId"
 					label="PlaceId"
-					value={placeId}
+					value={spotInput.placeId}
 					variant="outlined"
 					disabled
 				/>
@@ -401,63 +409,54 @@ function Logger(props) {
 					className={classes.textField}
 					id="edit-name"
 					label="Name"
-					value={name}
+					value={spotInput.name}
 					variant="outlined"
 					disabled
 				/>
-				{category === 'Event' && (
+				{spotInput.category === 'Event' && (
 					<>
 						<TextField
 							className={classes.textField}
 							label="EventName"
-							value={eventName}
+							name="eventName"
+							value={spotInput.eventName}
 							variant="outlined"
-							onChange={(e) => setEventName(e.target.value)}
+							onChange={spotFieldChangeHandler}
 						/>
 						<TextField
 							className={classes.textField}
 							label="Date"
-							value={date}
+							name="date"
+							value={spotInput.date}
 							variant="outlined"
-							onChange={(e) => setDate(e.target.value)}
+							onChange={spotFieldChangeHandler}
 						/>
 					</>
 				)}
 				<TextField
 					className={classes.textField}
 					label="Rating"
-					value={rating}
+					value={spotInput.rating}
 					variant="outlined"
 					disabled
 				/>
 				<TextField
 					className={classes.textField}
 					label="Address"
-					value={address}
+					value={spotInput.address}
 					variant="outlined"
+					disabled
 				/>
 				<TextField
 					className={classes.textField}
 					label="Location"
-					value={location}
+					value={spotInput.location}
 					variant="outlined"
 					disabled
 				/>
-				{/* <TextField
-						className={classes.textField}
-						label="ImgUrl"
-						value={imgUrl}
-						variant="outlined"
-						onChange={(e) => setImgUrl(e.target.value)}
-					/>
-					<div className={classes.mediaCards}>
-						{imgUrl.map((imgLink) => (
-							<img src={imgLink} className={classes.media} />
-						))}
-					</div> */}
 				<div className={classes.textField}>
 					<div className={classes.mediaCards}>
-						{imgUrl.map((img) => {
+						{spotInput.imgUrl.map((img) => {
 							const image =
 								img.substring(0, 4) === 'http' ? (
 									<img className={classes.media} src={img} />
@@ -523,11 +522,12 @@ function Logger(props) {
 					className={classes.textField}
 					id="edit-content"
 					label="Content"
-					value={content}
+					name="content"
+					value={spotInput.content}
 					variant="outlined"
 					multiline
 					rows={4}
-					onChange={(e) => setContent(e.target.value)}
+					onChange={spotFieldChangeHandler}
 				/>
 				<Button
 					variant="outlined"
@@ -605,17 +605,6 @@ const SAVE_SPOT = gql`
 			}
 		) {
 			guide
-		}
-	}
-`;
-
-const GET_GUIDES = gql`
-	query getGuides {
-		getGuides {
-			id
-			name
-			city
-			categories
 		}
 	}
 `;
