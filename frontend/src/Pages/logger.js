@@ -1,50 +1,58 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { TextField, MenuItem, Button } from '@material-ui/core/';
+import { TextField, MenuItem, Button, IconButton } from '@material-ui/core/';
 import PlaceAutoComplete from '../Components/placeAutoComplete';
 import AppBar from '../Components/appBar';
 import SpotsBoard from '../Components/spotsBoard';
 import { DragDropContext } from 'react-beautiful-dnd';
 
+import { SnackBarContext } from '../Store/SnackBarContext';
 import { LoggerContext } from '../Store/LoggerContext';
 
 import CategoryChip from '../Components/categoryChip';
 import { iconDict } from '../Components/spotIcons';
 import Paper from '@material-ui/core/Paper';
+import DeleteIcon from '@material-ui/icons/Delete';
+
 import { Image } from 'cloudinary-react';
 
 import { useQuery, useMutation, gql } from '@apollo/client';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
-		display: 'flex',
 		paddingTop: 15,
-	},
-	autoComplete: {
-		flex: 2,
-	},
-	form: {
-		flex: 3,
-		marginLeft: 8,
 	},
 	textField: {
 		marginBottom: 8,
 		width: '100%',
 	},
 	mediaCards: {
-		paddingBottom: 10,
 		display: 'flex',
 		overflowX: 'auto',
-		overflowX: 'scroll',
 		'&::-webkit-scrollbar': {
 			display: 'none',
 		},
 	},
+	mediaCard: {
+		minWidth: theme.cardWidth,
+		maxWidth: theme.cardWidth,
+		maxHeight: theme.cardWidth,
+		marginRight: 5,
+		position: 'relative',
+	},
 	media: {
-		width: '90%',
-		height: 300,
+		width: '100%',
+		height: theme.cardWidth * 0.5,
 		objectFit: 'cover',
-		marginRight: 3,
+		// marginRight: 3,
+	},
+	deleteButton: {
+		border: 'solid 1px white',
+		position: 'absolute',
+		top: 0,
+		right: 0,
+		padding: 3,
+		margin: 2,
 	},
 	submitButton: {
 		float: 'right',
@@ -66,6 +74,7 @@ function Logger(props) {
 	const classes = useStyles();
 
 	const guideId = props.match.params.guideBookId;
+	const { setSnackMessage } = useContext(SnackBarContext);
 
 	const { clickedCard } = useContext(LoggerContext);
 
@@ -79,10 +88,11 @@ function Logger(props) {
 			setLocation(clickedCard.place.location);
 			setImgUrl(clickedCard.imgUrl);
 			setContent(clickedCard.content);
+			setEventName(clickedCard.eventName);
+			setDate(clickedCard.date);
 		}
 	}, [clickedCard]);
 
-	const [city, setCity] = useState('Berlin');
 	const [guide, setGuide] = useState({});
 	const [category, setCategory] = useState('');
 	const [placeId, setPlaceId] = useState('');
@@ -94,6 +104,10 @@ function Logger(props) {
 	const [location, setLocation] = useState([]);
 	const [imgUrl, setImgUrl] = useState([]);
 	const [content, setContent] = useState('');
+	const [tempImgUrls, setTempImgUrls] = useState([]);
+	const [imgFiles, setImgFiles] = useState({});
+	const [uploadedImagesIds, setUploadedImagesIds] = useState([]);
+	const [uploadedImageBlobToFile, setUploadedImageBlobToFile] = useState({});
 
 	const { data } = useQuery(GET_GUIDES, {
 		onCompleted(data) {
@@ -142,7 +156,7 @@ function Logger(props) {
 			guide: guide.id,
 			place: placeId,
 			category,
-			imgUrl,
+			imgUrl: [...imgUrl, ...uploadedImagesIds],
 			content,
 			date,
 			eventName,
@@ -174,17 +188,33 @@ function Logger(props) {
 		setLocation([placeObject.location.lat, placeObject.location.lng]);
 	};
 
-	const submit = () => {
+	const submit = async () => {
+		if (!placeId) {
+			console.log('hello where is your placeId');
+			setSnackMessage({
+				text: "Can't save without a Place ID",
+				code: 'Error',
+			});
+			return;
+		}
+		await uploadedImagesPublicIds(imgFiles);
 		savePlace();
 		saveSpot();
+		setSnackMessage({
+			text: 'Spot Saved!',
+			code: 'Confirm',
+		});
 		setCategory('');
 		setPlaceId('');
 		setName('');
 		setRating('');
 		setAddress('');
 		setLocation('');
-		setImgUrl('');
+		setImgUrl([]);
 		setContent('');
+		setTempImgUrls([]);
+		setImgFiles({});
+		setUploadedImagesIds([]);
 	};
 
 	const onDragEnd = (result) => {
@@ -258,49 +288,70 @@ function Logger(props) {
 
 	const fileUploadClicked = async (event) => {
 		console.log('upload files', event.target.files);
+		const uploadedImageBlobToFileCopy = { ...uploadedImageBlobToFile };
+		[...event.target.files].forEach((imageFile, index) => {
+			console.log('imgfile: ', imageFile);
+			const tempUrl = URL.createObjectURL(imageFile);
+			uploadedImageBlobToFileCopy[tempUrl] = { index, toUpload: true };
+		});
+		setUploadedImageBlobToFile(uploadedImageBlobToFileCopy);
+		// setTempImgUrls(temporaryUrls);
+		setImgFiles(event.target.files);
+	};
 
-		// let file = event.target.files[0];
-		// const url = URL.createObjectURL(event.target.files[0]);
-		// console.log('url??', url);
+	const uploadedImagesPublicIds = async (imgFiles) => {
+		if (!imgFiles.length) {
+			return;
+		}
 
-		// const formData = new FormData();
-		// formData.append('file', event.target.files[0]);
-		// formData.append('upload_preset', 'mtmsf9hg');
-		// formData.append('folder', `${guideId}/${placeId}`);
-
-		// const uploadedFiles = event.target.files;
-		const promises = [...event.target.files].map((imageFile) => {
-			const formData = new FormData();
-			formData.append('file', imageFile);
-			formData.append('upload_preset', 'mtmsf9hg');
-			formData.append('folder', `${guideId}/${placeId}`);
-
-			return fetch(
-				`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUD_NAME}/upload`,
-				{
-					method: 'POST',
-					body: formData,
-				}
-			)
-				.then((response) => response.json())
-				.then((data) => data)
-				.catch((err) => console.error(err));
+		const indexesToUpload = [];
+		Object.keys(uploadedImageBlobToFile).forEach((img) => {
+			if (uploadedImageBlobToFile[img].toUpload == true) {
+				indexesToUpload.push(uploadedImageBlobToFile[img].index);
+			}
 		});
 
-		let allData = await Promise.all(promises);
+		console.log('indexesToUpload', indexesToUpload);
+		const promises = [...imgFiles].reduce((result, imageFile, index) => {
+			if (indexesToUpload.includes(index)) {
+				const formData = new FormData();
+				formData.append('file', imageFile);
+				formData.append('upload_preset', 'mtmsf9hg');
+				formData.append('folder', `${guideId}/${placeId}`);
 
-		console.log('final data:', allData);
-		// fetch(
-		// 	`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUD_NAME}/upload`,
-		// 	{
-		// 		method: 'POST',
-		// 		body: formData,
-		// 	}
-		// )
-		// 	.then((response) => response.json())
-		// 	.then((data) =>  data)
-		// 	.catch((err) => console.error(err));
+				result.push(
+					fetch(
+						`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUD_NAME}/upload`,
+						{
+							method: 'POST',
+							body: formData,
+						}
+					)
+						.then((response) => response.json())
+						.then((data) => data.public_id)
+						.catch((err) => console.error(err))
+				);
+			}
+			return result;
+		}, []);
+
+		let uploadedPublicIds = await Promise.all(promises);
+		setUploadedImagesIds(uploadedPublicIds);
 	};
+
+	const deleteImageHandler = (imgUrlToRemove) => {
+		const copyImgurl = imgUrl;
+		const newImgUrl = copyImgurl.filter((item) => item !== imgUrlToRemove);
+		setImgUrl(newImgUrl);
+	};
+
+	const deleteUploadedImageHandler = async (imgUrl) => {
+		console.log({ imgUrl, tempImgUrls, imgFiles, uploadedImageBlobToFile });
+		const uploadedImageBlobToFileCopy = { ...uploadedImageBlobToFile };
+		uploadedImageBlobToFileCopy[imgUrl].toUpload = false;
+		setUploadedImageBlobToFile(uploadedImageBlobToFileCopy);
+	};
+
 	return (
 		<>
 			<AppBar offset={true} />
@@ -321,83 +372,78 @@ function Logger(props) {
 				{allSpots && renderSpotsBoard()}
 			</DragDropContext>
 			<div className={classes.root}>
-				<div className={classes.autoComplete}>
-					<PlaceAutoComplete clickFunction={getDetails} city={city} />
-					<input
-						accept="image/*"
-						multiple
-						type="file"
-						onChange={fileUploadClicked}
-					/>
-				</div>
-
-				<div className={classes.form}>
-					<TextField
-						className={classes.textField}
-						label="Category"
-						value={category}
-						variant="outlined"
-						select
-						onChange={(e) => {
-							setCategory(e.target.value);
-						}}
-					>
-						{categoryMenu(guide)}
-					</TextField>
-					<TextField
-						className={classes.textField}
-						label="PlaceId"
-						value={placeId}
-						variant="outlined"
-						disabled
-					/>
-					<TextField
-						className={classes.textField}
-						label="Name"
-						value={name}
-						variant="outlined"
-						disabled
-					/>
-					{category === 'Event' && (
-						<>
-							<TextField
-								className={classes.textField}
-								label="EventName"
-								value={eventName}
-								variant="outlined"
-								onChange={(e) => setEventName(e.target.value)}
-							/>
-							<TextField
-								className={classes.textField}
-								label="Date"
-								value={date}
-								variant="outlined"
-								onChange={(e) => setDate(e.target.value)}
-							/>
-						</>
-					)}
-					<TextField
-						className={classes.textField}
-						label="Rating"
-						value={rating}
-						variant="outlined"
-						disabled
-					/>
-					<TextField
-						className={classes.textField}
-						label="Address"
-						value={address}
-						variant="outlined"
-						disabled
-					/>
-					<TextField
-						className={classes.textField}
-						label="Location"
-						value={location}
-						variant="outlined"
-						disabled
-					/>
-					<TextField
+				<PlaceAutoComplete
+					clickFunction={getDetails}
+					city={guide.city}
+					coordinates={guide.coordinates}
+				/>
+				<TextField
+					className={classes.textField}
+					label="Category"
+					value={category}
+					variant="outlined"
+					select
+					onChange={(e) => {
+						setCategory(e.target.value);
+					}}
+				>
+					{categoryMenu(guide)}
+				</TextField>
+				<TextField
+					className={classes.textField}
+					id="edit-placeId"
+					label="PlaceId"
+					value={placeId}
+					variant="outlined"
+					disabled
+				/>
+				<TextField
+					className={classes.textField}
+					id="edit-name"
+					label="Name"
+					value={name}
+					variant="outlined"
+					disabled
+				/>
+				{category === 'Event' && (
+					<>
+						<TextField
+							className={classes.textField}
+							label="EventName"
+							value={eventName}
+							variant="outlined"
+							onChange={(e) => setEventName(e.target.value)}
+						/>
+						<TextField
+							className={classes.textField}
+							label="Date"
+							value={date}
+							variant="outlined"
+							onChange={(e) => setDate(e.target.value)}
+						/>
+					</>
+				)}
+				<TextField
+					className={classes.textField}
+					label="Rating"
+					value={rating}
+					variant="outlined"
+					disabled
+				/>
+				<TextField
+					className={classes.textField}
+					label="Address"
+					value={address}
+					variant="outlined"
+				/>
+				<TextField
+					className={classes.textField}
+					label="Location"
+					value={location}
+					variant="outlined"
+					disabled
+				/>
+				{/* <TextField
 						className={classes.textField}
 						label="ImgUrl"
 						value={imgUrl}
@@ -408,24 +454,89 @@ function Logger(props) {
 						{imgUrl.map((imgLink) => (
 							<img src={imgLink} className={classes.media} />
 						))}
+					</div> */}
+				<div className={classes.textField}>
+					<div className={classes.mediaCards}>
+						{imgUrl.map((img) => {
+							const image =
+								img.substring(0, 4) === 'http' ? (
+									<img className={classes.media} src={img} />
+								) : (
+									<Image
+										className={classes.media}
+										cloudName={process.env.REACT_APP_CLOUD_NAME}
+										publicId={img}
+									/>
+								);
+							const imageCard = (
+								<div
+									data-testid="edit-existing-image"
+									key={img}
+									className={classes.mediaCard}
+								>
+									{image}
+									<IconButton
+										className={classes.deleteButton}
+										data-testid="delete-image"
+										onClick={() => deleteImageHandler(img)}
+									>
+										<DeleteIcon color="error" />
+									</IconButton>
+								</div>
+							);
+							return imageCard;
+						})}
 					</div>
-					<TextField
-						className={classes.textField}
-						label="Content "
-						value={content}
-						variant="outlined"
-						multiline
-						rows={4}
-						onChange={(e) => setContent(e.target.value)}
-					/>
-					<Button
-						variant="outlined"
-						className={classes.submitButton}
-						onClick={submit}
-					>
-						Submit
-					</Button>
+
+					<div className={classes.mediaCards}>
+						{Object.keys(uploadedImageBlobToFile).map((imgLink) => {
+							const imgPreview = uploadedImageBlobToFile[imgLink].toUpload ? (
+								<div
+									key={imgLink}
+									data-testid="uploadedImage"
+									className={classes.mediaCard}
+								>
+									<img src={imgLink} className={classes.media} />
+									<IconButton
+										className={classes.deleteButton}
+										onClick={() => deleteUploadedImageHandler(imgLink)}
+									>
+										<DeleteIcon color="error" />
+									</IconButton>
+								</div>
+							) : null;
+							return imgPreview;
+						})}
+					</div>
 				</div>
+				<div className={classes.textField}>
+					<input
+						className={classes.mediaCards}
+						data-testid="file-input"
+						accept="image/*"
+						multiple
+						type="file"
+						onChange={fileUploadClicked}
+					/>
+				</div>
+				<TextField
+					className={classes.textField}
+					id="edit-content"
+					label="Content"
+					value={content}
+					variant="outlined"
+					multiline
+					rows={4}
+					onChange={(e) => setContent(e.target.value)}
+				/>
+				<Button
+					variant="outlined"
+					id="submit"
+					className={classes.submitButton}
+					onClick={submit}
+				>
+					Submit
+				</Button>
 			</div>
 		</>
 	);
@@ -477,7 +588,7 @@ const SAVE_SPOT = gql`
 		$guide: String!
 		$place: String!
 		$category: String!
-		$imgUrl: String!
+		$imgUrl: [String]!
 		$content: String!
 		$eventName: String
 		$date: String

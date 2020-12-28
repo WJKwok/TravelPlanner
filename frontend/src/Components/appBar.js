@@ -82,6 +82,7 @@ const MenuAppBar = ({ offset, transparent }) => {
 						onClick={iconClickHandler}
 					/>
 				</Toolbar>
+				<SnackBar />
 			</AppBar>
 			{offset ? <Toolbar /> : null}
 			<AuthModal

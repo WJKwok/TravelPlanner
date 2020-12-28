@@ -42,7 +42,7 @@ module.exports = gql`
 		guide: String!
 		place: String!
 		category: String!
-		imgUrl: String!
+		imgUrl: [String]!
 		content: String!
 		date: String
 		eventName: String

@@ -56,9 +56,15 @@ module.exports = {
 			try {
 				let spot = await Spot.findOne({ guide, place });
 				if (spot) {
-					console.log('yay');
-					console.log(spot);
-					return spot;
+					console.log('editting spot...');
+					spot.category = category;
+					spot.imgUrl = imgUrl;
+					spot.content = content;
+					spot.date = date;
+					spot.eventName = eventName;
+					const newSpot = await spot.save();
+					console.log('newSpot', newSpot);
+					return newSpot;
 				} else {
 					console.log('nana');
 					const newSpot = new Spot({

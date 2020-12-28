@@ -19,6 +19,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 
 import { Draggable } from 'react-beautiful-dnd';
+import { Image } from 'cloudinary-react';
 
 import GoogleDirectionLink from './googleDirectionLink';
 
@@ -284,7 +285,7 @@ const SpotCard = React.memo((props) => {
 											className={classes.editButton}
 											onClick={editClickHandler}
 										>
-											<EditOutlinedIcon />
+											<EditOutlinedIcon data-testid="edit-pen" />
 										</div>
 									)}
 								</div>
@@ -302,10 +303,33 @@ const SpotCard = React.memo((props) => {
 						<div className={classes.mediaCards}>
 							{spot.imgUrl.length > 1 ? (
 								spot.imgUrl.map((img) => {
-									return <img className={classes.media} key={img} src={img} />;
+									const image =
+										img.substring(0, 4) === 'http' ? (
+											<img
+												data-testid="existing-image"
+												className={classes.media}
+												key={img}
+												src={img}
+											/>
+										) : (
+											<Image
+												data-testid="existing-image"
+												key={img}
+												className={classes.media}
+												cloudName={process.env.REACT_APP_CLOUD_NAME}
+												publicId={img}
+											/>
+										);
+									return image;
 								})
-							) : (
+							) : spot.imgUrl[0].substring(0, 4) === 'http' ? (
 								<img className={classes.onlyMedia} src={spot.imgUrl[0]} />
+							) : (
+								<Image
+									className={classes.onlyMedia}
+									cloudName={process.env.REACT_APP_CLOUD_NAME}
+									publicId={spot.imgUrl[0]}
+								/>
 							)}
 						</div>
 						{/* <CardMedia className={classes.media} image={spot.imgUrl[0]} /> */}

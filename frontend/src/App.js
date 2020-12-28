@@ -82,7 +82,6 @@ function App() {
 											path="/planner/:guideBookId/:tripId"
 											component={Planner}
 										/>
-										<SnackBar />
 									</div>
 								</BrowserRouter>
 							</ThemeProvider>
