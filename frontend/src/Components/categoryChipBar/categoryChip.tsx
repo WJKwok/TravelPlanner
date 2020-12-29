@@ -15,10 +15,10 @@ type Props = {
 		icon: JSX.Element;
 		clicked: boolean;
 	};
-	toggleChip: (data: object) => void;
+	toggleChipHandler: (data: object) => void;
 };
 
-function CategoryChip({ data, toggleChip }: Props) {
+function CategoryChip({ data, toggleChipHandler }: Props) {
 	const classes = useStyles();
 
 	return (
@@ -29,7 +29,7 @@ function CategoryChip({ data, toggleChip }: Props) {
 			icon={data.icon}
 			label={data.label}
 			variant={data.clicked ? 'default' : 'outlined'}
-			onClick={() => toggleChip(data)}
+			onClick={() => toggleChipHandler(data)}
 			className={classes.chip}
 		/>
 	);

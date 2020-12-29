@@ -9,9 +9,10 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import { SnackBarContext } from '../Store/SnackBarContext';
 import { LoggerContext } from '../Store/LoggerContext';
 
-import CategoryChip from '../Components/categoryChip';
+import CategoryChipBar, {
+	currentlySelectedChips,
+} from '../Components/categoryChipBar/';
 import { iconDict } from '../Components/spotIcons';
-import Paper from '@material-ui/core/Paper';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import { Image } from 'cloudinary-react';
@@ -55,17 +56,6 @@ const useStyles = makeStyles((theme) => ({
 	},
 	submitButton: {
 		float: 'right',
-	},
-	categoryChipBoard: {
-		display: 'flex',
-		overflowX: 'auto',
-		listStyle: 'none',
-		padding: theme.spacing(0.5),
-		alignItems: 'flex-start',
-		'&::-webkit-scrollbar': {
-			display: 'none',
-		},
-		backgroundColor: 'rgba(255,255,255)',
 	},
 }));
 
@@ -129,7 +119,7 @@ function Logger(props) {
 
 	const [tempImgUrls, setTempImgUrls] = useState([]);
 	const [uploadedImgFiles, setUploadedImgFiles] = useState({});
-	const [uploadedImagesIds, setUploadedImagesIds] = useState([]);
+	// const [uploadedImagesIds, setUploadedImagesIds] = useState([]);
 	const [uploadedImageBlobToFile, setUploadedImageBlobToFile] = useState({});
 
 	const { data: { getAllSpotsForGuide: allSpots } = [] } = useQuery(
@@ -162,12 +152,6 @@ function Logger(props) {
 		onError({ graphQLErrors, networkError }) {
 			console.log(graphQLErrors);
 			console.log(networkError);
-		},
-		variables: {
-			...spotInput,
-			guide: spotInput.guide.id,
-			place: spotInput.placeId,
-			imgUrl: [...spotInput.imgUrl, ...uploadedImagesIds],
 		},
 	});
 
@@ -205,9 +189,16 @@ function Logger(props) {
 			return;
 		}
 
-		await uploadedImagesPublicIds(uploadedImgFiles);
+		const uploadedImagesIds = await uploadedImagesPublicIds(uploadedImgFiles);
 		savePlace();
-		saveSpot();
+		saveSpot({
+			variables: {
+				...spotInput,
+				guide: spotInput.guide.id,
+				place: spotInput.placeId,
+				imgUrl: [...spotInput.imgUrl, ...uploadedImagesIds],
+			},
+		});
 		setSnackMessage({
 			text: 'Spot Saved!',
 			code: 'Confirm',
@@ -216,11 +207,6 @@ function Logger(props) {
 		setSpotInput(initialSpotState);
 		setTempImgUrls([]);
 		setUploadedImgFiles({});
-		setUploadedImagesIds([]);
-	};
-
-	const onDragEnd = (result) => {
-		return;
 	};
 
 	const [categoryChips, setCategoryChips] = useState([]);
@@ -250,7 +236,7 @@ function Logger(props) {
 		setCategoryChips(categories);
 	};
 
-	const toggleChip = (clickedChip) => {
+	const toggleChipHandler = (clickedChip) => {
 		const chipsClone = [...categoryChips];
 		const objectIndex = categoryChips.findIndex(
 			(chip) => chip.key === clickedChip.key
@@ -259,20 +245,10 @@ function Logger(props) {
 		setCategoryChips(chipsClone);
 	};
 
-	const currentlySelectedChips = () => {
-		let selectedChips = [];
-		for (var i = 0; i < categoryChips.length; i++) {
-			if (categoryChips[i].clicked) {
-				selectedChips.push(categoryChips[i].label);
-			}
-		}
-		return selectedChips;
-	};
-
 	const renderSpotsBoard = () => {
 		const unfilteredSpots = allSpots;
 
-		const selectedCategories = currentlySelectedChips();
+		const selectedCategories = currentlySelectedChips(categoryChips);
 		const filteredSpots = unfilteredSpots.filter((spot) =>
 			selectedCategories.includes(spot.category)
 		);
@@ -302,7 +278,7 @@ function Logger(props) {
 
 	const uploadedImagesPublicIds = async (uploadedImgFiles) => {
 		if (!uploadedImgFiles.length) {
-			return;
+			return [];
 		}
 
 		const indexesToUpload = [];
@@ -312,7 +288,6 @@ function Logger(props) {
 			}
 		});
 
-		console.log('indexesToUpload', indexesToUpload);
 		const promises = [...uploadedImgFiles].reduce(
 			(result, imageFile, index) => {
 				if (indexesToUpload.includes(index)) {
@@ -339,11 +314,10 @@ function Logger(props) {
 			[]
 		);
 
-		let uploadedPublicIds = await Promise.all(promises);
-		setUploadedImagesIds(uploadedPublicIds);
+		return await Promise.all(promises);
 	};
 
-	const deleteImageHandler = (imgUrlToRemove) => {
+	const deleteExistingImageHandler = (imgUrlToRemove) => {
 		const copyImgurl = spotInput.imgUrl;
 		const newImgUrl = copyImgurl.filter((item) => item !== imgUrlToRemove);
 		setSpotInput({ imgUrl: newImgUrl });
@@ -361,23 +335,18 @@ function Logger(props) {
 		setUploadedImageBlobToFile(uploadedImageBlobToFileCopy);
 	};
 
+	const onDragEnd = (result) => {
+		return;
+	};
+
 	return (
 		<>
 			<AppBar offset={true} />
 			<DragDropContext onDragEnd={onDragEnd}>
-				<Paper
-					component="ul"
-					className={classes.categoryChipBoard}
-					variant="outlined"
-				>
-					{categoryChips.map((data) => {
-						return (
-							<li key={data.key}>
-								<CategoryChip data={data} toggleChip={toggleChip} />
-							</li>
-						);
-					})}
-				</Paper>
+				<CategoryChipBar
+					categoryChips={categoryChips}
+					toggleChipHandler={toggleChipHandler}
+				/>
 				{allSpots && renderSpotsBoard()}
 			</DragDropContext>
 			<div className={classes.root}>
@@ -477,7 +446,7 @@ function Logger(props) {
 									<IconButton
 										className={classes.deleteButton}
 										data-testid="delete-image"
-										onClick={() => deleteImageHandler(img)}
+										onClick={() => deleteExistingImageHandler(img)}
 									>
 										<DeleteIcon color="error" />
 									</IconButton>

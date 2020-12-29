@@ -3,7 +3,9 @@ import { useQuery, useLazyQuery, useMutation, gql } from '@apollo/client';
 import { DragDropContext } from 'react-beautiful-dnd';
 import moment from 'moment';
 
-import CategoryChip from '../../Components/categoryChip';
+import CategoryChipBar, {
+	currentlySelectedChips,
+} from '../../Components/categoryChipBar/';
 import { iconDict } from '../../Components/spotIcons';
 import AppBar from '../../Components/appBar';
 import SpotsBoard from '../../Components/spotsBoard';
@@ -53,17 +55,6 @@ const useStyles = makeStyles((theme) => ({
 		[theme.breakpoints.down(430)]: {
 			padding: '10px 0px',
 		},
-	},
-	categoryChipBoard: {
-		display: 'flex',
-		overflowX: 'auto',
-		listStyle: 'none',
-		padding: theme.spacing(0.5),
-		alignItems: 'flex-start',
-		'&::-webkit-scrollbar': {
-			display: 'none',
-		},
-		backgroundColor: 'rgba(255,255,255)',
 	},
 	dayBoardContainer: {
 		display: 'flex',
@@ -267,7 +258,7 @@ function Planner(props) {
 		setCategoryChips(chipsClone);
 	};
 
-	const toggleChip = (clickedChip) => {
+	const toggleChipHandler = (clickedChip) => {
 		const chipsClone = [...categoryChips];
 		const objectIndex = categoryChips.findIndex(
 			(chip) => chip.key === clickedChip.key
@@ -287,16 +278,6 @@ function Planner(props) {
 				},
 			});
 		}
-	};
-
-	const currentlySelectedChips = () => {
-		let selectedChips = [];
-		for (var i = 0; i < categoryChips.length; i++) {
-			if (categoryChips[i].clicked) {
-				selectedChips.push(categoryChips[i].label);
-			}
-		}
-		return selectedChips;
 	};
 
 	const searchedItemClicked = (searchedItem) => {
@@ -576,7 +557,7 @@ function Planner(props) {
 		);
 		const isLikedChipClicked = categoryChips[likedChipIndex].clicked;
 
-		const selectedCategories = currentlySelectedChips();
+		const selectedCategories = currentlySelectedChips(categoryChips);
 		const filteredSpots = unfilteredSpots.filter((spot) =>
 			selectedCategories.includes(spot.category)
 		);
@@ -634,19 +615,10 @@ function Planner(props) {
 					>
 						Search
 					</Button>
-					<Paper
-						component="ul"
-						className={classes.categoryChipBoard}
-						variant="outlined"
-					>
-						{categoryChips.map((data) => {
-							return (
-								<li key={data.key}>
-									<CategoryChip data={data} toggleChip={toggleChip} />
-								</li>
-							);
-						})}
-					</Paper>
+					<CategoryChipBar
+						categoryChips={categoryChips}
+						toggleChipHandler={toggleChipHandler}
+					/>
 				</div>
 			</CardMedia>
 
