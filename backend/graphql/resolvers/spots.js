@@ -1,5 +1,5 @@
 const Spot = require('../../models/Spot');
-const Place = require('../../models/Place');
+const checkAuth = require('../../utils/checkAuth');
 
 module.exports = {
 	Query: {
@@ -41,7 +41,6 @@ module.exports = {
 			// await Spot.updateMany({ $unset: { randomData: '' } });
 			const spots = await Spot.find();
 			spots.forEach((spot) => {
-				console.log('spot:', spot);
 				Spot.update({ _id: spot._id }, { $set: { imgUrl: [spot.imgUrl] } });
 			});
 			return true;
@@ -50,20 +49,28 @@ module.exports = {
 			_,
 			{
 				spotInput: { guide, place, category, imgUrl, content, date, eventName },
-			}
+			},
+			context
 		) {
-			console.log(guide, place);
+			try {
+				const user = checkAuth(context);
+			} catch (err) {
+				throw new Error('Sorry, you are not authorised');
+			}
+
+			if (!user.role || !user.role.includes('Guide Owner')) {
+				throw new Error('Sorry, you are not authorised');
+			}
 			try {
 				let spot = await Spot.findOne({ guide, place });
 				if (spot) {
-					console.log('editting spot...');
 					spot.category = category;
 					spot.imgUrl = imgUrl;
 					spot.content = content;
 					spot.date = date;
 					spot.eventName = eventName;
 					const newSpot = await spot.save();
-					console.log('newSpot', newSpot);
+
 					return newSpot;
 				} else {
 					console.log('nana');

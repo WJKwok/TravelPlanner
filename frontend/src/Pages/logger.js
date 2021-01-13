@@ -135,6 +135,18 @@ function Logger(props) {
 		update(_, result) {
 			console.log(result);
 		},
+		onError(err) {
+			console.log('err', err);
+			//{ graphQLErrors, networkError, ...rest }
+			// console.log({ graphQLErrors, networkError, rest });
+			// // console.log(networkError);
+			// if (graphQLErrors) {
+			// 	setSnackMessage({
+			// 		text: graphQLErrors[0].message,
+			// 		code: 'Error',
+			// 	});
+			// }
+		},
 		variables: {
 			...spotInput,
 			id: spotInput.placeId,
@@ -146,12 +158,28 @@ function Logger(props) {
 	});
 
 	const [saveSpot] = useMutation(SAVE_SPOT, {
+		onCompleted() {
+			setSnackMessage({
+				text: 'Spot Saved!',
+				code: 'Confirm',
+			});
+			setSpotInput(initialSpotState);
+			setTempImgUrls([]);
+			setUploadedImgFiles({});
+		},
 		update(_, result) {
 			console.log(result);
 		},
-		onError({ graphQLErrors, networkError }) {
-			console.log(graphQLErrors);
-			console.log(networkError);
+		onError(err) {
+			console.log('err', err);
+			//{ graphQLErrors, networkError, ...rest }
+			// console.log({ graphQLErrors, networkError, rest });
+			// if (graphQLErrors) {
+			// 	setSnackMessage({
+			// 		text: graphQLErrors[0].message,
+			// 		code: 'Error',
+			// 	});
+			// }
 		},
 	});
 
@@ -199,14 +227,6 @@ function Logger(props) {
 				imgUrl: [...spotInput.imgUrl, ...uploadedImagesIds],
 			},
 		});
-		setSnackMessage({
-			text: 'Spot Saved!',
-			code: 'Confirm',
-		});
-
-		setSpotInput(initialSpotState);
-		setTempImgUrls([]);
-		setUploadedImgFiles({});
 	};
 
 	const [categoryChips, setCategoryChips] = useState([]);

@@ -1,4 +1,10 @@
 it('edit guide', () => {
+	cy.visit('http://localhost:3000/');
+	cy.get('[data-testid="nav-trips"]').click();
+	cy.get('#username').type('wen');
+	cy.get('#password').type('123456');
+	cy.get('#enterUser').click();
+	cy.wait(500);
 	cy.visit('http://localhost:3000/logger/5ed7aee473e66d73abe88279/');
 
 	cy.get('[data-testid*=chip-clicked]').should('have.length', 5);

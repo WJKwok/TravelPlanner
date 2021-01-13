@@ -31,12 +31,15 @@ const getNewToken = () => {
 
 const errorLink = onError(({ graphQLErrors, operation, forward }) => {
 	if (graphQLErrors) {
-		graphQLErrors.map(({ message }) => console.log(message));
+		graphQLErrors.forEach(({ message, extensions }) =>
+			console.log({ message, extensions })
+		);
 		for (let err of graphQLErrors) {
 			switch (err.extensions.code) {
 				case 'UNAUTHENTICATED':
 					return fromPromise(
 						getNewToken().catch((error) => {
+							console.log('error:', error);
 							// Handle token refresh errors e.g clear stored tokens, redirect to login
 							return;
 						})

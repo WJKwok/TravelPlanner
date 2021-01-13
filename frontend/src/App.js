@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
-import { AuthRoute, UnAuthRoute } from './utils/AuthRoute';
+import { AuthRoute, UnAuthRoute, AdminRoute } from './utils/AuthRoute';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -71,7 +71,7 @@ function App() {
 											path="/planner/:guideBookId"
 											component={Planner}
 										/>
-										<Route
+										<AdminRoute
 											exact
 											path="/logger/:guideBookId"
 											component={Logger}

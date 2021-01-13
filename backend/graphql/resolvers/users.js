@@ -19,6 +19,7 @@ function generateToken(user) {
 			id: user.id,
 			email: user.email,
 			username: user.username,
+			role: user.role,
 		},
 		process.env.REFRESH_TOKEN_SECRET,
 		{ expiresIn: '7d' }
@@ -29,6 +30,7 @@ function generateToken(user) {
 			id: user.id,
 			email: user.email,
 			username: user.username,
+			role: user.role,
 		},
 		process.env.ACCESS_TOKEN_SECRET,
 		{ expiresIn: '1h' }
