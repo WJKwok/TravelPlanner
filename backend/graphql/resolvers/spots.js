@@ -52,11 +52,7 @@ module.exports = {
 			},
 			context
 		) {
-			try {
-				const user = checkAuth(context);
-			} catch (err) {
-				throw new Error('Sorry, you are not authorised');
-			}
+			const user = checkAuth(context);
 
 			if (!user.role || !user.role.includes('Guide Owner')) {
 				throw new Error('Sorry, you are not authorised');
