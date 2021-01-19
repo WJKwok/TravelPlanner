@@ -7,6 +7,7 @@ import GoogleMap from './googleMap';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
 	dayBoard: {
@@ -22,9 +23,11 @@ const useStyles = makeStyles((theme) => ({
 		// boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2)',
 	},
 	date: {
-		padding: 8,
-		backgroundColor: 'grey',
-		color: 'white',
+		padding: '10px 15px',
+		// backgroundColor: theme.palette.secondary,
+		// color: 'white',
+		fontSize: '1.2em',
+		borderBottom: 'lightGrey solid 0.5px',
 	},
 	droppable: {
 		padding: 8,
@@ -65,7 +68,7 @@ function DayBoard(props) {
 			{/* <div className={classes.root} > */}
 			<div className={classes.date}>
 				<p>
-					{date.format('DD MMM')} ({date.format('ddd')})
+					{date.format('DD MMM')} - {date.format('ddd')}
 				</p>
 			</div>
 			<Droppable droppableId={boardId} direction="vertical">

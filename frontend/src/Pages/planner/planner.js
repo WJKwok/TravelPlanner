@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
 	dayBoardContainer: {
 		display: 'flex',
 		borderRadius: 5,
-		padding: '10px 0px 20px 0px',
+		padding: '10px 0px 20px 10px',
 		overflowX: 'auto',
 		'&::-webkit-scrollbar': {
 			display: 'none',
@@ -67,12 +67,13 @@ const useStyles = makeStyles((theme) => ({
 	},
 	dateAndSave: {
 		display: 'flex',
-		alignItems: 'baseline',
+		alignItems: 'center',
 		padding: '0px 10px',
 	},
 	saveButton: {
 		margin: '0 0 0 auto',
-		backgroundColor: 'grey',
+		// backgroundColor: 'grey',
+		border: 'lightGrey solid 0.5px',
 	},
 }));
 
@@ -628,7 +629,6 @@ function Planner(props) {
 					<DatePicker />
 					<IconButton
 						id="save"
-						color="secondary"
 						className={classes.saveButton}
 						onClick={saveItinerary}
 					>

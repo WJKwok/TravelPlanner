@@ -25,15 +25,15 @@ import deepOrange from '@material-ui/core/colors/deepOrange';
 const theme = createMuiTheme({
 	cardWidth: 300,
 	maxMobileWidth: 430,
-	palette: {
-		primary: {
-			main: deepOrange['A200'],
-			// contrastText: '#fff',
-		},
-		secondary: {
-			main: teal['A700'],
-		},
-	},
+	// palette: {
+	// 	primary: {
+	// 		main: deepOrange['A200'],
+	// 		// contrastText: '#fff',
+	// 	},
+	// 	secondary: {
+	// 		main: teal['A700'],
+	// 	},
+	// },
 });
 
 const useStyles = makeStyles((theme) => ({

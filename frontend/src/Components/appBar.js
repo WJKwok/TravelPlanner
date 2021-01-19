@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
 		width: '100%',
 		maxWidth: 1280,
 		margin: 'auto',
+		padding: '0px 16px',
 	},
 	logo: {
 		color: '#000',
@@ -32,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	iconButton: {
 		cursor: 'pointer',
+		color: '#000',
 	},
 	sizedBox: {
 		flexGrow: 1,
@@ -65,7 +67,7 @@ const MenuAppBar = ({ offset, transparent }) => {
 	return (
 		<>
 			<AppBar position="fixed" className={classes.AppBar} elevation={0}>
-				<Toolbar className={classes.toolbar}>
+				<Toolbar disableGutters={true} className={classes.toolbar}>
 					<Typography
 						component={Link}
 						to="/"

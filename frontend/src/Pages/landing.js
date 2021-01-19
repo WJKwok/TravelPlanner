@@ -17,6 +17,7 @@ const useStyles = makeStyles({
 		position: 'relative',
 		width: '100%',
 		height: '50vh',
+		borderRadius: 10,
 	},
 	autocomplete: {
 		position: 'absolute',
@@ -44,7 +45,7 @@ function Landing() {
 
 	return (
 		<>
-			<AppBar transparent={true} />
+			<AppBar />
 			<CardMedia
 				className={classes.cardMedia}
 				image="https://i.imgur.com/rpw1Dol.jpg"
