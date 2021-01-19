@@ -91,6 +91,7 @@ function SpotsBoard(props) {
 				spots={spots}
 				pinClicked={executeScroll}
 				mouseOverCard={mouseOverCard}
+				resizable={true}
 			/>
 		</Paper>
 	);

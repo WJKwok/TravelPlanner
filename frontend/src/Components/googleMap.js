@@ -10,6 +10,12 @@ const useStyles = makeStyles((theme) => ({
 		width: '100%',
 		height: 220,
 	},
+	resizable: {
+		resize: 'vertical',
+		overflow: 'auto',
+		position: 'relative',
+		zIndex: 3,
+	},
 	marker: {
 		width: 20,
 		height: 20,
@@ -29,24 +35,15 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function GoogleMap({ spots, coordinates, pinClicked, mouseOverCard }) {
+function GoogleMap({
+	spots,
+	coordinates,
+	pinClicked,
+	mouseOverCard,
+	resizable,
+}) {
 	const classes = badgeStyles();
-	const mapClass = useStyles();
-
-	// const coordinates = {
-	// 	Berlin: {
-	// 		lat: 52.52,
-	// 		lng: 13.4,
-	// 	},
-	// 	Zurich: {
-	// 		lat: 47.3769,
-	// 		lng: 8.5417,
-	// 	},
-	// 	'New+York': {
-	// 		lat: 40.7128,
-	// 		lng: -74.006,
-	// 	},
-	// };
+	const mapClass = useStyles({ resizable });
 
 	let center = { lat: coordinates[0], lng: coordinates[1] };
 
@@ -89,7 +86,9 @@ function GoogleMap({ spots, coordinates, pinClicked, mouseOverCard }) {
 	};
 
 	return (
-		<div className={mapClass.gMap}>
+		<div
+			className={`${mapClass.gMap} ${resizable ? mapClass.resizable : null}`}
+		>
 			<GoogleMapReact
 				bootstrapURLKeys={{
 					key: process.env.REACT_APP_GOOGLE_PLACES_API_KEY,
