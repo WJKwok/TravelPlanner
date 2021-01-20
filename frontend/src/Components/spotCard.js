@@ -133,7 +133,7 @@ const SpotCard = React.memo((props) => {
 
 	const { dispatch } = useContext(SpotContext);
 	const { setClickedCard } = useContext(LoggerContext);
-	const cssProps = { backgroundColor: iconColour[spot.category] };
+	const cssProps = { backgroundColor: iconColour[spot.categories[0]] };
 	const classes = useStyles(cssProps);
 	const [expanded, setExpanded] = useState(props.expanded);
 	const [liked, setLiked] = useState(spot.liked);

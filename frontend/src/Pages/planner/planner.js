@@ -714,7 +714,7 @@ const GET_TRIP = gql`
 					hours
 					businessStatus
 				}
-				category
+				# category
 				categories
 				imgUrl
 				content
@@ -799,7 +799,7 @@ const GET_SPOT = gql`
 				rating
 				location
 			}
-			category
+			# category
 			imgUrl
 			content
 		}
@@ -819,7 +819,7 @@ const GET_SPOTS = gql`
 				businessStatus
 				hours
 			}
-			category
+			# category
 			imgUrl
 			content
 			eventName

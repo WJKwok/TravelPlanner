@@ -71,8 +71,8 @@ function GoogleMap({
 				lng={place.location[1]}
 				index={index}
 				text={`${index + 1}`}
-				icon={iconDict[spot.category]}
-				category={spot.category}
+				icon={iconDict[spot.categories[0]]}
+				category={spot.categories[0]}
 			/>
 		);
 	});
