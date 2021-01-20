@@ -185,8 +185,9 @@ function Planner(props) {
 		variables: { tripId },
 	});
 
-	const [getSpotsForCategoryInGuide] = useLazyQuery(GET_SPOTS, {
+	const [getSpotsForCategoryInGuide, {variables}] = useLazyQuery(GET_SPOTS, {
 		onCompleted({ getSpotsForCategoryInGuide }) {
+			console.log("variables", variables)
 			console.log('getSpotsForCategoryInGuide:', getSpotsForCategoryInGuide);
 			dispatch({
 				type: 'ADD_SPOTS',
@@ -195,7 +196,7 @@ function Planner(props) {
 			if (getSpotsForCategoryInGuide.length > 0) {
 				setQueriedVariables([
 					...queriedVariables,
-					getSpotsForCategoryInGuide[0].category,
+					variables.category,
 				]);
 			}
 		},
@@ -409,26 +410,34 @@ function Planner(props) {
 		const daySpotsArrayFlattened = daySpotsArray.flat();
 
 		for (let j = 0; j < daySpotsArrayFlattened.length; j++) {
-			const category = spotState.spots[daySpotsArrayFlattened[j]].category;
+			const categories = spotState.spots[daySpotsArrayFlattened[j]].categories;
 
-			if (category === 'Searched') {
+			const categoriesNotYetIncluded = categories.filter(cat => (cat !== 'Searched') && (!categoriesInDayBoard.includes(cat)))
+			if (categories[0] === 'Searched') {
 				googlePlacesInTrip.push(daySpotsArrayFlattened[j]);
-			} else if (!categoriesInDayBoard.includes(category)) {
-				categoriesInDayBoard.push(category);
+			} else if (categoriesNotYetIncluded.length > 0) {
+				categoriesInDayBoard.push.apply(categoriesInDayBoard, categoriesNotYetIncluded);
 			}
+
+			// if (categories[0] === 'Searched') {
+			// 	googlePlacesInTrip.push(daySpotsArrayFlattened[j]);
+			// } else if (!categoriesInDayBoard.includes(category)) {
+			// 	categoriesInDayBoard.push(category);
+			// }
 		}
 
 		const allspots = spotState.spots;
 		const likedSpots = Object.keys(allspots).filter((id) => allspots[id].liked);
 		const likedCategory = [];
 		for (let k = 0; k < likedSpots.length; k++) {
-			likedCategory.push(allspots[likedSpots[k]].category);
+			likedCategory.push.apply(likedCategory, allspots[likedSpots[k]].categories);
 		}
 
 		const categoriesInTrip = [
 			...new Set([...likedCategory, ...categoriesInDayBoard]),
 		];
 
+		console.log("categoriesInTrip", categoriesInTrip)
 		if (daySpotsArrayFlattened.length === 0 && likedSpots.length === 0) {
 			setSnackMessage({
 				text: 'Your itinerary is empty or you have no liked spots',
@@ -559,9 +568,14 @@ function Planner(props) {
 		const isLikedChipClicked = categoryChips[likedChipIndex].clicked;
 
 		const selectedCategories = currentlySelectedChips(categoryChips);
-		const filteredSpots = unfilteredSpots.filter((spot) =>
-			selectedCategories.includes(spot.category)
+		const filteredSpots = unfilteredSpots.filter((spot) => 
+			spot.categories.some(cat => selectedCategories.includes(cat)) 
 		);
+
+		// const filteredSpots = unfilteredSpots.filter((spot) => 
+		// 	selectedCategories.includes(spot.category)
+		// );
+
 		const likedSpots = unfilteredSpots.filter((spot) => spot.liked);
 		const spots = isLikedChipClicked
 			? [...new Set([...filteredSpots, ...likedSpots])]
@@ -701,6 +715,7 @@ const GET_TRIP = gql`
 					businessStatus
 				}
 				category
+				categories
 				imgUrl
 				content
 				date
@@ -809,6 +824,7 @@ const GET_SPOTS = gql`
 			content
 			eventName
 			date
+			categories
 		}
 	}
 `;

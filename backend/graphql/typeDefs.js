@@ -37,6 +37,7 @@ module.exports = gql`
 		content: String!
 		date: String
 		eventName: String
+		categories: [String]!
 	}
 	input SpotInput {
 		guide: String!

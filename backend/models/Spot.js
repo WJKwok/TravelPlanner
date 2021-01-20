@@ -10,6 +10,7 @@ const spotSchema = new Schema({
 		ref: 'Place',
 	},
 	category: String,
+	categories: [String],
 	imgUrl: [String],
 	content: String,
 	date: String,

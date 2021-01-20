@@ -18,7 +18,7 @@ module.exports = {
 			try {
 				const trip = await Trip.findById(tripId).populate('guide');
 				const categoriesInTrip = trip.categoriesInTrip.map((category) => {
-					return { category };
+					return { categories: category };
 				});
 				/* console.log(categoriesInTrip)
                 [{"category":"Retail"},{"category":"Restaurant"},{"category":"Museum"}]

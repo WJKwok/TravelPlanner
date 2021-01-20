@@ -15,6 +15,7 @@ module.exports.getGooglePlace = async (placeId) => {
 		const result = response.data.result;
 		const googlePlace = {
 			category: 'Searched',
+			categories: ['Searched'],
 			content: 'hello',
 			guide: 'Searched',
 			id: placeId,

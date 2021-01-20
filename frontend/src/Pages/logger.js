@@ -625,6 +625,7 @@ const GET_ALL_SPOTS_IN_GUIDE = gql`
 				hours
 			}
 			category
+			categories
 			imgUrl
 			content
 			eventName

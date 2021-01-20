@@ -163,7 +163,7 @@ const addNewSpots = (state, newSpots) => {
 			...state.columns,
 			'filtered-spots': {
 				...state.columns['filtered-spots'],
-				spotIds: [...state.columns['filtered-spots'].spotIds, ...spotIds],
+				spotIds: [...new Set([...state.columns['filtered-spots'].spotIds, ...spotIds])]
 			},
 		},
 	};

@@ -266,7 +266,7 @@ const SpotCard = React.memo((props) => {
 							<CardContent>
 								<div className={classes.iconsRow}>
 									<div className={classes.catIndex}>
-										{iconDictWhite[spot.category]}
+										{iconDictWhite[spot.categories[0]]}
 										<span className={classes.index}>{index + 1}</span>
 									</div>
 									{dragAndDroppable ? (

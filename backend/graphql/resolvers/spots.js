@@ -26,7 +26,7 @@ module.exports = {
 		},
 		async getSpotsForCategoryInGuide(_, { guideId, category }) {
 			try {
-				const spots = await Spot.find({ guide: guideId, category }).populate(
+				const spots = await Spot.find({ guide: guideId, categories: category }).populate(
 					'place'
 				);
 				//console.log(spots);
@@ -40,9 +40,13 @@ module.exports = {
 		async editSchemaOfSpots() {
 			// await Spot.updateMany({ $unset: { randomData: '' } });
 			const spots = await Spot.find();
+			const promises = []
 			spots.forEach((spot) => {
-				Spot.update({ _id: spot._id }, { $set: { imgUrl: [spot.imgUrl] } });
+				spot.categories = [spot.category]
+				promises.push(spot.save())
 			});
+			const editedspots = await Promise.all(promises);
+			console.log(editedspots)
 			return true;
 		},
 		async saveSpot(
