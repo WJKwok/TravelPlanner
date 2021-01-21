@@ -26,9 +26,10 @@ module.exports = {
 		},
 		async getSpotsForCategoryInGuide(_, { guideId, category }) {
 			try {
-				const spots = await Spot.find({ guide: guideId, categories: category }).populate(
-					'place'
-				);
+				const spots = await Spot.find({
+					guide: guideId,
+					categories: category,
+				}).populate('place');
 				//console.log(spots);
 				return spots;
 			} catch (err) {
@@ -40,19 +41,27 @@ module.exports = {
 		async editSchemaOfSpots() {
 			// await Spot.updateMany({ $unset: { randomData: '' } });
 			const spots = await Spot.find();
-			const promises = []
+			const promises = [];
 			spots.forEach((spot) => {
-				spot.categories = [spot.category]
-				promises.push(spot.save())
+				spot.categories = [spot.category];
+				promises.push(spot.save());
 			});
 			const editedspots = await Promise.all(promises);
-			console.log(editedspots)
+			console.log(editedspots);
 			return true;
 		},
 		async saveSpot(
 			_,
 			{
-				spotInput: { guide, place, category, imgUrl, content, date, eventName },
+				spotInput: {
+					guide,
+					place,
+					categories,
+					imgUrl,
+					content,
+					date,
+					eventName,
+				},
 			},
 			context
 		) {
@@ -64,7 +73,7 @@ module.exports = {
 			try {
 				let spot = await Spot.findOne({ guide, place });
 				if (spot) {
-					spot.category = category;
+					spot.categories = categories;
 					spot.imgUrl = imgUrl;
 					spot.content = content;
 					spot.date = date;
@@ -77,7 +86,7 @@ module.exports = {
 					const newSpot = new Spot({
 						guide,
 						place,
-						category,
+						categories,
 						imgUrl,
 						content,
 						date,

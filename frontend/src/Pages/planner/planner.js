@@ -185,19 +185,16 @@ function Planner(props) {
 		variables: { tripId },
 	});
 
-	const [getSpotsForCategoryInGuide, {variables}] = useLazyQuery(GET_SPOTS, {
+	const [getSpotsForCategoryInGuide, { variables }] = useLazyQuery(GET_SPOTS, {
 		onCompleted({ getSpotsForCategoryInGuide }) {
-			console.log("variables", variables)
+			console.log('variables', variables);
 			console.log('getSpotsForCategoryInGuide:', getSpotsForCategoryInGuide);
 			dispatch({
 				type: 'ADD_SPOTS',
 				payload: { newSpots: getSpotsForCategoryInGuide },
 			});
 			if (getSpotsForCategoryInGuide.length > 0) {
-				setQueriedVariables([
-					...queriedVariables,
-					variables.category,
-				]);
+				setQueriedVariables([...queriedVariables, variables.category]);
 			}
 		},
 	});
@@ -214,7 +211,7 @@ function Planner(props) {
 				});
 				setQueriedVariables([...queriedVariables, 'Searched']);
 			} else {
-				const itemCategory = getSpot.category;
+				const itemCategory = getSpot.categories[0];
 				getSpotsForCategoryInGuide({
 					variables: {
 						guideId,
@@ -293,7 +290,7 @@ function Planner(props) {
 		}
 
 		const reshapedItem = {
-			category: 'Searched',
+			categories: ['Searched'],
 			content: 'hello',
 			guide: 'Searched',
 			id: searchedItem.id,
@@ -412,11 +409,16 @@ function Planner(props) {
 		for (let j = 0; j < daySpotsArrayFlattened.length; j++) {
 			const categories = spotState.spots[daySpotsArrayFlattened[j]].categories;
 
-			const categoriesNotYetIncluded = categories.filter(cat => (cat !== 'Searched') && (!categoriesInDayBoard.includes(cat)))
+			const categoriesNotYetIncluded = categories.filter(
+				(cat) => cat !== 'Searched' && !categoriesInDayBoard.includes(cat)
+			);
 			if (categories[0] === 'Searched') {
 				googlePlacesInTrip.push(daySpotsArrayFlattened[j]);
 			} else if (categoriesNotYetIncluded.length > 0) {
-				categoriesInDayBoard.push.apply(categoriesInDayBoard, categoriesNotYetIncluded);
+				categoriesInDayBoard.push.apply(
+					categoriesInDayBoard,
+					categoriesNotYetIncluded
+				);
 			}
 
 			// if (categories[0] === 'Searched') {
@@ -430,14 +432,17 @@ function Planner(props) {
 		const likedSpots = Object.keys(allspots).filter((id) => allspots[id].liked);
 		const likedCategory = [];
 		for (let k = 0; k < likedSpots.length; k++) {
-			likedCategory.push.apply(likedCategory, allspots[likedSpots[k]].categories);
+			likedCategory.push.apply(
+				likedCategory,
+				allspots[likedSpots[k]].categories
+			);
 		}
 
 		const categoriesInTrip = [
 			...new Set([...likedCategory, ...categoriesInDayBoard]),
 		];
 
-		console.log("categoriesInTrip", categoriesInTrip)
+		console.log('categoriesInTrip', categoriesInTrip);
 		if (daySpotsArrayFlattened.length === 0 && likedSpots.length === 0) {
 			setSnackMessage({
 				text: 'Your itinerary is empty or you have no liked spots',
@@ -568,13 +573,9 @@ function Planner(props) {
 		const isLikedChipClicked = categoryChips[likedChipIndex].clicked;
 
 		const selectedCategories = currentlySelectedChips(categoryChips);
-		const filteredSpots = unfilteredSpots.filter((spot) => 
-			spot.categories.some(cat => selectedCategories.includes(cat)) 
+		const filteredSpots = unfilteredSpots.filter((spot) =>
+			spot.categories.some((cat) => selectedCategories.includes(cat))
 		);
-
-		// const filteredSpots = unfilteredSpots.filter((spot) => 
-		// 	selectedCategories.includes(spot.category)
-		// );
 
 		const likedSpots = unfilteredSpots.filter((spot) => spot.liked);
 		const spots = isLikedChipClicked
@@ -714,7 +715,6 @@ const GET_TRIP = gql`
 					hours
 					businessStatus
 				}
-				# category
 				categories
 				imgUrl
 				content
@@ -799,7 +799,6 @@ const GET_SPOT = gql`
 				rating
 				location
 			}
-			# category
 			imgUrl
 			content
 		}
@@ -819,7 +818,6 @@ const GET_SPOTS = gql`
 				businessStatus
 				hours
 			}
-			# category
 			imgUrl
 			content
 			eventName

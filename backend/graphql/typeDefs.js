@@ -42,7 +42,7 @@ module.exports = gql`
 	input SpotInput {
 		guide: String!
 		place: String!
-		category: String!
+		categories: [String]!
 		imgUrl: [String]!
 		content: String!
 		date: String

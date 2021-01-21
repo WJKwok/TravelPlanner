@@ -1,6 +1,12 @@
 import React, { useState, useContext, useEffect, useReducer } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { TextField, MenuItem, Button, IconButton } from '@material-ui/core/';
+import {
+	TextField,
+	MenuItem,
+	Button,
+	IconButton,
+	Select,
+} from '@material-ui/core/';
 import PlaceAutoComplete from '../Components/placeAutoComplete';
 import AppBar from '../Components/appBar';
 import SpotsBoard from '../Components/spotsBoard';
@@ -69,7 +75,7 @@ function Logger(props) {
 
 	const initialSpotState = {
 		guide: {},
-		category: '',
+		categories: [],
 		placeId: '',
 		name: '',
 		date: '',
@@ -103,7 +109,7 @@ function Logger(props) {
 			becuase it would override 'guide'
 			*/
 			setSpotInput({
-				category: clickedCard.category,
+				categories: clickedCard.categories,
 				placeId: clickedCard.place.id,
 				name: clickedCard.place.name,
 				date: clickedCard.date,
@@ -270,7 +276,7 @@ function Logger(props) {
 
 		const selectedCategories = currentlySelectedChips(categoryChips);
 		const filteredSpots = unfilteredSpots.filter((spot) =>
-			selectedCategories.includes(spot.category)
+			spot.categories.some((cat) => selectedCategories.includes(cat))
 		);
 
 		return (
@@ -377,15 +383,17 @@ function Logger(props) {
 				/>
 				<TextField
 					className={classes.textField}
-					label="Category"
-					name="category"
-					value={spotInput.category}
+					label="Categories"
+					name="categories"
+					value={spotInput.categories}
 					variant="outlined"
 					select
+					SelectProps={{ multiple: true }}
 					onChange={spotFieldChangeHandler}
 				>
 					{categoryMenu(spotInput.guide)}
 				</TextField>
+
 				<TextField
 					className={classes.textField}
 					id="edit-placeId"
@@ -402,7 +410,7 @@ function Logger(props) {
 					variant="outlined"
 					disabled
 				/>
-				{spotInput.category === 'Event' && (
+				{spotInput.categories[0] === 'Event' && (
 					<>
 						<TextField
 							className={classes.textField}
@@ -576,7 +584,7 @@ const SAVE_SPOT = gql`
 	mutation saveSpot(
 		$guide: String!
 		$place: String!
-		$category: String!
+		$categories: [String]!
 		$imgUrl: [String]!
 		$content: String!
 		$eventName: String
@@ -586,7 +594,7 @@ const SAVE_SPOT = gql`
 			spotInput: {
 				guide: $guide
 				place: $place
-				category: $category
+				categories: $categories
 				imgUrl: $imgUrl
 				content: $content
 				eventName: $eventName
@@ -624,7 +632,6 @@ const GET_ALL_SPOTS_IN_GUIDE = gql`
 				address
 				hours
 			}
-			category
 			categories
 			imgUrl
 			content

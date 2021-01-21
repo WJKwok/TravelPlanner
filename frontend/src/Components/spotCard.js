@@ -167,15 +167,21 @@ const SpotCard = React.memo((props) => {
 		}
 
 		// if not an event card
-		if (spot.category !== 'Event') {
+		if (spot.categories[0] !== 'Event') {
 			return true;
 		}
 
-		if (spot.category === 'Event' && moment(date).isSame(spot.date, 'day')) {
+		if (
+			spot.categories[0] === 'Event' &&
+			moment(date).isSame(spot.date, 'day')
+		) {
 			return true;
 		}
 
-		if (spot.category === 'Event' && !moment(date).isSame(spot.date, 'day')) {
+		if (
+			spot.categories[0] === 'Event' &&
+			!moment(date).isSame(spot.date, 'day')
+		) {
 			return false;
 		}
 	};
@@ -191,7 +197,7 @@ const SpotCard = React.memo((props) => {
 
 	const eventIsOnRightDayBoard = isEventOnRightDayBoard(date, spot);
 	const cardHeader =
-		spot.category === 'Event' ? (
+		spot.categories[0] === 'Event' ? (
 			<>
 				<Typography className={classes.spotTitle}>{spot.eventName}</Typography>
 				<Typography
