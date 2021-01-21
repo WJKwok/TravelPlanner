@@ -75,6 +75,7 @@ module.exports = gql`
 		rating: Float!
 		address: String!
 		location: [Float]!
+		hours: [String]
 	}
 	input DayPlanInput {
 		placeIds: [String]

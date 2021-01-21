@@ -6,7 +6,7 @@ module.exports = {
 	Mutation: {
 		async savePlace(
 			_,
-			{ placeInput: { id, name, rating, address, location } },
+			{ placeInput: { id, name, rating, address, location, hours } },
 			context
 		) {
 			const user = checkAuth(context);
@@ -24,6 +24,7 @@ module.exports = {
 						rating,
 						address,
 						location,
+						hours,
 						updatedAt: new Date().toISOString(),
 					});
 

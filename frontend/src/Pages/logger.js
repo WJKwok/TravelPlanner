@@ -127,6 +127,7 @@ function Logger(props) {
 	const [uploadedImgFiles, setUploadedImgFiles] = useState({});
 	// const [uploadedImagesIds, setUploadedImagesIds] = useState([]);
 	const [uploadedImageBlobToFile, setUploadedImageBlobToFile] = useState({});
+	const [mapCoordinates, setMapCoordinates] = useState([]);
 
 	const { data: { getAllSpotsForGuide: allSpots } = [] } = useQuery(
 		GET_ALL_SPOTS_IN_GUIDE,
@@ -213,6 +214,7 @@ function Logger(props) {
 			location: [placeObject.location.lat, placeObject.location.lng],
 		});
 	};
+	console.log('spotInput', spotInput);
 
 	const submit = async () => {
 		if (!spotInput.placeId) {
@@ -242,6 +244,7 @@ function Logger(props) {
 			console.log('guide: ', getGuide);
 			getCategories(getGuide.categories, getGuide.categories);
 			setSpotInput({ guide: getGuide });
+			setMapCoordinates([...getGuide.coordinates]);
 		},
 		variables: {
 			guideId,
@@ -273,6 +276,7 @@ function Logger(props) {
 
 	const renderSpotsBoard = () => {
 		const unfilteredSpots = allSpots;
+		console.log('allSpots', allSpots);
 
 		const selectedCategories = currentlySelectedChips(categoryChips);
 		const filteredSpots = unfilteredSpots.filter((spot) =>
@@ -285,7 +289,7 @@ function Logger(props) {
 				key={guideId}
 				boardId={guideId}
 				spots={filteredSpots}
-				coordinates={[52.52, 13.4]}
+				coordinates={mapCoordinates}
 			/>
 		);
 	};
@@ -565,6 +569,7 @@ const SAVE_PLACE = gql`
 		$rating: Float!
 		$address: String!
 		$location: [Float]!
+		$hours: [String]
 	) {
 		savePlace(
 			placeInput: {
@@ -573,6 +578,7 @@ const SAVE_PLACE = gql`
 				rating: $rating
 				address: $address
 				location: $location
+				hours: $hours
 			}
 		) {
 			name
