@@ -81,6 +81,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	headerThumbnail: {
 		minWidth: 90,
+		maxWidth: 90,
 		objectFit: 'cover',
 	},
 	ratingDiv: {
@@ -216,7 +217,9 @@ const SpotCard = React.memo((props) => {
 			</>
 		) : (
 			<>
-				<Typography className={classes.spotTitle}>{spot.place.name}</Typography>
+				<Typography noWrap className={classes.spotTitle}>
+					{spot.place.name}
+				</Typography>
 				<Typography
 					data-testid="business-status"
 					className={classes.spotSubtitle}
@@ -265,8 +268,17 @@ const SpotCard = React.memo((props) => {
 						) : (
 							<CardMedia
 								className={classes.headerThumbnail}
-								image={spot.imgUrl[0]}
-							/>
+
+								// image={spot.imgUrl[0]}
+							>
+								<Image
+									data-testid="existing-image"
+									key={spot.imgUrl[0]}
+									className={classes.media}
+									cloudName={process.env.REACT_APP_CLOUD_NAME}
+									publicId={spot.imgUrl[0]}
+								/>
+							</CardMedia>
 						)}
 						<div>
 							<CardContent>

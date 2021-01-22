@@ -123,11 +123,10 @@ function Logger(props) {
 		}
 	}, [clickedCard]);
 
-	const [tempImgUrls, setTempImgUrls] = useState([]);
 	const [uploadedImgFiles, setUploadedImgFiles] = useState({});
-	// const [uploadedImagesIds, setUploadedImagesIds] = useState([]);
 	const [uploadedImageBlobToFile, setUploadedImageBlobToFile] = useState({});
 	const [mapCoordinates, setMapCoordinates] = useState([]);
+	const [submitButtonClicked, setSubmitButtonClicked] = useState(false);
 
 	const { data: { getAllSpotsForGuide: allSpots } = [] } = useQuery(
 		GET_ALL_SPOTS_IN_GUIDE,
@@ -171,8 +170,9 @@ function Logger(props) {
 				code: 'Confirm',
 			});
 			setSpotInput(initialSpotState);
-			setTempImgUrls([]);
 			setUploadedImgFiles({});
+			setUploadedImageBlobToFile({});
+			setSubmitButtonClicked(false);
 		},
 		update(_, result) {
 			console.log(result);
@@ -217,15 +217,55 @@ function Logger(props) {
 	console.log('spotInput', spotInput);
 
 	const submit = async () => {
-		if (!spotInput.placeId) {
-			setSnackMessage({
-				text: "Can't save without a Place ID",
-				code: 'Error',
-			});
+		setSubmitButtonClicked(true);
+		const requiredInputFieldTypes = {
+			placeId: 'string',
+			categories: 'array',
+			// imgUrl: 'array', you have to check any true img blob
+			content: 'string',
+		};
+
+		const extraRequiredInputFieldTypesForEvents = {
+			date: 'string', //TODO: check format
+			eventName: 'string',
+		};
+
+		const areRequiredFieldsFilled = Object.keys(requiredInputFieldTypes).map(
+			(key) => {
+				if (requiredInputFieldTypes[key] === 'string') {
+					return spotInput[key] ? true : false;
+				}
+
+				if (requiredInputFieldTypes[key] === 'array') {
+					return spotInput[key].length > 0 ? true : false;
+				}
+			}
+		);
+
+		if (!areRequiredFieldsFilled.includes(false)) {
+			console.log('yes they are filled!', areRequiredFieldsFilled);
+		} else {
+			console.log('nope they are not!', areRequiredFieldsFilled);
+			if (!spotInput.placeId) {
+				setSnackMessage({
+					text: 'Not all required inputs are filled 😏',
+					code: 'Error',
+				});
+				return;
+			}
 			return;
 		}
 
+		// check inputs that are not filled, and set submitButtonClicked to true
+		// textfield error prop will then check against spotInput
+
 		const uploadedImagesIds = await uploadedImagesPublicIds(uploadedImgFiles);
+
+		if ([...spotInput.imgUrl, ...uploadedImagesIds].length < 1) {
+			console.log('no imgs');
+			return;
+		}
+
 		savePlace();
 		saveSpot({
 			variables: {
@@ -356,7 +396,6 @@ function Logger(props) {
 	const deleteUploadedImageHandler = async (imgUrl) => {
 		console.log({
 			imgUrl,
-			tempImgUrls,
 			uploadedImgFiles,
 			uploadedImageBlobToFile,
 		});
@@ -368,6 +407,49 @@ function Logger(props) {
 	const onDragEnd = (result) => {
 		return;
 	};
+
+	const uploadedImgPreviewCard = Object.keys(uploadedImageBlobToFile).map(
+		(imgLink) => {
+			const imgPreview = uploadedImageBlobToFile[imgLink].toUpload ? (
+				<div
+					key={imgLink}
+					data-testid="uploadedImage"
+					className={classes.mediaCard}
+				>
+					<img src={imgLink} className={classes.media} />
+					<IconButton
+						className={classes.deleteButton}
+						onClick={() => deleteUploadedImageHandler(imgLink)}
+					>
+						<DeleteIcon color="error" />
+					</IconButton>
+				</div>
+			) : null;
+			return imgPreview;
+		}
+	);
+
+	const errorMsgForUploadedImg = (uploadedImgPreviewCard) => {
+		if (submitButtonClicked) {
+			if (uploadedImgPreviewCard.length < 1) {
+				return <p>you need pics</p>;
+			}
+			if (
+				uploadedImgPreviewCard.length > 0 &&
+				uploadedImgPreviewCard.every((el) => el === null)
+			) {
+				return <p>you need pics</p>;
+			}
+		}
+
+		if (uploadedImgPreviewCard.length > 0) {
+			return uploadedImgPreviewCard;
+		}
+
+		return <p>nothing is wrong</p>;
+	};
+
+	console.log('uploadedImgPreviewCard', uploadedImgPreviewCard);
 
 	return (
 		<>
@@ -394,10 +476,10 @@ function Logger(props) {
 					select
 					SelectProps={{ multiple: true }}
 					onChange={spotFieldChangeHandler}
+					error={submitButtonClicked && spotInput.categories.length < 1}
 				>
 					{categoryMenu(spotInput.guide)}
 				</TextField>
-
 				<TextField
 					className={classes.textField}
 					id="edit-placeId"
@@ -405,6 +487,7 @@ function Logger(props) {
 					value={spotInput.placeId}
 					variant="outlined"
 					disabled
+					error={submitButtonClicked && !spotInput.placeId}
 				/>
 				<TextField
 					className={classes.textField}
@@ -455,6 +538,8 @@ function Logger(props) {
 					variant="outlined"
 					disabled
 				/>
+				<p>Hours:</p>
+				{spotInput.hours && <p>{spotInput.hours.join(' | ')}</p>}
 				<div className={classes.textField}>
 					<div className={classes.mediaCards}>
 						{spotInput.imgUrl.map((img) => {
@@ -489,24 +574,7 @@ function Logger(props) {
 					</div>
 
 					<div className={classes.mediaCards}>
-						{Object.keys(uploadedImageBlobToFile).map((imgLink) => {
-							const imgPreview = uploadedImageBlobToFile[imgLink].toUpload ? (
-								<div
-									key={imgLink}
-									data-testid="uploadedImage"
-									className={classes.mediaCard}
-								>
-									<img src={imgLink} className={classes.media} />
-									<IconButton
-										className={classes.deleteButton}
-										onClick={() => deleteUploadedImageHandler(imgLink)}
-									>
-										<DeleteIcon color="error" />
-									</IconButton>
-								</div>
-							) : null;
-							return imgPreview;
-						})}
+						{errorMsgForUploadedImg(uploadedImgPreviewCard)}
 					</div>
 				</div>
 				<div className={classes.textField}>
@@ -529,6 +597,7 @@ function Logger(props) {
 					multiline
 					rows={4}
 					onChange={spotFieldChangeHandler}
+					error={submitButtonClicked && !spotInput.content}
 				/>
 				<Button
 					variant="outlined"

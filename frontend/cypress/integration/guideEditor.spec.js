@@ -17,9 +17,13 @@ it('edit guide', () => {
 	cy.get('#submit')
 		.click()
 		.then(() => {
-			cy.get('[data-testid=snackBar]')
-				.contains("Can't save without a Place ID")
-				.should('have.length', 1);
+			cy.get('#edit-placeId')
+				.parent()
+				.should(($placeIdForm) => {
+					expect($placeIdForm).to.have.length(1);
+					const className = $placeIdForm[0].className;
+					expect(className).to.match(/Mui-error/);
+				});
 		});
 
 	//editing a spot
