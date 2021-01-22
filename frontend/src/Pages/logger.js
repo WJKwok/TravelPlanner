@@ -69,6 +69,7 @@ function Logger(props) {
 	const classes = useStyles();
 
 	const guideId = props.match.params.guideBookId;
+	const [guide, setGuide] = useState({});
 	const { setSnackMessage } = useContext(SnackBarContext);
 
 	const { clickedCard } = useContext(LoggerContext);
@@ -83,6 +84,7 @@ function Logger(props) {
 		rating: '',
 		address: '',
 		location: [],
+		hours: '',
 		imgUrl: [],
 		content: '',
 	};
@@ -117,6 +119,7 @@ function Logger(props) {
 				rating: clickedCard.place.rating,
 				address: clickedCard.place.address,
 				location: clickedCard.place.location,
+				hours: clickedCard.place.hours,
 				imgUrl: clickedCard.imgUrl,
 				content: clickedCard.content,
 			});
@@ -270,7 +273,7 @@ function Logger(props) {
 		saveSpot({
 			variables: {
 				...spotInput,
-				guide: spotInput.guide.id,
+				guide: guideId,
 				place: spotInput.placeId,
 				imgUrl: [...spotInput.imgUrl, ...uploadedImagesIds],
 			},
@@ -282,6 +285,7 @@ function Logger(props) {
 	useQuery(GET_GUIDE, {
 		onCompleted({ getGuide }) {
 			console.log('guide: ', getGuide);
+			setGuide(getGuide);
 			getCategories(getGuide.categories, getGuide.categories);
 			setSpotInput({ guide: getGuide });
 			setMapCoordinates([...getGuide.coordinates]);
@@ -465,7 +469,7 @@ function Logger(props) {
 				<PlaceAutoComplete
 					clickFunction={getDetails}
 					city={spotInput.guide.city}
-					coordinates={spotInput.guide.coordinates}
+					coordinates={mapCoordinates}
 				/>
 				<TextField
 					className={classes.textField}
@@ -478,7 +482,7 @@ function Logger(props) {
 					onChange={spotFieldChangeHandler}
 					error={submitButtonClicked && spotInput.categories.length < 1}
 				>
-					{categoryMenu(spotInput.guide)}
+					{categoryMenu(guide)}
 				</TextField>
 				<TextField
 					className={classes.textField}
