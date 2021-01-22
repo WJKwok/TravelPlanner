@@ -189,12 +189,9 @@ const SpotCard = React.memo((props) => {
 
 	const dayToArrayIndex = day === 0 ? 6 : day - 1;
 
-	const businessStatus =
-		spot.place.businessStatus === 'OPERATIONAL'
-			? spot.place.hours
-				? trimDayText(spot.place.hours[dayToArrayIndex])
-				: 'Hours Null'
-			: spot.place.businessStatus;
+	const businessStatus = spot.place.hours
+		? trimDayText(spot.place.hours[dayToArrayIndex])
+		: 'Hours Null';
 
 	const eventIsOnRightDayBoard = isEventOnRightDayBoard(date, spot);
 	const cardHeader =
