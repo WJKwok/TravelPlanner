@@ -54,7 +54,7 @@ function GoogleMap({
 		<Badge
 			badgeContent={<p>{text}</p>}
 			onClick={() => pinClicked(index, id)}
-			classes={{ badge: classes[category] }}
+			classes={{ badge: classes[category] ? classes[category] : classes.Default  }}
 			className={mouseOverCard === id ? mapClass.marker : null}
 		>
 			{icon}
@@ -71,7 +71,7 @@ function GoogleMap({
 				lng={place.location[1]}
 				index={index}
 				text={`${index + 1}`}
-				icon={iconDict[spot.categories[0]]}
+				icon={iconDict[spot.categories[0]] ? iconDict[spot.categories[0]] : iconDict.Default}
 				category={spot.categories[0]}
 			/>
 		);

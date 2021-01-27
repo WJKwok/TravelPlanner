@@ -300,7 +300,7 @@ function Logger(props) {
 			return {
 				key: category,
 				label: category,
-				icon: iconDict[category],
+				icon: iconDict[category] ? iconDict[category] : iconDict.Default,
 				clicked: clickedCategories.includes(category) ? true : false,
 			};
 		});

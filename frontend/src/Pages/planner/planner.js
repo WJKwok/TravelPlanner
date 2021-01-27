@@ -229,10 +229,11 @@ function Planner(props) {
 
 	const getCategories = (guideCategories, clickedCategories = []) => {
 		let categories = guideCategories.map((category) => {
+			console.log('getCategories', iconDict.Default)
 			return {
 				key: category,
 				label: category,
-				icon: iconDict[category],
+				icon: iconDict[category] ? iconDict[category] : iconDict.Default,
 				clicked: clickedCategories.includes(category) ? true : false,
 			};
 		});

@@ -134,7 +134,7 @@ const SpotCard = React.memo((props) => {
 
 	const { dispatch } = useContext(SpotContext);
 	const { setClickedCard } = useContext(LoggerContext);
-	const cssProps = { backgroundColor: iconColour[spot.categories[0]] };
+	const cssProps = { backgroundColor: iconColour[spot.categories[0]] ? iconColour[spot.categories[0]] : iconColour.Default };
 	const classes = useStyles(cssProps);
 	const [expanded, setExpanded] = useState(props.expanded);
 	const [liked, setLiked] = useState(spot.liked);
@@ -281,7 +281,7 @@ const SpotCard = React.memo((props) => {
 							<CardContent>
 								<div className={classes.iconsRow}>
 									<div className={classes.catIndex}>
-										{iconDictWhite[spot.categories[0]]}
+										{iconDictWhite[spot.categories[0]] ? iconDictWhite[spot.categories[0]] : iconDictWhite.Default}
 										<span className={classes.index}>{index + 1}</span>
 									</div>
 									{dragAndDroppable ? (
