@@ -89,7 +89,7 @@ export const client = new ApolloClient({
 const REFRESH_TOKEN = gql`
 	mutation refreshToken($refreshToken: String!) {
 		refreshToken(refreshToken: $refreshToken) {
-			token
+			accessToken
 			refreshToken
 		}
 	}
