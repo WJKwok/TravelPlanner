@@ -45,6 +45,12 @@ const useStyles = makeStyles((theme) => ({
 	header: {
 		display: 'flex',
 	},
+	headerInfo: {
+		overflowX: 'scroll',
+		'&::-webkit-scrollbar': {
+			display: 'none',
+		},
+	},
 	iconsRow: {
 		display: 'flex',
 	},
@@ -67,10 +73,18 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: '1.2em',
 		lineHeight: 'normal',
 		padding: '5px 0px',
-		// overflowX: 'scroll',
-		// '&::-webkit-scrollbar': {
-		// 	display: 'none',
-		// },
+		overflowX: 'auto',
+		whiteSpace: 'nowrap',
+		'&::-webkit-scrollbar': {
+			display: 'none',
+		},
+	},
+	categoryOverflow: {
+		overflowX: 'auto',
+		whiteSpace: 'nowrap',
+		'&::-webkit-scrollbar': {
+			display: 'none',
+		},
 	},
 	spotSubtitle: {
 		marginRight: 5,
@@ -223,9 +237,8 @@ const SpotCard = React.memo((props) => {
 			</>
 		) : (
 			<>
-				<Typography noWrap className={classes.spotTitle}>
-					{spot.place.name}
-				</Typography>
+				<Typography className={classes.spotTitle}>{spot.place.name}</Typography>
+
 				<Typography
 					data-testid="business-status"
 					className={classes.spotSubtitle}
@@ -243,7 +256,7 @@ const SpotCard = React.memo((props) => {
 						readOnly
 					/>
 				</div>
-				<Typography noWrap className={classes.spotSubtitle}>
+				<Typography className={classes.categoryOverflow}>
 					{spot.categories.join(', ')}
 				</Typography>
 			</>
@@ -289,38 +302,34 @@ const SpotCard = React.memo((props) => {
 								/>
 							</CardMedia>
 						)}
-						<div>
-							<CardContent>
-								<div className={classes.iconsRow}>
-									<div className={classes.catIndex}>
-										{iconDictWhite[spot.categories[0]]
-											? iconDictWhite[spot.categories[0]]
-											: iconDictWhite.Default}
-										<span className={classes.index}>{index + 1}</span>
-									</div>
-									{dragAndDroppable ? (
-										<div onClick={likeClickHandler}>
-											{liked ? (
-												<FavoriteIcon
-													color="error"
-													data-testid="filled-heart"
-												/>
-											) : (
-												<FavoriteBorderIcon data-testid="hollow-heart" />
-											)}
-										</div>
-									) : (
-										<div
-											className={classes.editButton}
-											onClick={editClickHandler}
-										>
-											<EditOutlinedIcon data-testid="edit-pen" />
-										</div>
-									)}
+
+						<CardContent className={classes.headerInfo}>
+							<div className={classes.iconsRow}>
+								<div className={classes.catIndex}>
+									{iconDictWhite[spot.categories[0]]
+										? iconDictWhite[spot.categories[0]]
+										: iconDictWhite.Default}
+									<span className={classes.index}>{index + 1}</span>
 								</div>
-								{cardHeader}
-							</CardContent>
-						</div>
+								{dragAndDroppable ? (
+									<div onClick={likeClickHandler}>
+										{liked ? (
+											<FavoriteIcon color="error" data-testid="filled-heart" />
+										) : (
+											<FavoriteBorderIcon data-testid="hollow-heart" />
+										)}
+									</div>
+								) : (
+									<div
+										className={classes.editButton}
+										onClick={editClickHandler}
+									>
+										<EditOutlinedIcon data-testid="edit-pen" />
+									</div>
+								)}
+							</div>
+							{cardHeader}
+						</CardContent>
 					</div>
 					<Collapse
 						data-testid={`collapseContent-${spot.id}`}
