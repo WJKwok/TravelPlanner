@@ -21,6 +21,7 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { Draggable } from 'react-beautiful-dnd';
 import { Image } from 'cloudinary-react';
 
+import marked from 'marked';
 import GoogleDirectionLink from './googleDirectionLink';
 
 const useStyles = makeStyles((theme) => ({
@@ -66,6 +67,10 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: '1.2em',
 		lineHeight: 'normal',
 		padding: '5px 0px',
+		// overflowX: 'scroll',
+		// '&::-webkit-scrollbar': {
+		// 	display: 'none',
+		// },
 	},
 	spotSubtitle: {
 		marginRight: 5,
@@ -134,7 +139,11 @@ const SpotCard = React.memo((props) => {
 
 	const { dispatch } = useContext(SpotContext);
 	const { setClickedCard } = useContext(LoggerContext);
-	const cssProps = { backgroundColor: iconColour[spot.categories[0]] ? iconColour[spot.categories[0]] : iconColour.Default };
+	const cssProps = {
+		backgroundColor: iconColour[spot.categories[0]]
+			? iconColour[spot.categories[0]]
+			: iconColour.Default,
+	};
 	const classes = useStyles(cssProps);
 	const [expanded, setExpanded] = useState(props.expanded);
 	const [liked, setLiked] = useState(spot.liked);
@@ -234,6 +243,9 @@ const SpotCard = React.memo((props) => {
 						readOnly
 					/>
 				</div>
+				<Typography noWrap className={classes.spotSubtitle}>
+					{spot.categories.join(', ')}
+				</Typography>
 			</>
 		);
 
@@ -281,7 +293,9 @@ const SpotCard = React.memo((props) => {
 							<CardContent>
 								<div className={classes.iconsRow}>
 									<div className={classes.catIndex}>
-										{iconDictWhite[spot.categories[0]] ? iconDictWhite[spot.categories[0]] : iconDictWhite.Default}
+										{iconDictWhite[spot.categories[0]]
+											? iconDictWhite[spot.categories[0]]
+											: iconDictWhite.Default}
 										<span className={classes.index}>{index + 1}</span>
 									</div>
 									{dragAndDroppable ? (
@@ -350,9 +364,11 @@ const SpotCard = React.memo((props) => {
 						{/* <CardMedia className={classes.media} image={spot.imgUrl[0]} /> */}
 						{/*  <CardMedia key={img} className={classes.media} image={img} /> */}
 						<CardContent>
-							<Typography variant="body2" color="textSecondary" component="p">
+							{/* <Typography variant="body2" color="textSecondary" component="p">
 								{spot.content}
-							</Typography>
+							</Typography> */}
+							<div dangerouslySetInnerHTML={{ __html: marked(spot.content) }} />
+							{/* <p>{spot.content}</p> */}
 						</CardContent>
 					</Collapse>
 					{/* <GoogleDirectionLink place={spot.place}/> */}

@@ -24,6 +24,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { Image } from 'cloudinary-react';
 
 import { useQuery, useMutation, gql } from '@apollo/client';
+import marked from 'marked';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -591,6 +592,7 @@ function Logger(props) {
 						onChange={fileUploadClicked}
 					/>
 				</div>
+				<div dangerouslySetInnerHTML={{ __html: marked(spotInput.content) }} />
 				<TextField
 					className={classes.textField}
 					id="edit-content"
