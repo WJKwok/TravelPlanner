@@ -211,7 +211,7 @@ function Logger(props) {
 	};
 
 	const getDetails = (placeObject) => {
-		console.log(placeObject);
+		console.log('placeObject', placeObject);
 		setSpotInput({
 			...placeObject,
 			placeId: placeObject.id,

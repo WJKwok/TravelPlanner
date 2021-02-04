@@ -255,6 +255,9 @@ const SpotCard = React.memo((props) => {
 						size="small"
 						readOnly
 					/>
+					<Typography className={classes.spotSubtitle}>
+						({spot.place.userRatingsTotal})
+					</Typography>
 				</div>
 				<Typography className={classes.categoryOverflow}>
 					{spot.categories.join(', ')}

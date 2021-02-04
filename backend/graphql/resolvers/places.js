@@ -60,6 +60,7 @@ module.exports = {
 					place.name = updatedPlace.name;
 					place.businessStatus = updatedPlace.businessStatus;
 					place.rating = updatedPlace.rating;
+					place.userRatingsTotal = updatedPlace.userRatingsTotal;
 					place.address = updatedPlace.address;
 					place.location = updatedPlace.location;
 					place.hours = updatedPlace.hours;

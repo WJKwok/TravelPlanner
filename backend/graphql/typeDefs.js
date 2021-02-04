@@ -64,6 +64,7 @@ module.exports = gql`
 		id: ID!
 		name: String!
 		rating: Float!
+		userRatingsTotal: Int!
 		location: [Float]!
 		businessStatus: String
 		address: String

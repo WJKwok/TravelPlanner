@@ -229,7 +229,7 @@ function Planner(props) {
 
 	const getCategories = (guideCategories, clickedCategories = []) => {
 		let categories = guideCategories.map((category) => {
-			console.log('getCategories', iconDict.Default)
+			console.log('getCategories', iconDict.Default);
 			return {
 				key: category,
 				label: category,
@@ -301,6 +301,7 @@ function Planner(props) {
 				location: [searchedItem.location.lat, searchedItem.location.lng],
 				name: searchedItem.name,
 				rating: searchedItem.rating,
+				userRatingsTotal: searchedItem.userRatingsTotal,
 				businessStatus: searchedItem.businessStatus,
 				hours: searchedItem.hours,
 			},
@@ -712,6 +713,7 @@ const GET_TRIP = gql`
 					id
 					name
 					rating
+					userRatingsTotal
 					location
 					hours
 					businessStatus
@@ -798,10 +800,12 @@ const GET_SPOT = gql`
 				id
 				name
 				rating
+				userRatingsTotal
 				location
 			}
 			imgUrl
 			content
+			categories
 		}
 	}
 `;
@@ -815,6 +819,7 @@ const GET_SPOTS = gql`
 				id
 				name
 				rating
+				userRatingsTotal
 				location
 				businessStatus
 				hours

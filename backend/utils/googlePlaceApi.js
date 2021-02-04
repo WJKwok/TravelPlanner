@@ -26,6 +26,7 @@ module.exports.getGooglePlace = async (placeId) => {
 				name: result.name,
 				businessStatus: result.business_status,
 				rating: result.rating,
+				userRatingsTotal: result.user_ratings_total,
 				address: result.formatted_address,
 				hours: result.opening_hours ? result.opening_hours.weekday_text : null,
 			},
@@ -57,6 +58,7 @@ module.exports.getGooglePlaceForUpdate = async (placeId) => {
 				name: result.name,
 				businessStatus: result.business_status,
 				rating: result.rating,
+				userRatingsTotal: result.user_ratings_total,
 				address: result.formatted_address,
 				hours: result.opening_hours ? result.opening_hours.weekday_text : null,
 			};
