@@ -1,20 +1,14 @@
 import React, { useContext, useState, useEffect, useReducer } from 'react';
 import { LoggerContext } from '../Store/LoggerContext';
 import { SnackBarContext } from '../Store/SnackBarContext';
+
+import { LoggingImageUploaded, LoggingImageExisting } from './loggingImage';
 import PlaceAutoComplete from './placeAutoComplete';
 
-import {
-	TextField,
-	MenuItem,
-	Button,
-	IconButton,
-	Select,
-} from '@material-ui/core/';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { TextField, MenuItem, Button, IconButton } from '@material-ui/core/';
 import { makeStyles } from '@material-ui/core/styles';
 
 import marked from 'marked';
-import { Image } from 'cloudinary-react';
 
 import { useMutation, gql } from '@apollo/client';
 import { getPublicIdsOfUploadedImages } from '../Services/cloudinaryApi';
@@ -177,19 +171,10 @@ export const LoggingForm = ({ guide }) => {
 	const uploadedImgPreviewCard = Object.keys(uploadedImageBlobToFile).map(
 		(imgLink) => {
 			const imgPreview = uploadedImageBlobToFile[imgLink].toUpload ? (
-				<div
-					key={imgLink}
-					data-testid="uploadedImage"
-					className={classes.mediaCard}
-				>
-					<img src={imgLink} className={classes.media} />
-					<IconButton
-						className={classes.deleteButton}
-						onClick={() => deleteUploadedImageHandler(imgLink)}
-					>
-						<DeleteIcon color="error" />
-					</IconButton>
-				</div>
+				<LoggingImageUploaded
+					img={imgLink}
+					deleteHandler={deleteUploadedImageHandler}
+				/>
 			) : null;
 			return imgPreview;
 		}
@@ -416,33 +401,12 @@ export const LoggingForm = ({ guide }) => {
 			<div className={classes.textField}>
 				<div className={classes.mediaCards}>
 					{spotInput.imgUrl.map((img) => {
-						const image =
-							img.substring(0, 4) === 'http' ? (
-								<img className={classes.media} src={img} />
-							) : (
-								<Image
-									className={classes.media}
-									cloudName={process.env.REACT_APP_CLOUD_NAME}
-									publicId={img}
-								/>
-							);
-						const imageCard = (
-							<div
-								data-testid="edit-existing-image"
-								key={img}
-								className={classes.mediaCard}
-							>
-								{image}
-								<IconButton
-									className={classes.deleteButton}
-									data-testid="delete-image"
-									onClick={() => deleteExistingImageHandler(img)}
-								>
-									<DeleteIcon color="error" />
-								</IconButton>
-							</div>
+						return (
+							<LoggingImageExisting
+								img={img}
+								deleteHandler={deleteExistingImageHandler}
+							/>
 						);
-						return imageCard;
 					})}
 				</div>
 
