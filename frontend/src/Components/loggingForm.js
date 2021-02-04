@@ -16,7 +16,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import marked from 'marked';
 import { Image } from 'cloudinary-react';
 
-import { useQuery, useMutation, gql } from '@apollo/client';
+import { useMutation, gql } from '@apollo/client';
+import { getPublicIdsOfUploadedImages } from '../Services/cloudinaryApi';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -119,7 +120,7 @@ export const LoggingForm = ({ guide }) => {
 		setSpotInput({ [name]: newValue });
 	};
 
-	const getDetails = (placeObject) => {
+	const getDetailsFromAutoCompleteItem = (placeObject) => {
 		console.log('placeObject', placeObject);
 		setSpotInput({
 			...placeObject,
@@ -290,7 +291,11 @@ export const LoggingForm = ({ guide }) => {
 		// check inputs that are not filled, and set submitButtonClicked to true
 		// textfield error prop will then check against spotInput
 
-		const uploadedImagesIds = await uploadedImagesPublicIds(uploadedImgFiles);
+		const uploadedImagesIds = await getPublicIdsOfUploadedImages(
+			uploadedImgFiles,
+			uploadedImageBlobToFile,
+			`${guide.id}/${spotInput.placeId}`
+		);
 
 		if ([...spotInput.imgUrl, ...uploadedImagesIds].length < 1) {
 			console.log('no imgs');
@@ -306,47 +311,6 @@ export const LoggingForm = ({ guide }) => {
 				imgUrl: [...spotInput.imgUrl, ...uploadedImagesIds],
 			},
 		});
-	};
-
-	const uploadedImagesPublicIds = async (uploadedImgFiles) => {
-		if (!uploadedImgFiles.length) {
-			return [];
-		}
-
-		const indexesToUpload = [];
-		Object.keys(uploadedImageBlobToFile).forEach((img) => {
-			if (uploadedImageBlobToFile[img].toUpload == true) {
-				indexesToUpload.push(uploadedImageBlobToFile[img].index);
-			}
-		});
-
-		const promises = [...uploadedImgFiles].reduce(
-			(result, imageFile, index) => {
-				if (indexesToUpload.includes(index)) {
-					const formData = new FormData();
-					formData.append('file', imageFile);
-					formData.append('upload_preset', 'mtmsf9hg');
-					formData.append('folder', `${guide.id}/${spotInput.placeId}`);
-
-					result.push(
-						fetch(
-							`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUD_NAME}/upload`,
-							{
-								method: 'POST',
-								body: formData,
-							}
-						)
-							.then((response) => response.json())
-							.then((data) => data.public_id)
-							.catch((err) => console.error(err))
-					);
-				}
-				return result;
-			},
-			[]
-		);
-
-		return await Promise.all(promises);
 	};
 
 	const errorMsgForUploadedImg = (uploadedImgPreviewCard) => {
@@ -372,7 +336,7 @@ export const LoggingForm = ({ guide }) => {
 	return (
 		<div className={classes.root}>
 			<PlaceAutoComplete
-				clickFunction={getDetails}
+				clickFunction={getDetailsFromAutoCompleteItem}
 				city={spotInput.guide.city}
 				coordinates={guide.coordinates}
 			/>
