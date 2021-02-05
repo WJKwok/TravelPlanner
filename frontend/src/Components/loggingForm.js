@@ -4,6 +4,7 @@ import { SnackBarContext } from '../Store/SnackBarContext';
 
 import { LoggingImageUploaded, LoggingImageExisting } from './loggingImage';
 import PlaceAutoComplete from './placeAutoComplete';
+import { CategoryDragAndDrop } from './categoryDragAndDrop';
 
 import { TextField, MenuItem, Button, IconButton } from '@material-ui/core/';
 import { makeStyles } from '@material-ui/core/styles';
@@ -325,19 +326,11 @@ export const LoggingForm = ({ guide }) => {
 				city={spotInput.guide.city}
 				coordinates={guide.coordinates}
 			/>
-			<TextField
-				className={classes.textField}
-				label="Categories"
-				name="categories"
-				value={spotInput.categories}
-				variant="outlined"
-				select
-				SelectProps={{ multiple: true }}
-				onChange={spotFieldChangeHandler}
-				error={submitButtonClicked && spotInput.categories.length < 1}
-			>
-				{categoryMenu(guide)}
-			</TextField>
+			<CategoryDragAndDrop
+				guideCategories={guide.categories}
+				orderedCategories={clickedCard.categories}
+				onOrderChange={spotFieldChangeHandler}
+			/>
 			<TextField
 				className={classes.textField}
 				id="edit-placeId"

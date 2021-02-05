@@ -12,6 +12,8 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 
+import { CategoryDragAndDrop } from '../Components/categoryDragAndDrop';
+
 const useStyles = makeStyles({
 	cardMedia: {
 		position: 'relative',
@@ -64,6 +66,11 @@ function Landing() {
 					)}
 				/>
 			</CardMedia>
+			{/* <CategoryDragAndDrop
+				guideCategories={['retail', 'restaurant', 'museum']}
+				orderedCategories={['culture']}
+				onOrderChange={(state) => console.log(state)}
+			/> */}
 		</>
 	);
 }

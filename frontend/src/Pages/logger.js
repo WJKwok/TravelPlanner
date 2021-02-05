@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 
 import AppBar from '../Components/appBar';
 import SpotsBoard from '../Components/spotsBoard';
@@ -98,7 +98,7 @@ function Logger(props) {
 				/>
 				{allSpots && renderSpotsBoard()}
 			</DragDropContext>
-			<LoggingForm guide={guide} />
+			{guide.categories && <LoggingForm guide={guide} />}
 		</>
 	);
 }
@@ -143,6 +143,7 @@ const GET_ALL_SPOTS_IN_GUIDE = gql`
 				id
 				name
 				rating
+				userRatingsTotal
 				location
 				businessStatus
 				address
