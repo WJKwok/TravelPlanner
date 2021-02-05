@@ -1,21 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { makeStyles } from '@material-ui/core/styles';
+import Chip from '@material-ui/core/Chip';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
+		padding: '20px 0px',
+	},
+	bar: {
 		display: 'flex',
 		overflowX: 'auto',
-		alignItems: 'flex-start',
-		padding: '20px 10px',
-		border: 'solid 1px black',
+		alignItems: 'center',
+		marginBottom: 8,
 		'&::-webkit-scrollbar': {
 			display: 'none',
 		},
 	},
+	field: {
+		minHeight: 50,
+		border: 'solid 1px darkgrey',
+		borderRadius: 5,
+		paddingLeft: theme.spacing(0.5),
+	},
 	chip: {
-		border: 'solid 1px black',
-		padding: 5,
+		marginRight: theme.spacing(0.5),
 	},
 }));
 
@@ -24,7 +33,6 @@ export const CategoryDragAndDrop = ({
 	orderedCategories,
 	onOrderChange,
 }) => {
-	console.log('CategoryDragAndDrop rendered');
 	const classes = useStyles();
 	const [state, setState] = useState({
 		columns: {
@@ -45,6 +53,7 @@ export const CategoryDragAndDrop = ({
 		const cleanGuideCategories = guideCategories.filter(
 			(el) => !orderedCategories.includes(el)
 		);
+
 		setState({
 			columns: {
 				'category-chips': {
@@ -69,7 +78,6 @@ export const CategoryDragAndDrop = ({
 			},
 		};
 		onOrderChange(e);
-		//onOrderChange(state.columns['ordered-chips'].categories);
 	}, [state]);
 
 	const onDragEnd = (result) => {
@@ -136,57 +144,58 @@ export const CategoryDragAndDrop = ({
 	};
 
 	return (
-		<DragDropContext onDragEnd={onDragEnd}>
-			<Droppable droppableId="category-chips" direction="horizontal">
-				{(provided) => (
-					<div
-						ref={provided.innerRef}
-						{...provided.droppableProps}
-						className={classes.root}
-					>
-						{state.columns['category-chips'].categories.map((item, index) => (
-							<Draggable key={item} draggableId={item} index={index}>
-								{(provided, snapshot) => (
-									<div
-										ref={provided.innerRef}
-										{...provided.draggableProps}
-										{...provided.dragHandleProps}
-										className={classes.chip}
-									>
-										{item}
-									</div>
-								)}
-							</Draggable>
-						))}
-						{provided.placeholder}
-					</div>
-				)}
-			</Droppable>
-			<Droppable droppableId="ordered-chips" direction="horizontal">
-				{(provided) => (
-					<div
-						ref={provided.innerRef}
-						{...provided.droppableProps}
-						className={classes.root}
-					>
-						{state.columns['ordered-chips'].categories.map((item, index) => (
-							<Draggable key={item} draggableId={item} index={index}>
-								{(provided, snapshot) => (
-									<div
-										ref={provided.innerRef}
-										{...provided.draggableProps}
-										{...provided.dragHandleProps}
-										className={classes.chip}
-									>
-										{item}
-									</div>
-								)}
-							</Draggable>
-						))}
-						{provided.placeholder}
-					</div>
-				)}
-			</Droppable>
-		</DragDropContext>
+		<div className={classes.root}>
+			<DragDropContext onDragEnd={onDragEnd}>
+				<Droppable droppableId="category-chips" direction="horizontal">
+					{(provided) => (
+						<div
+							ref={provided.innerRef}
+							{...provided.droppableProps}
+							className={classes.bar}
+						>
+							{state.columns['category-chips'].categories.map((item, index) => (
+								<Draggable key={item} draggableId={item} index={index}>
+									{(provided, snapshot) => (
+										<Chip
+											ref={provided.innerRef}
+											{...provided.draggableProps}
+											{...provided.dragHandleProps}
+											className={classes.chip}
+											label={item}
+										/>
+									)}
+								</Draggable>
+							))}
+							{provided.placeholder}
+						</div>
+					)}
+				</Droppable>
+				<Typography>Drag, drop, and reorder categories from above:</Typography>
+				<Droppable droppableId="ordered-chips" direction="horizontal">
+					{(provided) => (
+						<div
+							ref={provided.innerRef}
+							{...provided.droppableProps}
+							className={`${classes.bar} ${classes.field}`}
+						>
+							{state.columns['ordered-chips'].categories.map((item, index) => (
+								<Draggable key={item} draggableId={item} index={index}>
+									{(provided, snapshot) => (
+										<Chip
+											ref={provided.innerRef}
+											{...provided.draggableProps}
+											{...provided.dragHandleProps}
+											className={classes.chip}
+											label={item}
+										/>
+									)}
+								</Draggable>
+							))}
+							{provided.placeholder}
+						</div>
+					)}
+				</Droppable>
+			</DragDropContext>
+		</div>
 	);
 };
