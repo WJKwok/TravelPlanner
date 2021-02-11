@@ -3,7 +3,7 @@ import { SpotContext } from '../Store/SpotContext';
 import { LoggerContext } from '../Store/LoggerContext';
 import moment from 'moment';
 
-import { iconDictWhite, iconColour } from './spotIcons';
+import { iconDict } from './spotIcons';
 import { makeStyles } from '@material-ui/core/styles';
 import {
 	Card,
@@ -33,15 +33,6 @@ const useStyles = makeStyles((theme) => ({
 			minWidth: '75%',
 		},
 	},
-	// rootHighlighted: {
-	// 	position: 'relative',
-	// 	minWidth: 300,
-	// 	margin: 5,
-	// 	[theme.breakpoints.down(430)]: {
-	// 		minWidth: '75%',
-	// 	},
-	// 	border: '1px solid grey',
-	// },
 	header: {
 		display: 'flex',
 	},
@@ -53,21 +44,28 @@ const useStyles = makeStyles((theme) => ({
 	},
 	iconsRow: {
 		display: 'flex',
+		alignItems: 'center',
 	},
 	editButton: {
 		cursor: 'pointer',
 	},
-	catIndex: (props) => ({
-		backgroundColor: props.backgroundColor,
-		padding: '2px 6px',
-		borderRadius: 5,
-		color: 'white',
-		display: 'inline-flex', //to center icon
+	catIndex: {
+		// backgroundColor: props.backgroundColor,
+		border: 'solid 3px grey',
+		display: 'flex',
+		alignItems: 'center',
 		marginRight: 5,
-	}),
+		borderRadius: 5,
+		padding: '0px 3px',
+	},
+	emoji: {
+		fontSize: 20,
+		lineHeight: 1,
+		paddingRight: 3,
+	},
 	index: {
-		paddingLeft: 3,
 		fontWeight: 600,
+		fontSize: 15,
 	},
 	spotTitle: {
 		fontSize: '1.2em',
@@ -153,12 +151,13 @@ const SpotCard = React.memo((props) => {
 
 	const { dispatch } = useContext(SpotContext);
 	const { setClickedCard } = useContext(LoggerContext);
-	const cssProps = {
-		backgroundColor: iconColour[spot.categories[0]]
-			? iconColour[spot.categories[0]]
-			: iconColour.Default,
-	};
-	const classes = useStyles(cssProps);
+	// const cssProps = {
+	// 	backgroundColor: iconColour[spot.categories[0]]
+	// 		? iconColour[spot.categories[0]]
+	// 		: iconColour.Default,
+	// };
+	// const classes = useStyles(cssProps);
+	const classes = useStyles();
 	const [expanded, setExpanded] = useState(props.expanded);
 	const [liked, setLiked] = useState(spot.liked);
 
@@ -309,9 +308,11 @@ const SpotCard = React.memo((props) => {
 						<CardContent className={classes.headerInfo}>
 							<div className={classes.iconsRow}>
 								<div className={classes.catIndex}>
-									{iconDictWhite[spot.categories[0]]
-										? iconDictWhite[spot.categories[0]]
-										: iconDictWhite.Default}
+									<span className={classes.emoji}>
+										{iconDict[spot.categories[0]]
+											? iconDict[spot.categories[0]]
+											: iconDict.Default}
+									</span>
 									<span className={classes.index}>{index + 1}</span>
 								</div>
 								{dragAndDroppable ? (
