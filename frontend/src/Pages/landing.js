@@ -7,12 +7,8 @@ import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CardMedia from '@material-ui/core/CardMedia';
 import AppBar from '../Components/appBar';
-import Paper from '@material-ui/core/Paper';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
 
-import { CategoryDragAndDrop } from '../Components/categoryDragAndDrop';
+import '../Style/styles.css';
 
 const useStyles = makeStyles({
 	cardMedia: {
@@ -38,6 +34,7 @@ function Landing() {
 	const classes = useStyles();
 	const history = useHistory();
 	const [guides, setGuides] = useState([]);
+
 	useQuery(GET_GUIDES, {
 		onCompleted({ getGuides }) {
 			console.log('guides: ', getGuides);
@@ -66,11 +63,6 @@ function Landing() {
 					)}
 				/>
 			</CardMedia>
-			{/* <CategoryDragAndDrop
-				guideCategories={['retail', 'restaurant', 'museum']}
-				orderedCategories={['culture']}
-				onOrderChange={(state) => console.log(state)}
-			/> */}
 		</>
 	);
 }

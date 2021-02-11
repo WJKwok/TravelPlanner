@@ -2,8 +2,7 @@ import React from 'react';
 import GoogleMapReact from 'google-map-react';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { badgeStyles, iconDict } from './spotIcons';
-import Badge from '@material-ui/core/Badge';
+import { MapMarker } from './mapMarker';
 
 const useStyles = makeStyles((theme) => ({
 	gMap: {
@@ -16,14 +15,9 @@ const useStyles = makeStyles((theme) => ({
 		position: 'relative',
 		zIndex: 3,
 	},
+	/* using animation
 	marker: {
-		width: 20,
-		height: 20,
-		borderRadius: 3,
-		color: 'white',
-		zIndex: 999,
-		transform: 'scale(1.3)',
-		// animation: `$bounce-6 1000ms ${theme.transitions.easing.easeInOut}`,
+		animation: `$bounce-6 1000ms ${theme.transitions.easing.easeInOut}`,
 	},
 	'@keyframes bounce-6': {
 		'0%': { transform: 'scale(1,1)      translateY(0)' },
@@ -33,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
 		'64%': { transform: 'scale(1,1)      translateY(0)' },
 		'100%': { transform: 'scale(1,1)      translateY(0)' },
 	},
+	*/
 }));
 
 function GoogleMap({
@@ -42,36 +37,22 @@ function GoogleMap({
 	mouseOverCard,
 	resizable,
 }) {
-	const classes = badgeStyles();
-	const mapClass = useStyles({ resizable });
+	const mapClass = useStyles();
 
 	let center = { lat: coordinates[0], lng: coordinates[1] };
-
 	const zoom = 11;
-
-	//overriding classes use 'classes={{componenetNameToOverride: class}}'
-	const MapPin = ({ text, index, id, icon, category }) => (
-		<Badge
-			badgeContent={<p>{text}</p>}
-			onClick={() => pinClicked(index, id)}
-			classes={{ badge: classes[category] ? classes[category] : classes.Default  }}
-			className={mouseOverCard === id ? mapClass.marker : null}
-		>
-			{icon}
-		</Badge>
-	);
 
 	const markerPins = spots.map((spot, index) => {
 		const place = spot.place;
 		return (
-			<MapPin
+			<MapMarker
 				key={spot.id}
 				id={spot.id}
 				lat={place.location[0]}
 				lng={place.location[1]}
-				index={index}
 				text={`${index + 1}`}
-				icon={iconDict[spot.categories[0]] ? iconDict[spot.categories[0]] : iconDict.Default}
+				onClick={() => pinClicked(index, spot.id)}
+				mouseOverId={mouseOverCard}
 				category={spot.categories[0]}
 			/>
 		);
