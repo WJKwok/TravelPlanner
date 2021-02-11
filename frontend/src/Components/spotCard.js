@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	catIndex: {
 		// backgroundColor: props.backgroundColor,
-		border: 'solid 3px grey',
+		border: 'solid 2px grey',
 		display: 'flex',
 		alignItems: 'center',
 		marginRight: 5,
@@ -275,7 +275,6 @@ const SpotCard = React.memo((props) => {
 					id="spot-card"
 					ref={provided.innerRef}
 					{...provided.draggableProps}
-					{...provided.dragHandleProps}
 					className={classes.root}
 					data-testid={spot.id}
 					elevation={highlight ? 24 : 1}
@@ -286,6 +285,7 @@ const SpotCard = React.memo((props) => {
 						className={classes.header}
 						onClick={handleExpandClick}
 						data-testid="spot-card"
+						{...provided.dragHandleProps}
 					>
 						{expanded ? (
 							''

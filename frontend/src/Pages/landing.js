@@ -8,8 +8,6 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import CardMedia from '@material-ui/core/CardMedia';
 import AppBar from '../Components/appBar';
 
-import '../Style/styles.css';
-
 const useStyles = makeStyles({
 	cardMedia: {
 		position: 'relative',
