@@ -1,12 +1,12 @@
 import React, { useContext, useState, useEffect, useReducer } from 'react';
-import { LoggerContext } from '../Store/LoggerContext';
+import { LoggerContext, emptyClickedCardState } from '../Store/LoggerContext';
 import { SnackBarContext } from '../Store/SnackBarContext';
 
 import { LoggingImageUploaded, LoggingImageExisting } from './loggingImage';
 import PlaceAutoComplete from './placeAutoComplete';
 import { CategoryDragAndDrop } from './categoryDragAndDrop';
 
-import { TextField, MenuItem, Button, IconButton } from '@material-ui/core/';
+import { TextField, Button } from '@material-ui/core/';
 import { makeStyles } from '@material-ui/core/styles';
 
 import marked from 'marked';
@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const LoggingForm = ({ guide }) => {
 	const classes = useStyles();
-	const { clickedCard } = useContext(LoggerContext);
+	const { clickedCard, setClickedCard } = useContext(LoggerContext);
 	const { setSnackMessage } = useContext(SnackBarContext);
 
 	useEffect(() => {
@@ -77,6 +77,7 @@ export const LoggingForm = ({ guide }) => {
 				date: clickedCard.date,
 				eventName: clickedCard.eventName,
 				rating: clickedCard.place.rating,
+				userRatingsTotal: clickedCard.place.userRatingsTotal,
 				address: clickedCard.place.address,
 				location: clickedCard.place.location,
 				hours: clickedCard.place.hours,
@@ -109,6 +110,8 @@ export const LoggingForm = ({ guide }) => {
 		initialSpotState
 	);
 
+	console.log('user ratings total', spotInput);
+
 	const spotFieldChangeHandler = (e) => {
 		const name = e.target.name;
 		const newValue = e.target.value;
@@ -122,22 +125,6 @@ export const LoggingForm = ({ guide }) => {
 			placeId: placeObject.id,
 			location: [placeObject.location.lat, placeObject.location.lng],
 		});
-	};
-
-	const categoryMenu = (guide) => {
-		let categoryMenu;
-
-		if (Object.keys(guide).length > 0) {
-			categoryMenu = guide.categories.map((category) => (
-				<MenuItem key={category} value={category}>
-					{category}
-				</MenuItem>
-			));
-			return categoryMenu;
-		}
-
-		categoryMenu = <MenuItem>Loading..</MenuItem>;
-		return categoryMenu;
 	};
 
 	const fileUploadClicked = async (event) => {
@@ -181,34 +168,26 @@ export const LoggingForm = ({ guide }) => {
 		}
 	);
 
-	const [savePlace] = useMutation(SAVE_PLACE, {
-		update(_, result) {
-			console.log(result);
-		},
-		onError(err) {
-			console.log('err', err);
-			//{ graphQLErrors, networkError, ...rest }
-			// console.log({ graphQLErrors, networkError, rest });
-			// // console.log(networkError);
-			// if (graphQLErrors) {
-			// 	setSnackMessage({
-			// 		text: graphQLErrors[0].message,
-			// 		code: 'Error',
-			// 	});
-			// }
-		},
-		variables: {
-			...spotInput,
-			id: spotInput.placeId,
-			// name: spotInput.name,
-			// rating: spotInput.rating,
-			// address: spotInput.address,
-			// location: spotInput.location,
-		},
-	});
+	// const [savePlace] = useMutation(SAVE_PLACE, {
+	// 	update(_, result) {
+	// 		console.log(result);
+	// 	},
+	// 	onError(err) {
+	// 		console.log('err', err);
+	// 	},
+	// 	variables: {
+	// 		...spotInput,
+	// 		id: spotInput.placeId,
+	// 		// name: spotInput.name,
+	// 		// rating: spotInput.rating,
+	// 		// address: spotInput.address,
+	// 		// location: spotInput.location,
+	// 	},
+	// });
 
 	const [saveSpot] = useMutation(SAVE_SPOT, {
-		onCompleted() {
+		onCompleted({ saveSpot }) {
+			console.log('saved spot', saveSpot);
 			setSnackMessage({
 				text: 'Spot Saved!',
 				code: 'Confirm',
@@ -217,6 +196,7 @@ export const LoggingForm = ({ guide }) => {
 			setUploadedImgFiles({});
 			setUploadedImageBlobToFile({});
 			setSubmitButtonClicked(false);
+			setClickedCard(emptyClickedCardState);
 		},
 		update(_, result) {
 			console.log(result);
@@ -288,10 +268,11 @@ export const LoggingForm = ({ guide }) => {
 			return;
 		}
 
-		savePlace();
+		// savePlace();
 		saveSpot({
 			variables: {
 				...spotInput,
+				id: spotInput.placeId, // from save place
 				guide: guide.id,
 				place: spotInput.placeId,
 				imgUrl: [...spotInput.imgUrl, ...uploadedImagesIds],
@@ -442,30 +423,6 @@ export const LoggingForm = ({ guide }) => {
 	);
 };
 
-const SAVE_PLACE = gql`
-	mutation savePlace(
-		$id: String!
-		$name: String!
-		$rating: Float!
-		$address: String!
-		$location: [Float]!
-		$hours: [String]
-	) {
-		savePlace(
-			placeInput: {
-				id: $id
-				name: $name
-				rating: $rating
-				address: $address
-				location: $location
-				hours: $hours
-			}
-		) {
-			name
-		}
-	}
-`;
-
 const SAVE_SPOT = gql`
 	mutation saveSpot(
 		$guide: String!
@@ -475,6 +432,13 @@ const SAVE_SPOT = gql`
 		$content: String!
 		$eventName: String
 		$date: String
+		$id: String!
+		$name: String!
+		$rating: Float!
+		$userRatingsTotal: Int!
+		$address: String!
+		$location: [Float]!
+		$hours: [String]
 	) {
 		saveSpot(
 			spotInput: {
@@ -486,8 +450,59 @@ const SAVE_SPOT = gql`
 				eventName: $eventName
 				date: $date
 			}
+			placeInput: {
+				id: $id
+				name: $name
+				rating: $rating
+				userRatingsTotal: $userRatingsTotal
+				address: $address
+				location: $location
+				hours: $hours
+			}
 		) {
+			id
 			guide
+			place {
+				id
+				name
+				rating
+				userRatingsTotal
+				location
+				businessStatus
+				address
+				hours
+			}
+			categories
+			imgUrl
+			content
+			eventName
+			date
 		}
 	}
 `;
+
+// const SAVE_PLACE = gql`
+// 	mutation savePlace(
+// 		$id: String!
+// 		$name: String!
+// 		$rating: Float!
+// 		$userRatingsTotal: Int!
+// 		$address: String!
+// 		$location: [Float]!
+// 		$hours: [String]
+// 	) {
+// 		savePlace(
+// 			placeInput: {
+// 				id: $id
+// 				name: $name
+// 				rating: $rating
+// 				userRatingsTotal: $userRatingsTotal
+// 				address: $address
+// 				location: $location
+// 				hours: $hours
+// 			}
+// 		) {
+// 			name
+// 		}
+// 	}
+// `;

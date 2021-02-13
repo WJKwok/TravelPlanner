@@ -2,26 +2,28 @@ import React, { createContext, useState } from 'react';
 
 const LoggerContext = createContext();
 
-const LoggerContextProvider = (props) => {
-	const [clickedCard, setClickedCard] = useState({
-		categories: [],
-		content: '',
-		date: '',
-		eventName: '',
-		guide: '',
+const emptyClickedCardState = {
+	categories: [],
+	content: '',
+	date: '',
+	eventName: '',
+	guide: '',
+	id: '',
+	imgUrl: [],
+	place: {
+		address: '',
+		businessStatus: '',
+		hours: [],
 		id: '',
-		imgUrl: [],
-		place: {
-			address: '',
-			businessStatus: '',
-			hours: [],
-			id: '',
-			location: [],
-			name: '',
-			rating: 0,
-			userRatingsTotal: 0,
-		},
-	});
+		location: [],
+		name: '',
+		rating: 0,
+		userRatingsTotal: 0,
+	},
+};
+
+const LoggerContextProvider = (props) => {
+	const [clickedCard, setClickedCard] = useState(emptyClickedCardState);
 	return (
 		<LoggerContext.Provider value={{ clickedCard, setClickedCard }}>
 			{props.children}
@@ -29,4 +31,4 @@ const LoggerContextProvider = (props) => {
 	);
 };
 
-export { LoggerContext, LoggerContextProvider };
+export { LoggerContext, LoggerContextProvider, emptyClickedCardState };

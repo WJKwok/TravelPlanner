@@ -32,7 +32,6 @@ module.exports = gql`
 		id: ID!
 		guide: ID!
 		place: Place!
-		category: String!
 		imgUrl: [String]!
 		content: String!
 		date: String
@@ -74,6 +73,7 @@ module.exports = gql`
 		id: String!
 		name: String!
 		rating: Float!
+		userRatingsTotal: Int!
 		address: String!
 		location: [Float]!
 		hours: [String]
@@ -128,7 +128,7 @@ module.exports = gql`
 		deleteTrip(tripId: ID!): String!
 		savePlace(placeInput: PlaceInput!): Place!
 		updatePlaces: Boolean!
-		saveSpot(spotInput: SpotInput!): Spot!
+		saveSpot(spotInput: SpotInput!, placeInput: PlaceInput!): Spot!
 		editSchemaOfSpots: Boolean!
 		authGoogle(input: AuthInput!): User
 	}

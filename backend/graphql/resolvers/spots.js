@@ -1,4 +1,5 @@
 const Spot = require('../../models/Spot');
+const Place = require('../../models/Place');
 const checkAuth = require('../../utils/checkAuth');
 
 module.exports = {
@@ -62,6 +63,15 @@ module.exports = {
 					date,
 					eventName,
 				},
+				placeInput: {
+					id,
+					name,
+					rating,
+					userRatingsTotal,
+					address,
+					location,
+					hours,
+				},
 			},
 			context
 		) {
@@ -78,11 +88,26 @@ module.exports = {
 					spot.content = content;
 					spot.date = date;
 					spot.eventName = eventName;
-					const newSpot = await spot.save();
-
+					const newSpot = await spot
+						.save()
+						.then((t) => t.populate('place').execPopulate());
 					return newSpot;
 				} else {
 					console.log('nana');
+
+					const newPlace = new Place({
+						_id: id,
+						name,
+						rating,
+						userRatingsTotal,
+						address,
+						location,
+						hours,
+						updatedAt: new Date().toISOString(),
+					});
+
+					await newPlace.save();
+
 					const newSpot = new Spot({
 						guide,
 						place,
@@ -94,7 +119,14 @@ module.exports = {
 					});
 
 					await newSpot.save();
-					return newSpot;
+					const result = {
+						...newSpot.toObject({ virtuals: true }),
+						place: {
+							...newPlace.toObject({ virtuals: true }),
+						},
+					};
+					console.log('save place and spot', result);
+					return result;
 				}
 			} catch (err) {
 				throw new Error(err);

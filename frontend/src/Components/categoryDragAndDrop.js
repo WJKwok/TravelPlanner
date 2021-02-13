@@ -33,18 +33,19 @@ export const CategoryDragAndDrop = ({
 	orderedCategories,
 	onOrderChange,
 }) => {
+	console.log('CategoryDragAndDrop re-rendered');
 	const classes = useStyles();
 	const [state, setState] = useState({
 		columns: {
 			'category-chips': {
 				id: 'category-chips',
 				title: 'category-chips',
-				categories: guideCategories,
+				categories: [],
 			},
 			'ordered-chips': {
 				id: 'ordered-chips',
 				title: 'ordered-chips',
-				categories: orderedCategories,
+				categories: [],
 			},
 		},
 	});

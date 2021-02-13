@@ -21,6 +21,15 @@ function Logger(props) {
 	const { data: { getAllSpotsForGuide: allSpots } = [] } = useQuery(
 		GET_ALL_SPOTS_IN_GUIDE,
 		{
+			// onCompleted({ getAllSpotsForGuide }) {
+			// 	console.log('guide: ', getGuide);
+			// 	setGuide(getGuide);
+			// 	getCategories(getGuide.categories, getGuide.categories);
+			// 	setMapCoordinates([...getGuide.coordinates]);
+			// },
+			onError(err) {
+				console.log(err);
+			},
 			variables: {
 				guideId,
 			},

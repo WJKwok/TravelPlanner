@@ -162,11 +162,12 @@ const SpotCard = React.memo((props) => {
 	const [liked, setLiked] = useState(spot.liked);
 
 	const handleExpandClick = () => {
-		setExpanded(!expanded);
+		setExpanded((expanded) => !expanded);
 	};
 
 	const editClickHandler = (e) => {
 		e.stopPropagation();
+		console.log('use ratings on clicked:', spot);
 		setClickedCard(spot);
 	};
 
