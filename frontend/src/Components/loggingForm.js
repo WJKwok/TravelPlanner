@@ -198,8 +198,43 @@ export const LoggingForm = ({ guide }) => {
 			setSubmitButtonClicked(false);
 			setClickedCard(emptyClickedCardState);
 		},
-		update(_, result) {
-			console.log(result);
+		update(proxy, result) {
+			console.log('saveSpot result:', result);
+
+			try {
+				const data = proxy.readQuery({
+					query: GET_ALL_SPOTS_IN_GUIDE,
+					variables: {
+						guideId: guide.id,
+					},
+				});
+
+				if (
+					data.getAllSpotsForGuide.filter(
+						(spot) => spot.id === result.data.saveSpot.id
+					).length === 0
+				) {
+					console.log('updating new spot into cache...');
+					proxy.writeQuery({
+						query: GET_ALL_SPOTS_IN_GUIDE,
+						variables: {
+							guideId: guide.id,
+						},
+						data: {
+							getAllSpotsForGuide: [
+								...data.getAllSpotsForGuide,
+								result.data.saveSpot,
+							],
+						},
+					});
+				} else {
+					console.log(
+						'spot already exists, no need to write to cache, apollo self updates'
+					);
+				}
+			} catch (err) {
+				console.log('update cache error:', err);
+			}
 		},
 		onError(err) {
 			console.log('err', err);
@@ -460,6 +495,30 @@ const SAVE_SPOT = gql`
 				hours: $hours
 			}
 		) {
+			id
+			guide
+			place {
+				id
+				name
+				rating
+				userRatingsTotal
+				location
+				businessStatus
+				address
+				hours
+			}
+			categories
+			imgUrl
+			content
+			eventName
+			date
+		}
+	}
+`;
+
+const GET_ALL_SPOTS_IN_GUIDE = gql`
+	query getAllSpotsForGuide($guideId: ID!) {
+		getAllSpotsForGuide(guideId: $guideId) {
 			id
 			guide
 			place {
