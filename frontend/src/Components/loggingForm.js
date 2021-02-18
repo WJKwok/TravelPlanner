@@ -5,6 +5,7 @@ import { SnackBarContext } from '../Store/SnackBarContext';
 import { LoggingImageUploaded, LoggingImageExisting } from './loggingImage';
 import PlaceAutoComplete from './placeAutoComplete';
 import { CategoryDragAndDrop } from './categoryDragAndDrop';
+import { SpotCardBase } from './spotCardBase';
 
 import { TextField, Button } from '@material-ui/core/';
 import { makeStyles } from '@material-ui/core/styles';
@@ -445,6 +446,37 @@ export const LoggingForm = ({ guide }) => {
 				rows={4}
 				onChange={spotFieldChangeHandler}
 				error={submitButtonClicked && !spotInput.content}
+			/>
+			<SpotCardBase
+				spot={{
+					categories: spotInput.categories,
+					content: spotInput.content,
+					date: '',
+					eventName: '',
+					guide: '',
+					id: '',
+					imgUrl: [
+						...spotInput.imgUrl,
+						...Object.keys(uploadedImageBlobToFile).map((imgLink) => {
+							if (uploadedImageBlobToFile[imgLink].toUpload) {
+								return imgLink;
+							}
+						}),
+					],
+					place: {
+						address: spotInput.address,
+						businessStatus: spotInput.businessStatus,
+						hours: spotInput.hours,
+						id: '',
+						location: spotInput.location,
+						name: spotInput.name,
+						rating: spotInput.rating,
+						userRatingsTotal: spotInput.userRatingsTotal,
+					},
+				}}
+				index={1}
+				day={1}
+				dragAndDroppable={false}
 			/>
 			<Button
 				variant="outlined"
