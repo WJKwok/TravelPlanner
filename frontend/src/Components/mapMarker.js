@@ -4,10 +4,10 @@ import { iconDict } from './spotIcons';
 
 const useStyles = makeStyles((theme) => ({
 	pin: {
-		position: 'relative',
 		display: 'flex',
-		alignItems: 'center',
+		// alignItems: 'center',
 		/* this is pure ccs pointy arrow
+		position: 'relative'
 		'&::after': {
 			content: '""', //content attribute needed to be double quoted like this
 			position: 'absolute',
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 	emoji: {
 		backgroundColor: 'white',
 		lineHeight: 1,
-		padding: '0px 2px',
+		paddingTop: 2,
 		borderRadius: '0px 0px 0px 10px',
 		border: 'solid 2px #e15915',
 		fontSize: 22,
