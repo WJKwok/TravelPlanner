@@ -70,6 +70,7 @@ module.exports = {
 					userRatingsTotal,
 					address,
 					location,
+					businessStatus,
 					hours,
 				},
 			},
@@ -103,6 +104,7 @@ module.exports = {
 						address,
 						location,
 						hours,
+						businessStatus,
 						updatedAt: new Date().toISOString(),
 					});
 
@@ -125,7 +127,7 @@ module.exports = {
 							...newPlace.toObject({ virtuals: true }),
 						},
 					};
-					console.log('save place and spot', result);
+					// console.log('save place and spot', result);
 					return result;
 				}
 			} catch (err) {
