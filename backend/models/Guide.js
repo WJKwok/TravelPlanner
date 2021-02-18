@@ -7,6 +7,7 @@ const guideSchema = new Schema({
 	categories: [],
 	coverImage: String,
 	plannerImage: String,
+	logo: String,
 });
 
 module.exports = model('Guide', guideSchema);

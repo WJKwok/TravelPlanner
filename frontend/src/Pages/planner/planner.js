@@ -26,6 +26,7 @@ import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
 import CardMedia from '@material-ui/core/CardMedia';
 import Dialog from '@material-ui/core/Dialog';
+import { Image } from 'cloudinary-react';
 
 const useStyles = makeStyles((theme) => ({
 	headerImage: {
@@ -601,7 +602,7 @@ function Planner(props) {
 
 	return loaded ? (
 		<div>
-			<AppBar offset={true} />
+			<AppBar offset={true} partnerLogo={guideData.logo} />
 			<ConfirmNavPrompt
 				when={spotState.unsavedChanges}
 				navigate={(path) => props.history.push(path)}
@@ -841,6 +842,7 @@ const GET_GUIDE = gql`
 			coordinates
 			categories
 			plannerImage
+			logo
 		}
 	}
 `;

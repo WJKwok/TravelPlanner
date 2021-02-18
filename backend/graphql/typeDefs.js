@@ -27,6 +27,7 @@ module.exports = gql`
 		coverImage: String!
 		plannerImage: String!
 		categories: [String]!
+		logo: String
 	}
 	type Spot {
 		id: ID!
@@ -76,6 +77,7 @@ module.exports = gql`
 		userRatingsTotal: Int!
 		address: String!
 		location: [Float]!
+		businessStatus: String
 		hours: [String]
 	}
 	input DayPlanInput {

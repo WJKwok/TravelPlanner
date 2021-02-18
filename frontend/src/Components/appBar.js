@@ -14,6 +14,8 @@ import AuthModal from './AuthModal';
 import SnackBar from './snackBar';
 import { Button, Snackbar } from '@material-ui/core';
 
+import { Image } from 'cloudinary-react';
+
 const useStyles = makeStyles((theme) => ({
 	AppBar: (props) => ({
 		backgroundColor: props.transparent ? 'transparent' : 'white',
@@ -31,6 +33,14 @@ const useStyles = makeStyles((theme) => ({
 			textDecoration: 'none',
 		},
 	},
+	partnerEmoji: {
+		padding: '0px 5px',
+	},
+	partnerLogo: {
+		height: 50,
+		width: 100,
+		objectFit: 'cover',
+	},
 	iconButton: {
 		cursor: 'pointer',
 		color: '#000',
@@ -40,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const MenuAppBar = ({ offset, transparent }) => {
+const MenuAppBar = ({ offset, transparent, partnerLogo }) => {
 	const styleProps = { transparent };
 	const classes = useStyles(styleProps);
 
@@ -77,6 +87,18 @@ const MenuAppBar = ({ offset, transparent }) => {
 					>
 						Planners
 					</Typography>
+					{partnerLogo && (
+						<>
+							{/* <Typography className={classes.partnerEmoji} variant="h4">
+								🤝
+							</Typography> */}
+							<Image
+								cloudName={process.env.REACT_APP_CLOUD_NAME}
+								publicId={partnerLogo}
+								className={classes.partnerLogo}
+							/>
+						</>
+					)}
 					<Box className={classes.sizedBox} />
 					<FaceIcon
 						className={classes.iconButton}
