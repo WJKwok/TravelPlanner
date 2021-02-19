@@ -22,6 +22,7 @@ import { Draggable } from 'react-beautiful-dnd';
 import { Image } from 'cloudinary-react';
 
 import marked from 'marked';
+import { SpotCardImages, HeaderThumbnail } from './loggingImage';
 import GoogleDirectionLink from './googleDirectionLink';
 
 const useStyles = makeStyles((theme) => ({
@@ -99,14 +100,9 @@ const useStyles = makeStyles((theme) => ({
 	headerThumbnail: {
 		minWidth: 90,
 		maxWidth: 90,
+		objectFit: 'cover',
 		// paddingBottom: '75%',
 		// paddingTop: '56.25%', // 16:9
-		objectFit: 'cover',
-	},
-	headerThumbnailMedia: {
-		width: '100%',
-		height: '100%',
-		objectFit: 'cover',
 	},
 	ratingDiv: {
 		display: 'flex',
@@ -118,20 +114,6 @@ const useStyles = makeStyles((theme) => ({
 		'&::-webkit-scrollbar': {
 			display: 'none',
 		},
-	},
-	onlyMedia: {
-		width: '100%',
-		height: theme.cardWidth * 0.5,
-		objectFit: 'cover',
-	},
-	media: {
-		// height: 0,
-		width: '90%',
-		height: theme.cardWidth * 0.5,
-		objectFit: 'cover',
-		marginRight: 3,
-		// paddingBottom: '75%',
-		// paddingTop: '56.25%', // 16:9
 	},
 	mediaCards: {
 		display: 'flex',
@@ -295,41 +277,12 @@ export const SpotCardBase = (props) => {
 				className={classes.header}
 				onClick={handleExpandClick}
 				data-testid="spot-card"
-				// {...provided.dragHandleProps}
 			>
 				{expanded ? (
 					''
 				) : (
-					<CardMedia
-						className={classes.headerThumbnail}
-
-						// image={spot.imgUrl[0]}
-					>
-						{(spot.imgUrl[0] && spot.imgUrl[0].substring(0, 4) === 'http') ||
-						(spot.imgUrl[0] && spot.imgUrl[0].substring(0, 4) === 'blob') ? (
-							<img
-								cdata-testid="existing-image"
-								key={spot.imgUrl[0]}
-								className={classes.headerThumbnailMedia}
-								src={spot.imgUrl[0]}
-							/>
-						) : (
-							<Image
-								data-testid="existing-image"
-								key={spot.imgUrl[0]}
-								className={classes.headerThumbnailMedia}
-								cloudName={process.env.REACT_APP_CLOUD_NAME}
-								publicId={spot.imgUrl[0]}
-							/>
-						)}
-
-						{/* <Image
-							data-testid="existing-image"
-							key={spot.imgUrl[0]}
-							className={classes.headerThumbnailMedia}
-							cloudName={process.env.REACT_APP_CLOUD_NAME}
-							publicId={spot.imgUrl[0]}
-						/> */}
+					<CardMedia className={classes.headerThumbnail}>
+						<HeaderThumbnail spotImgUrl={spot.imgUrl[0]} />
 					</CardMedia>
 				)}
 
@@ -368,38 +321,7 @@ export const SpotCardBase = (props) => {
 				unmountOnExit
 			>
 				<div className={classes.mediaCards}>
-					{spot.imgUrl.length === 0 ? null : spot.imgUrl.length > 1 ? (
-						spot.imgUrl.map((img) => {
-							const image =
-								img.substring(0, 4) === 'http' ||
-								img.substring(0, 4) === 'blob' ? (
-									<img
-										data-testid="existing-image"
-										className={classes.media}
-										key={img}
-										src={img}
-									/>
-								) : (
-									<Image
-										data-testid="existing-image"
-										key={img}
-										className={classes.media}
-										cloudName={process.env.REACT_APP_CLOUD_NAME}
-										publicId={img}
-									/>
-								);
-							return image;
-						})
-					) : spot.imgUrl[0].substring(0, 4) === 'http' ||
-					  spot.imgUrl[0].substring(0, 4) === 'blob' ? (
-						<img className={classes.onlyMedia} src={spot.imgUrl[0]} />
-					) : (
-						<Image
-							className={classes.onlyMedia}
-							cloudName={process.env.REACT_APP_CLOUD_NAME}
-							publicId={spot.imgUrl[0]}
-						/>
-					)}
+					<SpotCardImages spotImgUrl={spot.imgUrl} />
 				</div>
 				<CardContent>
 					<div

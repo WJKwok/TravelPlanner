@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect, useReducer } from 'react';
 import { LoggerContext, emptyClickedCardState } from '../Store/LoggerContext';
 import { SnackBarContext } from '../Store/SnackBarContext';
 
-import { LoggingImageUploaded, LoggingImageExisting } from './loggingImage';
+import { LoggingImage } from './loggingImage';
 import PlaceAutoComplete from './placeAutoComplete';
 import { CategoryDragAndDrop } from './categoryDragAndDrop';
 import { SpotCardBase } from './spotCardBase';
@@ -170,8 +170,10 @@ export const LoggingForm = ({ guide }) => {
 	const uploadedImgPreviewCard = Object.keys(uploadedImageBlobToFile)
 		.filter((imgLink) => uploadedImageBlobToFile[imgLink].toUpload)
 		.map((imgLink) => {
+			console.log('uploaded????', imgLink);
 			const imgPreview = (
-				<LoggingImageUploaded
+				<LoggingImage
+					testId="uploadedImage"
 					img={imgLink}
 					deleteHandler={deleteUploadedImageHandler}
 				/>
@@ -327,19 +329,18 @@ export const LoggingForm = ({ guide }) => {
 	};
 
 	const errorMsgForUploadedImg = (uploadedImgPreviewCard) => {
-		if (spotInput.imgUrl.length > 0) {
-			return;
+		if (uploadedImgPreviewCard.length > 0) {
+			return uploadedImgPreviewCard;
 		}
 
 		if (submitButtonClicked) {
-			console.log('uploadedImgPreviewCard', uploadedImgPreviewCard);
+			if (spotInput.imgUrl.length > 0) {
+				return;
+			}
+
 			if (uploadedImgPreviewCard.length === 0) {
 				return <Typography color="error">Photos are required</Typography>;
 			}
-		}
-
-		if (uploadedImgPreviewCard.length > 0) {
-			return uploadedImgPreviewCard;
 		}
 
 		return;
@@ -426,9 +427,10 @@ export const LoggingForm = ({ guide }) => {
 				<div className={classes.mediaCards}>
 					{spotInput.imgUrl.map((img) => {
 						return (
-							<LoggingImageExisting
+							<LoggingImage
 								img={img}
 								deleteHandler={deleteExistingImageHandler}
+								testId="edit-existing-image"
 							/>
 						);
 					})}
