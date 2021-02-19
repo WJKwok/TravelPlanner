@@ -7,17 +7,15 @@ import PlaceAutoComplete from './placeAutoComplete';
 import { CategoryDragAndDrop } from './categoryDragAndDrop';
 import { SpotCardBase } from './spotCardBase';
 
-import { TextField, Button } from '@material-ui/core/';
+import { TextField, Button, Typography } from '@material-ui/core/';
 import { makeStyles } from '@material-ui/core/styles';
-
-import marked from 'marked';
 
 import { useMutation, gql } from '@apollo/client';
 import { getPublicIdsOfUploadedImages } from '../Services/cloudinaryApi';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
-		paddingTop: 15,
+		paddingTop: 50,
 	},
 	textField: {
 		marginBottom: 8,
@@ -50,8 +48,20 @@ const useStyles = makeStyles((theme) => ({
 		padding: 3,
 		margin: 2,
 	},
+	previewCardAndSubmitDiv: {
+		display: 'flex',
+		alignItems: 'flex-end',
+		justifyContent: 'space-between',
+	},
+	previewText: {
+		textAlign: 'center',
+		backgroundColor: 'lightgray',
+		margin: '0px 5px',
+		borderRadius: 3,
+	},
 	submitButton: {
 		float: 'right',
+		margin: 5,
 	},
 }));
 
@@ -157,17 +167,17 @@ export const LoggingForm = ({ guide }) => {
 		setUploadedImageBlobToFile(uploadedImageBlobToFileCopy);
 	};
 
-	const uploadedImgPreviewCard = Object.keys(uploadedImageBlobToFile).map(
-		(imgLink) => {
-			const imgPreview = uploadedImageBlobToFile[imgLink].toUpload ? (
+	const uploadedImgPreviewCard = Object.keys(uploadedImageBlobToFile)
+		.filter((imgLink) => uploadedImageBlobToFile[imgLink].toUpload)
+		.map((imgLink) => {
+			const imgPreview = (
 				<LoggingImageUploaded
 					img={imgLink}
 					deleteHandler={deleteUploadedImageHandler}
 				/>
-			) : null;
+			);
 			return imgPreview;
-		}
-	);
+		});
 
 	// const [savePlace] = useMutation(SAVE_PLACE, {
 	// 	update(_, result) {
@@ -317,15 +327,14 @@ export const LoggingForm = ({ guide }) => {
 	};
 
 	const errorMsgForUploadedImg = (uploadedImgPreviewCard) => {
+		if (spotInput.imgUrl.length > 0) {
+			return;
+		}
+
 		if (submitButtonClicked) {
-			if (uploadedImgPreviewCard.length < 1) {
-				return <p>you need pics</p>;
-			}
-			if (
-				uploadedImgPreviewCard.length > 0 &&
-				uploadedImgPreviewCard.every((el) => el === null)
-			) {
-				return <p>you need pics</p>;
+			console.log('uploadedImgPreviewCard', uploadedImgPreviewCard);
+			if (uploadedImgPreviewCard.length === 0) {
+				return <Typography color="error">Photos are required</Typography>;
 			}
 		}
 
@@ -333,14 +342,14 @@ export const LoggingForm = ({ guide }) => {
 			return uploadedImgPreviewCard;
 		}
 
-		return <p>nothing is wrong</p>;
+		return;
 	};
 
 	return (
 		<div className={classes.root}>
 			<PlaceAutoComplete
 				clickFunction={getDetailsFromAutoCompleteItem}
-				city={spotInput.guide.city}
+				city={guide.city}
 				coordinates={guide.coordinates}
 			/>
 			<CategoryDragAndDrop
@@ -406,8 +415,13 @@ export const LoggingForm = ({ guide }) => {
 				variant="outlined"
 				disabled
 			/>
-			<p>Hours:</p>
-			{spotInput.hours && <p>{spotInput.hours.join(' | ')}</p>}
+			<TextField
+				className={classes.textField}
+				label="Hours"
+				value={spotInput.hours && spotInput.hours.join(' | ')}
+				variant="outlined"
+				disabled
+			/>
 			<div className={classes.textField}>
 				<div className={classes.mediaCards}>
 					{spotInput.imgUrl.map((img) => {
@@ -423,8 +437,6 @@ export const LoggingForm = ({ guide }) => {
 				<div className={classes.mediaCards}>
 					{errorMsgForUploadedImg(uploadedImgPreviewCard)}
 				</div>
-			</div>
-			<div className={classes.textField}>
 				<input
 					className={classes.mediaCards}
 					data-testid="file-input"
@@ -434,7 +446,6 @@ export const LoggingForm = ({ guide }) => {
 					onChange={fileUploadClicked}
 				/>
 			</div>
-			<div dangerouslySetInnerHTML={{ __html: marked(spotInput.content) }} />
 			<TextField
 				className={classes.textField}
 				id="edit-content"
@@ -443,49 +454,55 @@ export const LoggingForm = ({ guide }) => {
 				value={spotInput.content}
 				variant="outlined"
 				multiline
-				rows={4}
+				rows={8}
 				onChange={spotFieldChangeHandler}
 				error={submitButtonClicked && !spotInput.content}
 			/>
-			<SpotCardBase
-				spot={{
-					categories: spotInput.categories,
-					content: spotInput.content,
-					date: '',
-					eventName: '',
-					guide: '',
-					id: '',
-					imgUrl: [
-						...spotInput.imgUrl,
-						...Object.keys(uploadedImageBlobToFile).map((imgLink) => {
-							if (uploadedImageBlobToFile[imgLink].toUpload) {
-								return imgLink;
-							}
-						}),
-					],
-					place: {
-						address: spotInput.address,
-						businessStatus: spotInput.businessStatus,
-						hours: spotInput.hours,
-						id: '',
-						location: spotInput.location,
-						name: spotInput.name,
-						rating: spotInput.rating,
-						userRatingsTotal: spotInput.userRatingsTotal,
-					},
-				}}
-				index={1}
-				day={1}
-				dragAndDroppable={false}
-			/>
-			<Button
-				variant="outlined"
-				id="submit"
-				className={classes.submitButton}
-				onClick={submit}
-			>
-				Submit
-			</Button>
+			<div className={classes.previewCardAndSubmitDiv}>
+				<div>
+					<Typography className={classes.previewText}>Preview</Typography>
+					<SpotCardBase
+						spot={{
+							categories: spotInput.categories,
+							content: spotInput.content,
+							date: '',
+							eventName: '',
+							guide: '',
+							id: '',
+							imgUrl: [
+								...spotInput.imgUrl,
+								...Object.keys(uploadedImageBlobToFile)
+									.filter(
+										(imgLink) => uploadedImageBlobToFile[imgLink].toUpload
+									)
+									.map((imgLink) => imgLink),
+							],
+							place: {
+								address: spotInput.address,
+								businessStatus: spotInput.businessStatus,
+								hours: spotInput.hours,
+								id: '',
+								location: spotInput.location,
+								name: spotInput.name,
+								rating: spotInput.rating,
+								userRatingsTotal: spotInput.userRatingsTotal,
+							},
+						}}
+						index={0}
+						day={1}
+						expanded={true}
+						dragAndDroppable={false}
+					/>
+				</div>
+				<Button
+					variant="outlined"
+					id="submit"
+					className={classes.submitButton}
+					onClick={submit}
+				>
+					Submit
+				</Button>
+			</div>
 		</div>
 	);
 };
@@ -505,6 +522,7 @@ const SAVE_SPOT = gql`
 		$userRatingsTotal: Int!
 		$address: String!
 		$location: [Float]!
+		$businessStatus: String
 		$hours: [String]
 	) {
 		saveSpot(
@@ -525,6 +543,7 @@ const SAVE_SPOT = gql`
 				address: $address
 				location: $location
 				hours: $hours
+				businessStatus: $businessStatus
 			}
 		) {
 			id

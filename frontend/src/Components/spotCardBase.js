@@ -157,7 +157,6 @@ export const SpotCardBase = (props) => {
 		dragAndDroppable,
 		provided,
 	} = props;
-	console.log(' uploaded?', spot.imgUrl);
 	const { dispatch } = useContext(SpotContext);
 	const { setClickedCard } = useContext(LoggerContext);
 	// const cssProps = {
@@ -243,6 +242,9 @@ export const SpotCardBase = (props) => {
 				</Typography>
 				<Typography className={classes.spotSubtitle}>
 					{spot.place.name}
+				</Typography>
+				<Typography className={classes.categoryOverflow}>
+					{spot.categories.join(', ')}
 				</Typography>
 			</>
 		) : (
@@ -368,7 +370,6 @@ export const SpotCardBase = (props) => {
 				<div className={classes.mediaCards}>
 					{spot.imgUrl.length === 0 ? null : spot.imgUrl.length > 1 ? (
 						spot.imgUrl.map((img) => {
-							console.log('spotcardbase img:', img);
 							const image =
 								img.substring(0, 4) === 'http' ||
 								img.substring(0, 4) === 'blob' ? (
