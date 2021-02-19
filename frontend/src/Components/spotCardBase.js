@@ -13,6 +13,7 @@ import {
 	Typography,
 	IconButton,
 } from '@material-ui/core';
+import Link from '@material-ui/core/Link';
 import Rating from '@material-ui/lab/Rating';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
@@ -128,6 +129,14 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
+//to get link in marked.js to open in a new tab
+const renderer = new marked.Renderer();
+const linkRenderer = renderer.link;
+renderer.link = (href, title, text) => {
+	const html = linkRenderer.call(renderer, href, title, text);
+	return html.replace(/^<a /, '<a target="_blank" rel="nofollow" ');
+};
+
 export const SpotCardBase = (props) => {
 	const {
 		spot,
@@ -157,7 +166,7 @@ export const SpotCardBase = (props) => {
 
 	const editClickHandler = (e) => {
 		e.stopPropagation();
-		console.log('use ratings on clicked:', spot);
+		console.log('use ratings on clicked from spotcardbase:', spot);
 		setClickedCard(spot);
 	};
 
@@ -326,8 +335,18 @@ export const SpotCardBase = (props) => {
 				<CardContent>
 					<div
 						className={classes.content}
-						dangerouslySetInnerHTML={{ __html: marked(spot.content) }}
+						dangerouslySetInnerHTML={{
+							__html: marked(spot.content, { renderer }),
+						}}
 					/>
+					{spot.place.website && (
+						<a target="_blank" href={spot.place.website}>
+							Website
+						</a>
+					)}
+					<Typography variant="body2">
+						{spot.place.internationalPhoneNumber}
+					</Typography>
 					<Typography variant="body2">{spot.place.address}</Typography>
 				</CardContent>
 			</Collapse>
