@@ -40,9 +40,9 @@ it('edit guide', () => {
 		});
 
 	//upload photo
-	cy.get('[data-testid=uploadedImage]').should('have.length', 0);
+	cy.get('[data-testid="uploadedImage"]').should('have.length', 0);
 	cy.get('[data-testid="file-input"]').attachFile('samplePic.jpeg');
-	cy.get('[data-testid=uploadedImage]').should('have.length', 1);
+	cy.get('[data-testid="uploadedImage"]').should('have.length', 1);
 
 	cy.get('#edit-content').type('Test');
 
@@ -59,7 +59,7 @@ it('edit guide', () => {
 		});
 
 	//Check if image is successfully uploaded
-	cy.visit('http://localhost:3000/logger/5ed7aee473e66d73abe88279/');
+	// cy.visit('http://localhost:3000/logger/5ed7aee473e66d73abe88279/');
 
 	cy.get('[data-testid="5ee1fbf4aa3118be4c682992"]').within(() => {
 		cy.get('[data-testid=existing-image]').should('have.length', 4);
@@ -90,7 +90,7 @@ it('edit guide', () => {
 		});
 
 	// check if delete was successful
-	cy.visit('http://localhost:3000/logger/5ed7aee473e66d73abe88279/');
+	// cy.visit('http://localhost:3000/logger/5ed7aee473e66d73abe88279/');
 
 	cy.get('[data-testid="5ee1fbf4aa3118be4c682992"]').within(() => {
 		cy.get('[data-testid=existing-image]').should('have.length', 3);
