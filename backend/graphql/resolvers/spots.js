@@ -72,6 +72,8 @@ module.exports = {
 					location,
 					businessStatus,
 					hours,
+					internationalPhoneNumber,
+					website,
 				},
 			},
 			context
@@ -105,6 +107,8 @@ module.exports = {
 						location,
 						hours,
 						businessStatus,
+						internationalPhoneNumber,
+						website,
 						updatedAt: new Date().toISOString(),
 					});
 

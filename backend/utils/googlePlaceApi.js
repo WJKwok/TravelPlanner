@@ -61,6 +61,8 @@ module.exports.getGooglePlaceForUpdate = async (placeId) => {
 				userRatingsTotal: result.user_ratings_total,
 				address: result.formatted_address,
 				hours: result.opening_hours ? result.opening_hours.weekday_text : null,
+				internationalPhoneNumber: result.international_phone_number,
+				website: result.website,
 			};
 			return googlePlace;
 		} else {

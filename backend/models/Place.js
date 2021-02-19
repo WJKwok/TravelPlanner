@@ -10,6 +10,8 @@ const placeSchema = new Schema({
 	location: [Number],
 	hours: [String],
 	updatedAt: String,
+	internationalPhoneNumber: String,
+	website: String,
 });
 
 module.exports = model('Place', placeSchema);

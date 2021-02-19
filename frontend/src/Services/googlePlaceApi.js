@@ -31,6 +31,9 @@ export const fetchOnePlaceId = async (placeId) => {
 	placeObject['hours'] = placeData.result.opening_hours
 		? placeData.result.opening_hours.weekday_text
 		: null;
+	placeObject['website'] = placeData.result.website;
+	placeObject['internationalPhoneNumber'] =
+		placeData.result.formatted_phone_number;
 
 	return placeObject;
 };

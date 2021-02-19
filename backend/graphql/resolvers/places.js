@@ -75,6 +75,9 @@ module.exports = {
 					place.address = updatedPlace.address;
 					place.location = updatedPlace.location;
 					place.hours = updatedPlace.hours;
+					place.website = updatedPlace.website;
+					place.internationalPhoneNumber =
+						updatedPlace.internationalPhoneNumber;
 					place.updatedAt = new Date().toISOString();
 
 					await place.save();

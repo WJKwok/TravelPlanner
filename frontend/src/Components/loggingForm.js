@@ -94,10 +94,13 @@ export const LoggingForm = ({ guide }) => {
 				hours: clickedCard.place.hours,
 				imgUrl: clickedCard.imgUrl,
 				content: clickedCard.content,
+				website: clickedCard.place.website,
+				internationalPhoneNumber: clickedCard.place.internationalPhoneNumber,
 			});
 		}
 	}, [clickedCard]);
 
+	// somehow it is impt to put the values here if not your textfield label will not shrink even with value
 	const initialSpotState = {
 		guide: {},
 		categories: [],
@@ -111,6 +114,8 @@ export const LoggingForm = ({ guide }) => {
 		hours: '',
 		imgUrl: [],
 		content: '',
+		website: '',
+		internationalPhoneNumber: '',
 	};
 
 	const [submitButtonClicked, setSubmitButtonClicked] = useState(false);
@@ -404,6 +409,20 @@ export const LoggingForm = ({ guide }) => {
 			/>
 			<TextField
 				className={classes.textField}
+				label="Phone number"
+				value={spotInput.internationalPhoneNumber}
+				variant="outlined"
+				disabled
+			/>
+			<TextField
+				className={classes.textField}
+				label="Website"
+				value={spotInput.website}
+				variant="outlined"
+				disabled
+			/>
+			<TextField
+				className={classes.textField}
 				label="Address"
 				value={spotInput.address}
 				variant="outlined"
@@ -488,6 +507,8 @@ export const LoggingForm = ({ guide }) => {
 								name: spotInput.name,
 								rating: spotInput.rating,
 								userRatingsTotal: spotInput.userRatingsTotal,
+								internationalPhoneNumber: spotInput.internationalPhoneNumber,
+								website: spotInput.website,
 							},
 						}}
 						index={0}
@@ -526,6 +547,8 @@ const SAVE_SPOT = gql`
 		$location: [Float]!
 		$businessStatus: String
 		$hours: [String]
+		$internationalPhoneNumber: String
+		$website: String
 	) {
 		saveSpot(
 			spotInput: {
@@ -546,6 +569,8 @@ const SAVE_SPOT = gql`
 				location: $location
 				hours: $hours
 				businessStatus: $businessStatus
+				internationalPhoneNumber: $internationalPhoneNumber
+				website: $website
 			}
 		) {
 			id
@@ -559,6 +584,8 @@ const SAVE_SPOT = gql`
 				businessStatus
 				address
 				hours
+				internationalPhoneNumber
+				website
 			}
 			categories
 			imgUrl
@@ -581,6 +608,8 @@ const GET_ALL_SPOTS_IN_GUIDE = gql`
 				userRatingsTotal
 				location
 				businessStatus
+				internationalPhoneNumber
+				website
 				address
 				hours
 			}

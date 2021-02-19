@@ -19,6 +19,8 @@ const emptyClickedCardState = {
 		name: '',
 		rating: 0,
 		userRatingsTotal: 0,
+		internationalPhoneNumber: '',
+		website: '',
 	},
 };
 

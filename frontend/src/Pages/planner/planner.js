@@ -718,6 +718,8 @@ const GET_TRIP = gql`
 					location
 					hours
 					businessStatus
+					internationalPhoneNumber
+					website
 				}
 				categories
 				imgUrl
@@ -803,6 +805,11 @@ const GET_SPOT = gql`
 				rating
 				userRatingsTotal
 				location
+				address
+				businessStatus
+				hours
+				internationalPhoneNumber
+				website
 			}
 			imgUrl
 			content
@@ -822,8 +829,11 @@ const GET_SPOTS = gql`
 				rating
 				userRatingsTotal
 				location
+				address
 				businessStatus
 				hours
+				internationalPhoneNumber
+				website
 			}
 			imgUrl
 			content

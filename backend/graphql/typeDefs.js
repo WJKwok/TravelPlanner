@@ -69,6 +69,8 @@ module.exports = gql`
 		businessStatus: String
 		address: String
 		hours: [String]
+		internationalPhoneNumber: String
+		website: String
 	}
 	input PlaceInput {
 		id: String!
@@ -79,6 +81,8 @@ module.exports = gql`
 		location: [Float]!
 		businessStatus: String
 		hours: [String]
+		internationalPhoneNumber: String
+		website: String
 	}
 	input DayPlanInput {
 		placeIds: [String]

@@ -157,6 +157,8 @@ const GET_ALL_SPOTS_IN_GUIDE = gql`
 				businessStatus
 				address
 				hours
+				internationalPhoneNumber
+				website
 			}
 			categories
 			imgUrl
