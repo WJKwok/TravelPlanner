@@ -3,6 +3,8 @@ import { useQuery, useLazyQuery, useMutation, gql } from '@apollo/client';
 import { DragDropContext } from 'react-beautiful-dnd';
 import moment from 'moment';
 
+import { SPOT_DATA } from '../../utils/graphql';
+
 import CategoryChipBar, {
 	currentlySelectedChips,
 } from '../../Components/categoryChipBar/';
@@ -73,7 +75,6 @@ const useStyles = makeStyles((theme) => ({
 	},
 	saveButton: {
 		margin: '0 0 0 auto',
-		// backgroundColor: 'grey',
 		border: 'lightGrey solid 0.5px',
 	},
 }));
@@ -97,39 +98,11 @@ function Planner(props) {
 
 	console.log('tripId :', tripId, guideId);
 	console.log('user exists? ', authState);
-	//temporary for testing
-	console.log('props:', props);
-
-	// const onUnload = e => {
-	//   e.preventDefault();
-	//   e.returnValue = '';
-	//   console.log('unlaoding')
-	// }
-	// window.addEventListener("beforeunload", onUnload);
 
 	useEffect(() => {
-		//props.history.push('/trips')
 		if (tripId === undefined) {
 			dispatch({ type: 'CLEAR_STATE' });
 		}
-
-		//Check if guideId exist, is the same, else clear state
-
-		// if (guideId === spotState.guideId) {
-		//   console.log('it is the same guidebook!')
-		//   return
-		// }
-		// console.log('is there guideid?', spotState.guideId)
-		// if (!spotState.guideId){
-		//   console.log("there's no guide Id!")
-		//   dispatch({type:"SET_GUIDEID", payload:{guideId}})
-		//   return
-		// }
-		// if (guideId !== spotState.guideId) {
-		//   console.log('checking if guide the same:', spotState.guideId)
-		//   dispatch({type:"CLEAR_STATE"})
-		//   return
-		// }
 	}, []);
 
 	useEffect(() => {
@@ -652,17 +625,6 @@ function Planner(props) {
 					>
 						<SaveIcon />
 					</IconButton>
-					{/* <Button
-						variant="outlined"
-						color="primary"
-						size="medium"
-						className={classes.saveButton}
-						startIcon={<SaveIcon />}
-						onClick={saveItinerary}
-						id="save"
-					>
-						Save
-					</Button> */}
 				</div>
 				<div className={classes.dayBoardContainer}>
 					{spotState.dayBoard.map((columnId, index) => {
@@ -708,29 +670,13 @@ const GET_TRIP = gql`
 			categoriesInTrip
 			googlePlacesInTrip
 			spotsArray {
-				id
-				guide
-				place {
-					id
-					name
-					rating
-					userRatingsTotal
-					location
-					hours
-					businessStatus
-					internationalPhoneNumber
-					website
-				}
-				categories
-				imgUrl
-				content
-				date
-				eventName
+				...SpotData
 			}
 			filteredSpots
 			likedSpots
 		}
 	}
+	${SPOT_DATA}
 `;
 
 const SUBMIT_TRIP = gql`
@@ -797,51 +743,19 @@ const GET_USER_TRIPS = gql`
 const GET_SPOT = gql`
 	query getSpot($guideId: ID!, $placeId: String!) {
 		getSpot(guideId: $guideId, placeId: $placeId) {
-			id
-			guide
-			place {
-				id
-				name
-				rating
-				userRatingsTotal
-				location
-				address
-				businessStatus
-				hours
-				internationalPhoneNumber
-				website
-			}
-			imgUrl
-			content
-			categories
+			...SpotData
 		}
 	}
+	${SPOT_DATA}
 `;
 
 const GET_SPOTS = gql`
 	query getSpotsForCategoryInGuide($guideId: ID!, $category: String!) {
 		getSpotsForCategoryInGuide(guideId: $guideId, category: $category) {
-			id
-			guide
-			place {
-				id
-				name
-				rating
-				userRatingsTotal
-				location
-				address
-				businessStatus
-				hours
-				internationalPhoneNumber
-				website
-			}
-			imgUrl
-			content
-			eventName
-			date
-			categories
+			...SpotData
 		}
 	}
+	${SPOT_DATA}
 `;
 
 const GET_GUIDE = gql`

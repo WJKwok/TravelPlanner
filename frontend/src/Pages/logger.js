@@ -5,6 +5,8 @@ import SpotsBoard from '../Components/spotsBoard';
 import { LoggingForm } from '../Components/loggingForm';
 import { DragDropContext } from 'react-beautiful-dnd';
 
+import { SPOT_DATA } from '../utils/graphql';
+
 import CategoryChipBar, {
 	currentlySelectedChips,
 } from '../Components/categoryChipBar/';
@@ -146,27 +148,10 @@ const GET_GUIDE = gql`
 const GET_ALL_SPOTS_IN_GUIDE = gql`
 	query getAllSpotsForGuide($guideId: ID!) {
 		getAllSpotsForGuide(guideId: $guideId) {
-			id
-			guide
-			place {
-				id
-				name
-				rating
-				userRatingsTotal
-				location
-				businessStatus
-				address
-				hours
-				internationalPhoneNumber
-				website
-			}
-			categories
-			imgUrl
-			content
-			eventName
-			date
+			...SpotData
 		}
 	}
+	${SPOT_DATA}
 `;
 
 export default Logger;

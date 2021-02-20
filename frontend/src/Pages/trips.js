@@ -197,27 +197,4 @@ const DELETE_TRIP = gql`
 	}
 `;
 
-// const DELETE_ITINERARY =  gql`
-//     mutation deleteItinerary($itineraryId: ID!){
-//         deleteItinerary(itineraryId: $itineraryId)
-//     }
-// `
-
-/* with parameters ^, without parameters
-const GET_USER_ITINERARIES = gql`
-    query {
-        getUserItineraries{
-            id
-            city
-            dayPlans{
-                placeIds
-            }
-            createdAt
-            user
-            username
-        }
-    }
-`
-*/
-
 export default Trips;

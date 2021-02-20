@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect, useReducer } from 'react';
 import { LoggerContext, emptyClickedCardState } from '../Store/LoggerContext';
 import { SnackBarContext } from '../Store/SnackBarContext';
+import { SPOT_DATA } from '../utils/graphql';
 
 import { LoggingImage } from './loggingImage';
 import PlaceAutoComplete from './placeAutoComplete';
@@ -73,6 +74,7 @@ export const LoggingForm = ({ guide }) => {
 	useEffect(() => {
 		if (Object.keys(clickedCard).length > 0) {
 			/* can't do 
+		
         setSpotInpoout({
             ...clickedCard,
             ...clickedCard['place'],
@@ -185,23 +187,6 @@ export const LoggingForm = ({ guide }) => {
 			);
 			return imgPreview;
 		});
-
-	// const [savePlace] = useMutation(SAVE_PLACE, {
-	// 	update(_, result) {
-	// 		console.log(result);
-	// 	},
-	// 	onError(err) {
-	// 		console.log('err', err);
-	// 	},
-	// 	variables: {
-	// 		...spotInput,
-	// 		id: spotInput.placeId,
-	// 		// name: spotInput.name,
-	// 		// rating: spotInput.rating,
-	// 		// address: spotInput.address,
-	// 		// location: spotInput.location,
-	// 	},
-	// });
 
 	const [saveSpot] = useMutation(SAVE_SPOT, {
 		onCompleted({ saveSpot }) {
@@ -573,77 +558,17 @@ const SAVE_SPOT = gql`
 				website: $website
 			}
 		) {
-			id
-			guide
-			place {
-				id
-				name
-				rating
-				userRatingsTotal
-				location
-				businessStatus
-				address
-				hours
-				internationalPhoneNumber
-				website
-			}
-			categories
-			imgUrl
-			content
-			eventName
-			date
+			...SpotData
 		}
 	}
+	${SPOT_DATA}
 `;
 
 const GET_ALL_SPOTS_IN_GUIDE = gql`
 	query getAllSpotsForGuide($guideId: ID!) {
 		getAllSpotsForGuide(guideId: $guideId) {
-			id
-			guide
-			place {
-				id
-				name
-				rating
-				userRatingsTotal
-				location
-				businessStatus
-				internationalPhoneNumber
-				website
-				address
-				hours
-			}
-			categories
-			imgUrl
-			content
-			eventName
-			date
+			...SpotData
 		}
 	}
+	${SPOT_DATA}
 `;
-
-// const SAVE_PLACE = gql`
-// 	mutation savePlace(
-// 		$id: String!
-// 		$name: String!
-// 		$rating: Float!
-// 		$userRatingsTotal: Int!
-// 		$address: String!
-// 		$location: [Float]!
-// 		$hours: [String]
-// 	) {
-// 		savePlace(
-// 			placeInput: {
-// 				id: $id
-// 				name: $name
-// 				rating: $rating
-// 				userRatingsTotal: $userRatingsTotal
-// 				address: $address
-// 				location: $location
-// 				hours: $hours
-// 			}
-// 		) {
-// 			name
-// 		}
-// 	}
-// `;

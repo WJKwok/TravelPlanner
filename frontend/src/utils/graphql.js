@@ -1,21 +1,25 @@
-import gql from 'graphql-tag'
+import { gql } from '@apollo/client';
 
-export const GET_USER_ITINERARIES = gql`
-query getUserItineraries(
-    $userId: ID!
-){
-    getUserItineraries(
-        userId: $userId
-    ){
-        id
-        city
-        dayPlans{
-            placeIds
-        }
-        createdAt
-        user {
-            username
-        }
-    }
-}
-`
+export const SPOT_DATA = gql`
+	fragment SpotData on Spot {
+		id
+		guide
+		place {
+			id
+			name
+			rating
+			userRatingsTotal
+			location
+			hours
+			businessStatus
+			internationalPhoneNumber
+			website
+			address
+		}
+		categories
+		imgUrl
+		content
+		date
+		eventName
+	}
+`;
