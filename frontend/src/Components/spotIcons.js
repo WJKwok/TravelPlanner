@@ -17,6 +17,7 @@ export const iconDict = {
 	'Night Life': '👯‍♂️',
 	Bar: '🍻',
 	Liked: '😍',
+	Event: '🎉',
 };
 
 /*

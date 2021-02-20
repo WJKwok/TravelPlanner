@@ -5,23 +5,6 @@ import { iconDict } from './spotIcons';
 const useStyles = makeStyles((theme) => ({
 	pin: {
 		display: 'flex',
-		// alignItems: 'center',
-		/* this is pure ccs pointy arrow
-		position: 'relative'
-		'&::after': {
-			content: '""', //content attribute needed to be double quoted like this
-			position: 'absolute',
-			top: '100%',
-			left: 0,
-			right: 0,
-			margin: '0 auto',
-			width: 0,
-			height: 0,
-			borderTop: 'solid 5px white',
-			borderLeft: 'solid 3px transparent',
-			borderRight: 'solid 3px transparent',
-		},
-        */
 	},
 	emoji: {
 		backgroundColor: 'white',
@@ -73,4 +56,20 @@ export const MapMarker = ({ id, text, category, onClick, mouseOverId }) => {
     >
         {icon}
     </Badge>
+
+	this is pure ccs pointy arrow
+	position: 'relative'
+	'&::after': {
+		content: '""', //content attribute needed to be double quoted like this
+		position: 'absolute',
+		top: '100%',
+		left: 0,
+		right: 0,
+		margin: '0 auto',
+		width: 0,
+		height: 0,
+		borderTop: 'solid 5px white',
+		borderLeft: 'solid 3px transparent',
+		borderRight: 'solid 3px transparent',
+	},
 */
