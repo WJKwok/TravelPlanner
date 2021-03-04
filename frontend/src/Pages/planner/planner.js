@@ -29,6 +29,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import CardMedia from '@material-ui/core/CardMedia';
 import Dialog from '@material-ui/core/Dialog';
 import { Image } from 'cloudinary-react';
+import Icon from '@material-ui/core/Icon';
 
 const useStyles = makeStyles((theme) => ({
 	headerImage: {
@@ -76,6 +77,14 @@ const useStyles = makeStyles((theme) => ({
 	saveButton: {
 		margin: '0 0 0 auto',
 		border: 'lightGrey solid 0.5px',
+	},
+	imageIcon: {
+		display: 'flex',
+		height: 'inherit',
+		width: 'inherit',
+	},
+	iconRoot: {
+		textAlign: 'center',
 	},
 }));
 
@@ -220,7 +229,7 @@ function Planner(props) {
 		};
 
 		console.log('building chips... :', categories);
-		setCategoryChips([...categories, likedCategory]);
+		setCategoryChips([likedCategory, ...categories]);
 	};
 
 	const chipClickedTrue = (chipName) => {
@@ -237,6 +246,14 @@ function Planner(props) {
 		const objectIndex = categoryChips.findIndex(
 			(chip) => chip.key === clickedChip.key
 		);
+
+		if (
+			clickedChip.label === 'Liked' &&
+			chipsClone[objectIndex].clicked === false
+		) {
+			chipsClone.map((chip) => (chip.clicked = false));
+		}
+
 		chipsClone[objectIndex].clicked = !categoryChips[objectIndex].clicked;
 		setCategoryChips(chipsClone);
 
@@ -600,9 +617,14 @@ function Planner(props) {
 					<Button
 						className={classes.searchButton}
 						variant="contained"
-						color="primary"
+						color="default"
 						size="medium"
 						data-testid="google-search-button"
+						startIcon={
+							<Icon classes={{ root: classes.iconRoot }}>
+								<img className={classes.imageIcon} src="/images/search.png" />
+							</Icon>
+						}
 						onClick={() => setSearchModalOpen(true)}
 					>
 						Search
