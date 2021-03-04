@@ -5,6 +5,8 @@ import { iconDict } from './spotIcons';
 const useStyles = makeStyles((theme) => ({
 	pin: {
 		display: 'flex',
+		position: 'absolute',
+		transform: 'translate(-50%, -50%)',
 	},
 	emoji: {
 		backgroundColor: 'white',
