@@ -6,13 +6,13 @@ const useStyles = makeStyles((theme) => ({
 	pin: {
 		display: 'flex',
 		position: 'absolute',
-		transform: 'translate(-50%, -50%)',
+		transform: 'translate(-0%, -100%)',
 	},
 	emoji: {
 		backgroundColor: 'white',
 		lineHeight: 1,
 		paddingTop: 2,
-		borderRadius: '0px 0px 0px 10px',
+		borderRadius: '10px 0px 0px 0px',
 		border: 'solid 2px #e15915',
 		fontSize: 22,
 	},
