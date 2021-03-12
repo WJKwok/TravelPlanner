@@ -30,7 +30,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Dialog from '@material-ui/core/Dialog';
 import { Image } from 'cloudinary-react';
 import Icon from '@material-ui/core/Icon';
-import ScrollBoardWithinMap from '../../Components/scrollBoardWithinMap';
+import ScrollBoardWithinMap from '../../Components/scrollBoardWithinMapWeb';
 
 const useStyles = makeStyles((theme) => ({
 	headerImage: {
@@ -592,7 +592,12 @@ function Planner(props) {
 				boardId={columnId}
 				spots={spots}
 				coordinates={guideData.coordinates}
-			/>
+			>
+				<CategoryChipBar
+					categoryChips={categoryChips}
+					toggleChipHandler={toggleChipHandler}
+				/>
+			</ScrollBoardWithinMap>
 		);
 	};
 
@@ -600,7 +605,7 @@ function Planner(props) {
 
 	return loaded ? (
 		<div>
-			<AppBar offset={true} partnerLogo={guideData.logo} />
+			{/* <AppBar offset={true} partnerLogo={guideData.logo} /> */}
 			<ConfirmNavPrompt
 				when={spotState.unsavedChanges === true}
 				navigate={(path) => props.history.push(path)}
@@ -620,7 +625,7 @@ function Planner(props) {
 				</div>
 			</Dialog>
 
-			<CardMedia className={classes.headerImage} image={guideData.plannerImage}>
+			{/* <CardMedia className={classes.headerImage} image={guideData.plannerImage}>
 				<div className={classes.searchAndChips}>
 					<Button
 						className={classes.searchButton}
@@ -642,11 +647,30 @@ function Planner(props) {
 						toggleChipHandler={toggleChipHandler}
 					/>
 				</div>
-			</CardMedia>
+			</CardMedia> */}
+			{/* <Button
+				className={classes.searchButton}
+				variant="contained"
+				color="default"
+				size="medium"
+				data-testid="google-search-button"
+				startIcon={
+					<Icon classes={{ root: classes.iconRoot }}>
+						<img className={classes.imageIcon} src="/images/search.png" />
+					</Icon>
+				}
+				onClick={() => setSearchModalOpen(true)}
+			>
+				Search
+			</Button> */}
+			{/* <CategoryChipBar
+				categoryChips={categoryChips}
+				toggleChipHandler={toggleChipHandler}
+			/> */}
 
 			<DragDropContext onDragEnd={onDragEnd}>
 				<div>{renderSpotsBoard()}</div>
-				<div className={classes.dateAndSave}>
+				{/* <div className={classes.dateAndSave}>
 					<DatePicker />
 					<IconButton
 						id="save"
@@ -655,8 +679,8 @@ function Planner(props) {
 					>
 						<SaveIcon />
 					</IconButton>
-				</div>
-				<div className={classes.dayBoardContainer}>
+				</div> */}
+				{/* <div className={classes.dayBoardContainer}>
 					{spotState.dayBoard.map((columnId, index) => {
 						const column = spotState.columns[columnId];
 						const spots = column.spotIds.map(
@@ -674,7 +698,7 @@ function Planner(props) {
 							/>
 						);
 					})}
-				</div>
+				</div> */}
 			</DragDropContext>
 			<AuthModal
 				registerOpen={registerOpen}

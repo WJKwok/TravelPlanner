@@ -6,6 +6,8 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import Container from '@material-ui/core/Container';
 import Planner from './Pages/planner';
+import PlannerWeb from './Pages/plannerWeb';
+import PlannerMobile from './Pages/plannerMobile';
 import Logger from './Pages/logger';
 import Landing from './Pages/landing';
 import Trips from './Pages/trips';
@@ -83,6 +85,16 @@ function App() {
 											component={Planner}
 										/>
 									</div>
+									<Route
+										exact
+										path="/web/planner/:guideBookId"
+										component={PlannerWeb}
+									/>
+									<Route
+										exact
+										path="/mobile/planner/:guideBookId"
+										component={PlannerMobile}
+									/>
 								</BrowserRouter>
 							</ThemeProvider>
 						</LoggerContextProvider>
