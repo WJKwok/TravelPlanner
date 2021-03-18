@@ -28,12 +28,12 @@ import GoogleDirectionLink from './googleDirectionLink';
 
 const useStyles = makeStyles((theme) => ({
 	root: (props) => ({
-		minWidth: theme.cardWidth,
-		maxWidth: theme.cardWidth,
-		margin: 5,
-		[theme.breakpoints.down(theme.maxMobileWidth)]: {
-			minWidth: '75%',
-		},
+		minWidth: '80vw',
+		maxWidth: '80vw',
+		margin: '2vw',
+		// [theme.breakpoints.down(theme.maxMobileWidth)]: {
+		// 	minWidth: '75%',
+		// },
 		boxShadow: props.highlight ? '0 0 0 3px #1a73e8' : null,
 	}),
 	header: {

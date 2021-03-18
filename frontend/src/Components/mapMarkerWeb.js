@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { iconDict } from './spotIcons';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 
 const useStyles = makeStyles((theme) => ({
 	emoji: (props) => ({
@@ -13,6 +14,11 @@ const useStyles = makeStyles((theme) => ({
 		padding: 5,
 		fontSize: 22,
 	}),
+	heartEmoji: {
+		position: 'absolute',
+		bottom: '50%',
+		left: '60%',
+	},
 }));
 
 export const MapMarker = ({
@@ -22,6 +28,7 @@ export const MapMarker = ({
 	onClick,
 	mouseOverId,
 	clickedCardId,
+	liked,
 }) => {
 	const styleProps = {
 		shouldHighlight: mouseOverId === id || clickedCardId === id,
@@ -32,6 +39,13 @@ export const MapMarker = ({
 	return (
 		<div className={classes.emoji} onClick={onClick}>
 			{icon}
+			{liked && (
+				<FavoriteIcon
+					color="error"
+					className={classes.heartEmoji}
+					data-testid="filled-heart"
+				/>
+			)}
 		</div>
 	);
 };

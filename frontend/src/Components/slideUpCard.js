@@ -17,12 +17,11 @@ const useStyles = makeStyles((theme) => ({
 		left: 0,
 		backgroundColor: 'white',
 		height: '100vh',
-		width: props.showSidePanel ? 408 : 0,
-		zIndex: 3,
-		paddingTop: 50,
+		width: '100vw',
+		zIndex: 10,
 	}),
 	card: {
-		height: 'calc(100vh - 50px)',
+		height: 'inherit',
 		overflowY: 'auto',
 	},
 	mediaCards: {
@@ -50,43 +49,47 @@ export const SidePanelCard = ({ spot, showSidePanel, children }) => {
 	const classes = useStyles(styleProps);
 
 	return (
-		<div className={classes.sidePanel}>
-			{children}
-			<Card elevation={0} className={classes.card}>
-				<CardActionArea>
-					<div className={classes.mediaCards}>
-						<SpotCardImages spotImgUrl={spot.imgUrl} />
-					</div>
-					<CardContent>
-						<Typography gutterBottom variant="h5" component="h2">
-							{spot.place.name}
-						</Typography>
-						<div
-							className={classes.content}
-							dangerouslySetInnerHTML={{
-								__html: marked(spot.content, { renderer }),
-							}}
-						/>
-						{spot.place.website && (
-							<a target="_blank" href={spot.place.website}>
-								Website
-							</a>
-						)}
-						<Typography variant="body2">
-							{spot.place.internationalPhoneNumber}
-						</Typography>
-						<Typography variant="body2">{spot.place.address}</Typography>
-					</CardContent>
-				</CardActionArea>
-				<CardActions>
-					<Button size="small" color="primary">
-						Share
-					</Button>
-					<Button size="small" color="primary">
-						Learn More
-					</Button>
-				</CardActions>
-			</Card>
-		</div>
+		<>
+			{showSidePanel && (
+				<div className={classes.sidePanel}>
+					{children}
+					<Card elevation={0} className={classes.card}>
+						<CardActionArea>
+							<div className={classes.mediaCards}>
+								<SpotCardImages spotImgUrl={spot.imgUrl} />
+							</div>
+							<CardContent>
+								<Typography gutterBottom variant="h5" component="h2">
+									{spot.place.name}
+								</Typography>
+								<div
+									className={classes.content}
+									dangerouslySetInnerHTML={{
+										__html: marked(spot.content, { renderer }),
+									}}
+								/>
+								{spot.place.website && (
+									<a target="_blank" href={spot.place.website}>
+										Website
+									</a>
+								)}
+								<Typography variant="body2">
+									{spot.place.internationalPhoneNumber}
+								</Typography>
+								<Typography variant="body2">{spot.place.address}</Typography>
+							</CardContent>
+						</CardActionArea>
+						<CardActions>
+							<Button size="small" color="primary">
+								Share
+							</Button>
+							<Button size="small" color="primary">
+								Learn More
+							</Button>
+						</CardActions>
+					</Card>
+				</div>
+			)}
+		</>
 	);
 };

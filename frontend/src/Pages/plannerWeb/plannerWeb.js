@@ -592,13 +592,38 @@ function Planner(props) {
 				boardId={columnId}
 				spots={spots}
 				coordinates={guideData.coordinates}
-			>
-				<CategoryChipBar
+				catBar={
+					<CategoryChipBar
+						categoryChips={categoryChips}
+						toggleChipHandler={toggleChipHandler}
+					/>
+				}
+				gSearchButton={
+					<Button
+						className={classes.searchButton}
+						variant="contained"
+						color="default"
+						size="medium"
+						data-testid="google-search-button"
+						startIcon={
+							<Icon classes={{ root: classes.iconRoot }}>
+								<img className={classes.imageIcon} src="/images/search.png" />
+							</Icon>
+						}
+						onClick={() => setSearchModalOpen(true)}
+					>
+						Search
+					</Button>
+				}
+			/>
+		);
+		{
+			/* <CategoryChipBar
 					categoryChips={categoryChips}
 					toggleChipHandler={toggleChipHandler}
 				/>
-			</ScrollBoardWithinMap>
-		);
+			</ScrollBoardWithinMap> */
+		}
 	};
 
 	const placeAutoCompletePlaceHolderText = 'Google a place of interest 🙌';

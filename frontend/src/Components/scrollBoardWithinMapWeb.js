@@ -13,11 +13,11 @@ import { SidePanelCard } from './sidePanelCard';
 
 const useStyles = makeStyles((theme) => ({
 	cardsScroll: (props) => ({
-		position: 'absolute',
-		bottom: 0,
-		left: props.sidePanel ? 408 : 0,
-		zIndex: 5,
-		width: props.sidePanel ? 'calc(100vw - 408px)' : '100vw',
+		// position: 'absolute',
+		// bottom: 0,
+		// left: props.sidePanel ? 408 : 0,
+		// zIndex: 5,
+		// width: props.sidePanel ? 'calc(100vw - 408px)' : '100vw',
 		'&::-webkit-scrollbar': {
 			display: 'none',
 		},
@@ -35,12 +35,31 @@ const useStyles = makeStyles((theme) => ({
 		backgroundColor: 'white',
 		padding: 5,
 	},
+	bottomBar: (props) => ({
+		position: 'absolute',
+		bottom: 0,
+		left: props.sidePanel ? 408 : 0,
+		zIndex: 5,
+		width: props.sidePanel ? 'calc(100vw - 408px)' : '100vw',
+	}),
+	paddingRight: {
+		position: 'absolute',
+		bottom: '100%',
+		left: 20,
+	},
 }));
 
 function ScrollBoardWithinMap(props) {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(`(max-width:${theme.maxMobileWidth}px)`);
-	const { boardId, spots, coordinates, dragAndDroppable } = props;
+	const {
+		boardId,
+		spots,
+		coordinates,
+		dragAndDroppable,
+		catBar,
+		gSearchButton,
+	} = props;
 
 	const [mouseOverCard, setMouseOverCard] = useState(undefined);
 	const [clickedCard, setClickedCard] = useState(null);
@@ -60,12 +79,14 @@ function ScrollBoardWithinMap(props) {
 
 	const cardWith = isMobile ? window.innerWidth * 0.75 : theme.cardWidth;
 	console.log('cardWith', cardWith);
-	const executeScroll = (index, key) => {
+	const executeScroll = (index, spot) => {
 		const pixel = index * cardWith + 10;
 		console.log('pixel', pixel);
-		console.log('map marker:', key);
+		console.log('map marker:', spot.id);
 		myref.scrollLeft = pixel;
-		setMouseOverCard(key);
+		setMouseOverCard(spot.id);
+		setClickedCard(spot);
+		setShowSidePanel(true);
 	};
 
 	const placeHolderText = (
@@ -83,7 +104,8 @@ function ScrollBoardWithinMap(props) {
 				mouseOverCard={mouseOverCard}
 				clickedCard={clickedCard}
 			>
-				{props.children}
+				{catBar}
+
 				{clickedCard ? (
 					<SidePanelCard spot={clickedCard} showSidePanel={showSidePanel}>
 						<p
@@ -94,36 +116,39 @@ function ScrollBoardWithinMap(props) {
 						</p>
 					</SidePanelCard>
 				) : null}
-				<Droppable droppableId={boardId} direction="horizontal">
-					{(provided) => (
-						<div
-							ref={(ref) => setRef(provided.innerRef, ref)}
-							{...provided.droppableProps}
-							className={classes.cardsScroll}
-						>
-							{spots.length > 0
-								? spots.map((spot, index) => (
-										<SpotCardBase
-											key={spot.id}
-											spot={spot}
-											day={day}
-											index={index}
-											expanded={false}
-											highlight={mouseOverCard === spot.id}
-											mouseOver={(id) => setMouseOverCard(id)}
-											dragAndDroppable={dragAndDroppable}
-											cardClickedHandler={() => {
-												setClickedCard(spot);
-												setShowSidePanel(true);
-											}}
-										/>
-								  ))
-								: placeHolderText}
-							<Paper className={classes.paddingRight} elevation={0} />
-							{provided.placeholder}
-						</div>
-					)}
-				</Droppable>
+				<div className={classes.bottomBar}>
+					<Droppable droppableId={boardId} direction="horizontal">
+						{(provided) => (
+							<div
+								ref={(ref) => setRef(provided.innerRef, ref)}
+								{...provided.droppableProps}
+								className={classes.cardsScroll}
+							>
+								{spots.length > 0
+									? spots.map((spot, index) => (
+											<SpotCardBase
+												key={spot.id}
+												spot={spot}
+												day={day}
+												index={index}
+												expanded={false}
+												highlight={clickedCard && clickedCard.id === spot.id}
+												mouseOver={(id) => setMouseOverCard(id)}
+												dragAndDroppable={dragAndDroppable}
+												cardClickedHandler={() => {
+													setClickedCard(spot);
+													setShowSidePanel(true);
+												}}
+											/>
+									  ))
+									: placeHolderText}
+
+								{provided.placeholder}
+							</div>
+						)}
+					</Droppable>
+					<div className={classes.paddingRight}>{gSearchButton}</div>
+				</div>
 			</GoogleMapWithScrollBoard>
 		</>
 	);
