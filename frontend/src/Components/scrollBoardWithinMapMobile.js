@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
 	gSearchButton: {
 		position: 'absolute',
 		bottom: '100%',
-		left: 20,
+		left: '10vw',
 	},
 	rightPadding: {
 		width: '8vw',
@@ -147,7 +147,7 @@ function ScrollBoardWithinMap(props) {
 						// {...provided.droppableProps}
 						ref={myref}
 						className={classes.cardsScroll}
-						onScroll={debounce(onCardsScroll, 300)}
+						onScroll={debounce(onCardsScroll, 150)}
 					>
 						{spots.length > 0
 							? spots.map((spot, index) => (

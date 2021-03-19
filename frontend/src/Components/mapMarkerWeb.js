@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme) => ({
 		borderRadius: '50%',
 		padding: 5,
 		fontSize: 22,
+		zIndex: props.shouldHighlight ? 5 : 0,
 	}),
 	heartEmoji: {
 		position: 'absolute',

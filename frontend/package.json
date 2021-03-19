@@ -18,7 +18,7 @@
 		"bootstrap": "^4.4.1",
 		"cloudinary-react": "^1.6.8",
 		"cypress-file-upload": "^4.1.1",
-		"google-map-react": "^1.1.6",
+		"google-map-react": "^2.1.9",
 		"graphql": "^15.0.0",
 		"graphql-tag": "^2.10.3",
 		"history": "^5.0.0",

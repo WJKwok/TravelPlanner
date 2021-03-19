@@ -43,12 +43,6 @@ const useStyles = makeStyles((theme) => ({
 		minHeight: 300,
 		padding: '13px',
 	},
-	searchButton: {
-		margin: '0px 0px 5px 0px',
-		[theme.breakpoints.down(430)]: {
-			margin: '0px 0px 10px 10px',
-		},
-	},
 	searchAndChips: {
 		position: 'absolute',
 		bottom: -45,
@@ -600,7 +594,6 @@ function Planner(props) {
 				}
 				gSearchButton={
 					<Button
-						className={classes.searchButton}
 						variant="contained"
 						color="default"
 						size="medium"
