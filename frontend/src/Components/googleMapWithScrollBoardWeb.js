@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import GoogleMapReact from 'google-map-react';
+import { fitBounds } from 'google-map-react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { MapMarker } from './mapMarkerWeb';
@@ -27,7 +28,7 @@ function GoogleMapWithScrollBoard({
 	clickedCard,
 }) {
 	const mapClass = useStyles();
-
+	let mapref = useRef(null);
 	const [center, setCenter] = useState({
 		lat: coordinates[0],
 		lng: coordinates[1],
@@ -36,11 +37,22 @@ function GoogleMapWithScrollBoard({
 
 	useEffect(() => {
 		if (clickedCard) {
+			// const markerInBound = new mapref.current.LatLngBounds();
+			// .contains({
+			// 	lat: clickedCard.place.location[0],
+			// 	lng: clickedCard.place.location[1],
+			// });
+
+			// console.log('markerInBound', mapref.current.getBounds());
+			// if (markerInBound) {
+			// 	return;
+			// }
+
 			setCenter({
 				lat: clickedCard.place.location[0],
 				lng: clickedCard.place.location[1],
 			});
-			setZoom(15);
+			// setZoom(15);
 		}
 	}, [clickedCard]);
 
@@ -70,9 +82,58 @@ function GoogleMapWithScrollBoard({
 		};
 	};
 
+	useEffect(() => {
+		if (mapref.current && spots.length > 0) {
+			// calculating bounds is difficult for only one spot
+			if (spots.length === 1) {
+				setZoom(11);
+				setCenter({
+					lat: spots[0].place.location[0],
+					lng: spots[0].place.location[1],
+				});
+				return;
+			}
+
+			const bounds = new mapref.current.LatLngBounds();
+			for (let i = 0; i < spots.length; i++) {
+				const marker = spots[i].place.location;
+				const newPoint = new mapref.current.LatLng(marker[0], marker[1]);
+				bounds.extend(newPoint);
+			}
+
+			const size = {
+				width: window.innerWidth, // Map width in pixels
+				height: window.innerHeight, // Map height in pixels
+			};
+
+			const newBounds = {
+				ne: {
+					lat: bounds.getNorthEast().lat(),
+					lng: bounds.getNorthEast().lng(),
+				},
+				sw: {
+					lat: bounds.getSouthWest().lat(),
+					lng: bounds.getSouthWest().lng(),
+				},
+			};
+
+			let { zoom, center } = fitBounds(newBounds, size);
+			console.log({ zoom, center });
+
+			setZoom(zoom);
+			setCenter(center);
+		}
+	}, [spots.length]);
+
 	//https://github.com/google-map-react/google-map-react/issues/986
-	const handleChange = (e) => {
-		setZoom(e.zoom);
+	const handleChange = (maps) => {
+		setZoom(maps.zoom);
+	};
+
+	// to be able to use 'new mapref.current.LatLngBounds()'
+	const apiIsLoaded = (map, maps) => {
+		console.log('apiIsLoaded', map);
+		mapref.current = maps;
 	};
 
 	return (
@@ -88,6 +149,8 @@ function GoogleMapWithScrollBoard({
 				center={center}
 				onChange={(e) => handleChange(e)}
 				zoom={zoom}
+				yesIWantToUseGoogleMapApiInternals
+				onGoogleApiLoaded={({ map, maps }) => apiIsLoaded(map, maps)}
 			>
 				{markerPins}
 			</GoogleMapReact>
