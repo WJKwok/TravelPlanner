@@ -63,7 +63,7 @@ function ScrollBoardWithinMap(props) {
 
 	const [mouseOverCard, setMouseOverCard] = useState(undefined);
 	const [clickedCard, setClickedCard] = useState(null);
-	const [showSidePanel, setShowSidePanel] = useState(true);
+	const [showSidePanel, setShowSidePanel] = useState(false);
 	const styleProps = { sidePanel: !!clickedCard && showSidePanel };
 	const classes = useStyles(styleProps);
 
@@ -103,6 +103,7 @@ function ScrollBoardWithinMap(props) {
 				pinClicked={executeScroll}
 				mouseOverCard={mouseOverCard}
 				clickedCard={clickedCard}
+				showSidePanel={showSidePanel && clickedCard}
 			>
 				{catBar}
 
