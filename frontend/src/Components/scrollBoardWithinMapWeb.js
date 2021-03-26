@@ -10,6 +10,9 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Paper from '@material-ui/core/Paper';
 import { SpotCardBase } from './spotCardBaseWeb';
 import { SidePanelCard } from './sidePanelCard';
+import ArrowRightIcon from '@material-ui/icons/ArrowRight';
+import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
+import SnackBar from './snackBar';
 
 const useStyles = makeStyles((theme) => ({
 	cardsScroll: (props) => ({
@@ -33,7 +36,8 @@ const useStyles = makeStyles((theme) => ({
 		top: 100,
 		left: '100%',
 		backgroundColor: 'white',
-		padding: 5,
+		padding: '10px 0px',
+		boxShadow: '0px 1px 4px rgb(0 0 0 / 30%)',
 	},
 	bottomBar: (props) => ({
 		position: 'absolute',
@@ -47,6 +51,11 @@ const useStyles = makeStyles((theme) => ({
 		bottom: '100%',
 		left: 20,
 	},
+	rightButtons: {
+		position: 'absolute',
+		bottom: '100%',
+		right: 20,
+	},
 }));
 
 function ScrollBoardWithinMap(props) {
@@ -59,6 +68,7 @@ function ScrollBoardWithinMap(props) {
 		dragAndDroppable,
 		catBar,
 		gSearchButton,
+		rightButtons,
 	} = props;
 
 	const [mouseOverCard, setMouseOverCard] = useState(undefined);
@@ -106,15 +116,14 @@ function ScrollBoardWithinMap(props) {
 				showSidePanel={showSidePanel && clickedCard}
 			>
 				{catBar}
-
 				{clickedCard ? (
 					<SidePanelCard spot={clickedCard} showSidePanel={showSidePanel}>
-						<p
+						<div
 							className={classes.toggleButton}
 							onClick={() => setShowSidePanel((prev) => !prev)}
 						>
-							Toggle
-						</p>
+							{showSidePanel ? <ArrowLeftIcon /> : <ArrowRightIcon />}
+						</div>
 					</SidePanelCard>
 				) : null}
 				<div className={classes.bottomBar}>
@@ -143,12 +152,15 @@ function ScrollBoardWithinMap(props) {
 											/>
 									  ))
 									: placeHolderText}
-
+								<div
+									style={{ height: '5px', minWidth: '10px', clear: 'both' }}
+								></div>
 								{provided.placeholder}
 							</div>
 						)}
 					</Droppable>
 					<div className={classes.paddingRight}>{gSearchButton}</div>
+					<div className={classes.rightButtons}>{rightButtons}</div>
 				</div>
 			</GoogleMapWithScrollBoard>
 		</>

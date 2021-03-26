@@ -12,8 +12,6 @@ const useStyles = makeStyles({
 		textAlign: 'center',
 		color: 'white',
 		backgroundColor: props.backgroundColor,
-		// position: 'absolute',
-		// top: 0,
 	}),
 });
 

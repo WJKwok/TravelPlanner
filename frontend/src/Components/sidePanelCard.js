@@ -18,8 +18,9 @@ const useStyles = makeStyles((theme) => ({
 		backgroundColor: 'white',
 		height: '100vh',
 		width: props.showSidePanel ? 408 : 0,
-		zIndex: 3,
-		paddingTop: 50,
+		zIndex: 6,
+		paddingTop: 37,
+		boxShadow: '0 0 20px rgb(0 0 0 / 30%)',
 	}),
 	card: {
 		height: 'calc(100vh - 50px)',
@@ -52,32 +53,30 @@ export const SidePanelCard = ({ spot, showSidePanel, children }) => {
 	return (
 		<div className={classes.sidePanel}>
 			{children}
-			<Card elevation={0} className={classes.card}>
-				<CardActionArea>
-					<div className={classes.mediaCards}>
-						<SpotCardImages spotImgUrl={spot.imgUrl} />
-					</div>
-					<CardContent>
-						<Typography gutterBottom variant="h5" component="h2">
-							{spot.place.name}
-						</Typography>
-						<div
-							className={classes.content}
-							dangerouslySetInnerHTML={{
-								__html: marked(spot.content, { renderer }),
-							}}
-						/>
-						{spot.place.website && (
-							<a target="_blank" href={spot.place.website}>
-								Website
-							</a>
-						)}
-						<Typography variant="body2">
-							{spot.place.internationalPhoneNumber}
-						</Typography>
-						<Typography variant="body2">{spot.place.address}</Typography>
-					</CardContent>
-				</CardActionArea>
+			<Card elevation={0} className={classes.card} square>
+				<div className={classes.mediaCards}>
+					<SpotCardImages spotImgUrl={spot.imgUrl} />
+				</div>
+				<CardContent>
+					<Typography gutterBottom variant="h5" component="h2">
+						{spot.place.name}
+					</Typography>
+					<div
+						className={classes.content}
+						dangerouslySetInnerHTML={{
+							__html: marked(spot.content, { renderer }),
+						}}
+					/>
+					{spot.place.website && (
+						<a target="_blank" href={spot.place.website}>
+							Website
+						</a>
+					)}
+					<Typography variant="body2">
+						{spot.place.internationalPhoneNumber}
+					</Typography>
+					<Typography variant="body2">{spot.place.address}</Typography>
+				</CardContent>
 				<CardActions>
 					<Button size="small" color="primary">
 						Share

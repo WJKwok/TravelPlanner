@@ -28,19 +28,60 @@ function GoogleMapWithScrollBoard({
 	clickedCard,
 }) {
 	const mapClass = useStyles();
-	let mapref = useRef(null);
+	let mapsRef = useRef(null);
+	let mapRef = useRef(null);
 	const [center, setCenter] = useState({
 		lat: coordinates[0],
 		lng: coordinates[1],
 	});
 	const [zoom, setZoom] = useState(11);
 
+	const paddedBounds = (npad, spad, epad, wpad) => {
+		var SW = mapRef.current.getBounds().getSouthWest();
+		var NE = mapRef.current.getBounds().getNorthEast();
+		var topRight = mapRef.current.getProjection().fromLatLngToPoint(NE);
+		var bottomLeft = mapRef.current.getProjection().fromLatLngToPoint(SW);
+		var scale = Math.pow(2, mapRef.current.getZoom());
+
+		var SWtopoint = mapRef.current.getProjection().fromLatLngToPoint(SW);
+		var SWpoint = new mapsRef.current.Point(
+			(SWtopoint.x - bottomLeft.x) * scale + wpad,
+			(SWtopoint.y - topRight.y) * scale - spad
+		);
+		var SWworld = new mapsRef.current.Point(
+			SWpoint.x / scale + bottomLeft.x,
+			SWpoint.y / scale + topRight.y
+		);
+		var pt1 = mapRef.current.getProjection().fromPointToLatLng(SWworld);
+
+		var NEtopoint = mapRef.current.getProjection().fromLatLngToPoint(NE);
+		var NEpoint = new mapsRef.current.Point(
+			(NEtopoint.x - bottomLeft.x) * scale - epad,
+			(NEtopoint.y - topRight.y) * scale + npad
+		);
+		var NEworld = new mapsRef.current.Point(
+			NEpoint.x / scale + bottomLeft.x,
+			NEpoint.y / scale + topRight.y
+		);
+		var pt2 = mapRef.current.getProjection().fromPointToLatLng(NEworld);
+
+		return new mapsRef.current.LatLngBounds(pt1, pt2);
+	};
+
 	useEffect(() => {
 		if (clickedCard) {
-			setCenter({
+			let isInView = paddedBounds(50, 200, 0, 0).contains({
 				lat: clickedCard.place.location[0],
 				lng: clickedCard.place.location[1],
 			});
+
+			if (!isInView) {
+				setCenter({
+					lat: clickedCard.place.location[0],
+					lng: clickedCard.place.location[1],
+				});
+			}
+
 			// setZoom(15);
 			// you wanna leave the zoom as it is but just center
 		}
@@ -73,7 +114,7 @@ function GoogleMapWithScrollBoard({
 	};
 
 	useEffect(() => {
-		if (mapref.current && spots.length > 0) {
+		if (mapsRef.current && spots.length > 0) {
 			// calculating bounds is difficult for only one spot
 			if (spots.length === 1) {
 				setZoom(11);
@@ -84,34 +125,41 @@ function GoogleMapWithScrollBoard({
 				return;
 			}
 
-			const bounds = new mapref.current.LatLngBounds();
+			const bounds = new mapsRef.current.LatLngBounds();
 			for (let i = 0; i < spots.length; i++) {
 				const marker = spots[i].place.location;
-				const newPoint = new mapref.current.LatLng(marker[0], marker[1]);
+				const newPoint = new mapsRef.current.LatLng(marker[0], marker[1]);
 				bounds.extend(newPoint);
 			}
 
-			const size = {
-				width: window.innerWidth, // Map width in pixels
-				height: window.innerHeight, // Map height in pixels
-			};
+			mapRef.current.fitBounds(bounds, {
+				top: 50,
+				right: 0,
+				bottom: 180,
+				left: 0,
+			});
 
-			const newBounds = {
-				ne: {
-					lat: bounds.getNorthEast().lat(),
-					lng: bounds.getNorthEast().lng(),
-				},
-				sw: {
-					lat: bounds.getSouthWest().lat(),
-					lng: bounds.getSouthWest().lng(),
-				},
-			};
+			// const size = {
+			// 	width: window.innerWidth, // Map width in pixels
+			// 	height: window.innerHeight, // Map height in pixels
+			// };
 
-			let { zoom, center } = fitBounds(newBounds, size);
-			console.log({ zoom, center });
+			// const newBounds = {
+			// 	ne: {
+			// 		lat: bounds.getNorthEast().lat(),
+			// 		lng: bounds.getNorthEast().lng(),
+			// 	},
+			// 	sw: {
+			// 		lat: bounds.getSouthWest().lat(),
+			// 		lng: bounds.getSouthWest().lng(),
+			// 	},
+			// };
 
-			setZoom(zoom);
-			setCenter(center);
+			// let { zoom, center } = fitBounds(newBounds, size);
+			// console.log({ zoom, center });
+
+			// setZoom(zoom);
+			// setCenter(center);
 		}
 	}, [spots.length]);
 
@@ -120,9 +168,10 @@ function GoogleMapWithScrollBoard({
 		setZoom(maps.zoom);
 	};
 
-	// to be able to use 'new mapref.current.LatLngBounds()'
+	// to be able to use 'new mapsRef.current.LatLngBounds()'
 	const apiIsLoaded = (map, maps) => {
-		mapref.current = maps;
+		mapsRef.current = maps;
+		mapRef.current = map;
 	};
 
 	return (

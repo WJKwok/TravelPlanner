@@ -148,9 +148,10 @@ const addNewSpots = (state, newSpots) => {
 	let mappedSpots = {};
 	let spotIds = [];
 	for (var i = 0; i < newSpots.length; i++) {
-		console.log(newSpots[i]);
-		mappedSpots[newSpots[i].id] = newSpots[i];
-		spotIds.push(newSpots[i].id);
+		if (!(newSpots[i].id in state.spots)) {
+			mappedSpots[newSpots[i].id] = newSpots[i];
+			spotIds.push(newSpots[i].id);
+		}
 	}
 
 	const newState = {
@@ -163,7 +164,9 @@ const addNewSpots = (state, newSpots) => {
 			...state.columns,
 			'filtered-spots': {
 				...state.columns['filtered-spots'],
-				spotIds: [...new Set([...state.columns['filtered-spots'].spotIds, ...spotIds])]
+				spotIds: [
+					...new Set([...state.columns['filtered-spots'].spotIds, ...spotIds]),
+				],
 			},
 		},
 	};

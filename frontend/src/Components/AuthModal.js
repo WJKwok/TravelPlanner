@@ -121,6 +121,7 @@ function AuthModal({ registerOpen, setRegisterOpen, navgiateTo }) {
 					fullWidth
 					value={username}
 					onChange={(e) => setUsername(e.target.value)}
+					autoComplete="off"
 				/>
 				{loginBoolean ? null : (
 					<TextField
@@ -130,6 +131,7 @@ function AuthModal({ registerOpen, setRegisterOpen, navgiateTo }) {
 						label="Email"
 						value={email}
 						onChange={(e) => setEmail(e.target.value)}
+						autoComplete="off"
 					/>
 				)}
 				<TextField
@@ -139,6 +141,7 @@ function AuthModal({ registerOpen, setRegisterOpen, navgiateTo }) {
 					value={password}
 					label="Password"
 					onChange={(e) => setPassword(e.target.value)}
+					autoComplete="off"
 				/>
 				{loginBoolean ? null : (
 					<TextField
@@ -148,6 +151,7 @@ function AuthModal({ registerOpen, setRegisterOpen, navgiateTo }) {
 						label="Confirm Password"
 						value={confirmPassword}
 						onChange={(e) => setConfirmPassword(e.target.value)}
+						autoComplete="off"
 					/>
 				)}
 			</DialogContent>

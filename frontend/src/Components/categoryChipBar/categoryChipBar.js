@@ -14,12 +14,6 @@ const useStyles = makeStyles((theme) => ({
 			display: 'none',
 		},
 		backgroundColor: 'rgba(255,255,255)',
-		//for web
-		zIndex: 5,
-		position: 'absolute',
-		width: '100%',
-		top: 0,
-		left: 0,
 	},
 }));
 

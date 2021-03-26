@@ -17,6 +17,7 @@ import Link from '@material-ui/core/Link';
 import Rating from '@material-ui/lab/Rating';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import StarRateIcon from '@material-ui/icons/StarRate';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 
 import { Draggable } from 'react-beautiful-dnd';
@@ -40,26 +41,28 @@ const useStyles = makeStyles((theme) => ({
 		display: 'flex',
 	},
 	headerInfo: {
+		flexGrow: 1,
 		overflowX: 'scroll',
 		'&::-webkit-scrollbar': {
 			display: 'none',
 		},
+		padding: 10,
+		'&:last-child': {
+			paddingBottom: 10,
+		},
 	},
-	iconsRow: {
+	ratingHeartRow: {
+		display: 'flex',
+		justifyContent: 'space-between',
+		alignItems: 'baseline',
+	},
+	ratingRow: {
 		display: 'flex',
 		alignItems: 'center',
+		fontSize: '0.75em',
 	},
 	editButton: {
 		cursor: 'pointer',
-	},
-	catIndex: {
-		// backgroundColor: props.backgroundColor,
-		border: 'solid 2px grey',
-		display: 'flex',
-		alignItems: 'center',
-		marginRight: 5,
-		borderRadius: 5,
-		padding: '0px 3px',
 	},
 	emoji: {
 		fontSize: 20,
@@ -71,21 +74,26 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: 15,
 	},
 	spotTitle: {
-		fontSize: '1.2em',
+		fontSize: '1em',
 		lineHeight: 'normal',
 		padding: '5px 0px',
-		overflowX: 'auto',
+		// overflowX: 'auto',
 		whiteSpace: 'nowrap',
-		'&::-webkit-scrollbar': {
-			display: 'none',
-		},
+		// '&::-webkit-scrollbar': {
+		// 	display: 'none',
+		// },
+		overflow: 'hidden',
+		textOverflow: 'ellipsis',
 	},
 	categoryOverflow: {
-		overflowX: 'auto',
+		// overflowX: 'auto',
 		whiteSpace: 'nowrap',
-		'&::-webkit-scrollbar': {
-			display: 'none',
-		},
+		// '&::-webkit-scrollbar': {
+		// 	display: 'none',
+		// },
+		fontSize: '0.8em',
+		overflow: 'hidden',
+		textOverflow: 'ellipsis',
 	},
 	spotSubtitle: {
 		marginRight: 5,
@@ -251,20 +259,6 @@ export const SpotCardBase = (props) => {
 				>
 					{businessStatus}
 				</Typography>
-				<div className={classes.ratingDiv}>
-					<Typography className={classes.spotSubtitle}>
-						{spot.place.rating}
-					</Typography>
-					<Rating
-						value={spot.place.rating}
-						precision={0.5}
-						size="small"
-						readOnly
-					/>
-					<Typography className={classes.spotSubtitle}>
-						({spot.place.userRatingsTotal})
-					</Typography>
-				</div>
 				<Typography className={classes.categoryOverflow}>
 					{spot.categories.join(', ')}
 				</Typography>
@@ -299,14 +293,11 @@ export const SpotCardBase = (props) => {
 				)}
 
 				<CardContent className={classes.headerInfo}>
-					<div className={classes.iconsRow}>
-						<div className={classes.catIndex}>
-							<span className={classes.emoji}>
-								{iconDict[spot.categories[0]]
-									? iconDict[spot.categories[0]]
-									: iconDict.Default}
-							</span>
-							<span className={classes.index}>{index + 1}</span>
+					<div className={classes.ratingHeartRow}>
+						<div className={classes.ratingRow}>
+							{spot.place.rating}
+							<StarRateIcon color="error" data-testid="filled-heart" /> (
+							{spot.place.userRatingsTotal})
 						</div>
 						{dragAndDroppable ? (
 							<div onClick={likeClickHandler}>

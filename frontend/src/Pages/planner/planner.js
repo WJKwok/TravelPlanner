@@ -585,6 +585,13 @@ function Planner(props) {
 		// 		resizable={true}
 		// 	/>
 		// );
+
+		// <SpotsBoard
+		// 		dragAndDroppable={true}
+		// 		boardId={columnId}
+		// 		spots={spots}
+		// 		coordinates={guideData.coordinates}
+		// 	/>
 		return (
 			<ScrollBoardWithinMap
 				dragAndDroppable={true}

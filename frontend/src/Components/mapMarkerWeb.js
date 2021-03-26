@@ -7,8 +7,8 @@ const useStyles = makeStyles((theme) => ({
 	emoji: (props) => ({
 		position: 'absolute',
 		transform: 'translate(-0%, -100%)',
-		backgroundColor: props.shouldHighlight ? 'black' : 'white',
-		border: `solid 2px ${props.shouldHighlight ? 'white' : 'black'}`,
+		backgroundColor: props.shouldHighlight ? 'orangered' : 'white',
+		border: `solid 2px ${props.shouldHighlight ? 'mediumvioletred' : 'black'}`,
 		lineHeight: 1,
 		borderRadius: '50%',
 		padding: 5,

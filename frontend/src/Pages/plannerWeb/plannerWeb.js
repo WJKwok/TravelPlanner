@@ -7,7 +7,7 @@ import { SPOT_DATA } from '../../utils/graphql';
 
 import CategoryChipBar, {
 	currentlySelectedChips,
-} from '../../Components/categoryChipBar/';
+} from '../../Components/categoryChipBarWeb';
 import { iconDict } from '../../Components/spotIcons';
 import AppBar from '../../Components/appBar';
 import SpotsBoard from '../../Components/spotsBoard';
@@ -20,17 +20,21 @@ import { SnackBarContext } from '../../Store/SnackBarContext';
 
 import AuthModal from '../../Components/AuthModal';
 import ConfirmNavPrompt from '../../Components/confirmNavPrompt';
+import ProfileIconButton from '../../Components/profileIconButton';
 
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
-import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
 import CardMedia from '@material-ui/core/CardMedia';
 import Dialog from '@material-ui/core/Dialog';
 import { Image } from 'cloudinary-react';
 import Icon from '@material-ui/core/Icon';
 import ScrollBoardWithinMap from '../../Components/scrollBoardWithinMapWeb';
+import ScrollBoardWithinMapMobile from '../../Components/scrollBoardWithinMapMobile';
 
 const useStyles = makeStyles((theme) => ({
 	headerImage: {
@@ -75,9 +79,16 @@ const useStyles = makeStyles((theme) => ({
 		alignItems: 'center',
 		padding: '0px 10px',
 	},
-	saveButton: {
-		margin: '0 0 0 auto',
-		border: 'lightGrey solid 0.5px',
+	iconButton: {
+		backgroundColor: 'white',
+		color: 'black',
+		'&:focus': {
+			outline: 'none',
+		},
+		'&:hover': {
+			backgroundColor: 'black',
+			color: 'white',
+		},
 	},
 	imageIcon: {
 		display: 'flex',
@@ -86,6 +97,10 @@ const useStyles = makeStyles((theme) => ({
 	},
 	iconRoot: {
 		textAlign: 'center',
+	},
+	buttonGroup: {
+		backgroundColor: 'white',
+		color: 'black',
 	},
 }));
 
@@ -96,7 +111,7 @@ function Planner(props) {
 
 	const classes = useStyles();
 	const [categoryChips, setCategoryChips] = useState([]);
-	const [queriedVariables, setQueriedVariables] = useState(['Liked']);
+	const [queriedVariables, setQueriedVariables] = useState([]);
 	const [startedSearch, setStartedSearch] = useState(false);
 	const [newSearchItem, setNewSearchItem] = useState({});
 	const [tripId, setTripId] = useState(props.match.params.tripId);
@@ -105,6 +120,9 @@ function Planner(props) {
 	const [registerOpen, setRegisterOpen] = useState(false);
 	const [searchModalOpen, setSearchModalOpen] = useState(false);
 	const guideId = props.match.params.guideBookId;
+
+	const theme = useTheme();
+	const isMobile = useMediaQuery(`(max-width:${theme.maxMobileWidth}px)`);
 
 	console.log('tripId :', tripId, guideId);
 	console.log('user exists? ', authState);
@@ -222,15 +240,15 @@ function Planner(props) {
 			};
 		});
 
-		let likedCategory = {
-			key: 'Liked',
-			label: 'Liked',
-			icon: iconDict['Liked'],
-			clicked: false,
-		};
+		// let likedCategory = {
+		// 	key: 'Liked',
+		// 	label: 'Liked',
+		// 	icon: iconDict['Liked'],
+		// 	clicked: false,
+		// };
 
 		console.log('building chips... :', categories);
-		setCategoryChips([likedCategory, ...categories]);
+		setCategoryChips(categories);
 	};
 
 	const chipClickedTrue = (chipName) => {
@@ -242,18 +260,26 @@ function Planner(props) {
 		setCategoryChips(chipsClone);
 	};
 
+	const showOnlyLiked = () => {
+		const chipsClone = [...categoryChips];
+		const chipsAllUnlcicked = chipsClone.map((chip) =>
+			Object.assign(chip, { clicked: false })
+		);
+		setCategoryChips(chipsAllUnlcicked);
+	};
+
 	const toggleChipHandler = (clickedChip) => {
 		const chipsClone = [...categoryChips];
 		const objectIndex = categoryChips.findIndex(
 			(chip) => chip.key === clickedChip.key
 		);
 
-		if (
-			clickedChip.label === 'Liked' &&
-			chipsClone[objectIndex].clicked === false
-		) {
-			chipsClone.map((chip) => (chip.clicked = false));
-		}
+		// if (
+		// 	clickedChip.label === 'Liked' &&
+		// 	chipsClone[objectIndex].clicked === false
+		// ) {
+		// 	chipsClone.map((chip) => (chip.clicked = false)); // if without assigning it to a new variable, it would modify the original
+		// }
 
 		chipsClone[objectIndex].clicked = !categoryChips[objectIndex].clicked;
 		setCategoryChips(chipsClone);
@@ -561,10 +587,10 @@ function Planner(props) {
 			(spotId) => spotState.spots[spotId]
 		);
 
-		const likedChipIndex = categoryChips.findIndex(
-			(chip) => chip.key === 'Liked'
-		);
-		const isLikedChipClicked = categoryChips[likedChipIndex].clicked;
+		// const likedChipIndex = categoryChips.findIndex(
+		// 	(chip) => chip.key === 'Liked'
+		// );
+		// const isLikedChipClicked = categoryChips[likedChipIndex].clicked;
 
 		const selectedCategories = currentlySelectedChips(categoryChips);
 		const filteredSpots = unfilteredSpots.filter((spot) =>
@@ -572,9 +598,10 @@ function Planner(props) {
 		);
 
 		const likedSpots = unfilteredSpots.filter((spot) => spot.liked);
-		const spots = isLikedChipClicked
-			? [...new Set([...filteredSpots, ...likedSpots])]
-			: filteredSpots;
+		const spots = [...new Set([...filteredSpots, ...likedSpots])];
+		// const spots = isLikedChipClicked
+		// 	? [...new Set([...filteredSpots, ...likedSpots])]
+		// 	: filteredSpots;
 
 		console.log('filtering spots: ', spots);
 
@@ -585,6 +612,49 @@ function Planner(props) {
 		// 		resizable={true}
 		// 	/>
 		// );
+
+		if (isMobile) {
+			return (
+				<ScrollBoardWithinMapMobile
+					dragAndDroppable={true}
+					key={columnId}
+					boardId={columnId}
+					spots={spots}
+					coordinates={guideData.coordinates}
+					catBar={
+						<CategoryChipBar
+							categoryChips={categoryChips}
+							toggleChipHandler={toggleChipHandler}
+							showOnlyLiked={showOnlyLiked}
+						/>
+					}
+					gSearchButton={
+						<ButtonGroup
+							variant="contained"
+							aria-label="contained primary button group"
+						>
+							<Button
+								data-testid="google-search-button"
+								onClick={() => setSearchModalOpen(true)}
+								className={classes.iconButton}
+							>
+								<Icon classes={{ root: classes.iconRoot }}>
+									<img className={classes.imageIcon} src="/images/search.png" />
+								</Icon>
+							</Button>
+							<Button
+								id="save"
+								onClick={saveItinerary}
+								className={classes.iconButton}
+							>
+								<SaveIcon />
+							</Button>
+						</ButtonGroup>
+					}
+					rightButtons={<ProfileIconButton />}
+				/>
+			);
+		}
 		return (
 			<ScrollBoardWithinMap
 				dragAndDroppable={true}
@@ -596,27 +666,36 @@ function Planner(props) {
 					<CategoryChipBar
 						categoryChips={categoryChips}
 						toggleChipHandler={toggleChipHandler}
+						showOnlyLiked={showOnlyLiked}
 					/>
 				}
 				gSearchButton={
-					<Button
-						className={classes.searchButton}
+					<ButtonGroup
 						variant="contained"
-						color="default"
-						size="medium"
-						data-testid="google-search-button"
-						startIcon={
+						aria-label="contained primary button group"
+					>
+						<Button
+							data-testid="google-search-button"
+							onClick={() => setSearchModalOpen(true)}
+							className={classes.iconButton}
+						>
 							<Icon classes={{ root: classes.iconRoot }}>
 								<img className={classes.imageIcon} src="/images/search.png" />
 							</Icon>
-						}
-						onClick={() => setSearchModalOpen(true)}
-					>
-						Search
-					</Button>
+						</Button>
+						<Button
+							id="save"
+							onClick={saveItinerary}
+							className={classes.iconButton}
+						>
+							<SaveIcon />
+						</Button>
+					</ButtonGroup>
 				}
+				rightButtons={<ProfileIconButton />}
 			/>
 		);
+
 		{
 			/* <CategoryChipBar
 					categoryChips={categoryChips}
@@ -627,7 +706,7 @@ function Planner(props) {
 	};
 
 	const placeAutoCompletePlaceHolderText = 'Google a place of interest 🙌';
-
+	console.log('unsaved web?', spotState.unsavedChanges);
 	return loaded ? (
 		<div>
 			{/* <AppBar offset={true} partnerLogo={guideData.logo} /> */}

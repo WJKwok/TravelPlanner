@@ -6,11 +6,13 @@ import GoogleMapWithScrollBoard from './googleMapWithScrollBoardMobile';
 import DaySelectMenu from './daySelectMenu';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import IconButton from '@material-ui/core/IconButton';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Paper from '@material-ui/core/Paper';
 import { SpotCardBase } from './spotCardBaseMobile';
 import { SidePanelCard } from './slideUpCard';
 import debounce from 'lodash/debounce';
+import ArrowBackOutlinedIcon from '@material-ui/icons/ArrowBackOutlined';
 
 const useStyles = makeStyles((theme) => ({
 	cardsScroll: (props) => ({
@@ -25,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 		display: 'flex',
 		overflowX: 'auto',
 		alignItems: 'flex-start',
-		paddingLeft: '8vw',
+		paddingLeft: '3.5vw',
 		// transition: 'left 200ms cubic-bezier(0.0,0.0,0.2,1)',
 	}),
 	toggleButton: {
@@ -34,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
 		top: 20,
 		left: 20,
 		backgroundColor: 'white',
+		color: 'black',
 		padding: 5,
 	},
 	bottomBar: (props) => ({
@@ -46,10 +49,12 @@ const useStyles = makeStyles((theme) => ({
 	gSearchButton: {
 		position: 'absolute',
 		bottom: '100%',
-		left: '10vw',
+		left: '5vw',
 	},
-	rightPadding: {
-		width: '8vw',
+	rightButtons: {
+		position: 'absolute',
+		bottom: '100%',
+		right: '5vw',
 	},
 }));
 
@@ -63,6 +68,7 @@ function ScrollBoardWithinMap(props) {
 		dragAndDroppable,
 		catBar,
 		gSearchButton,
+		rightButtons,
 	} = props;
 
 	const [mouseOverCard, setMouseOverCard] = useState(undefined);
@@ -81,9 +87,9 @@ function ScrollBoardWithinMap(props) {
 	// };
 	*/
 
-	const cardWith = window.innerWidth * 0.84;
+	const cardWithAndMargin = window.innerWidth * 0.93;
 	const executeScroll = (index, spot) => {
-		const pixel = index * cardWith;
+		const pixel = index * cardWithAndMargin;
 		console.log('pixel', pixel);
 		console.log('map marker:', spot.id);
 		// myref.current.scrollLeft = pixel;
@@ -97,18 +103,20 @@ function ScrollBoardWithinMap(props) {
 
 	const onCardsScroll = () => {
 		console.log('scrolling:', myref.current);
-		// console.log('scrolling', myref.current.top);
-		const messyScroll = myref.current.scrollLeft;
-		const cardIndex = Math.round(messyScroll / cardWith);
-		const straightenedScroll = cardIndex * cardWith;
-		myref.current.scrollTo({
-			//top: myref.current.top //which is undefined anws
-			left: straightenedScroll,
-			behavior: 'smooth',
-		});
-		// setMouseOverCard(spots[cardIndex].id);
-		setClickedCard(spots[cardIndex]);
-		// console.log('spot name:', spots[cardIndex].place.name);
+		if (myref.current) {
+			// console.log('scrolling', myref.current.top);
+			const messyScroll = myref.current.scrollLeft;
+			const cardIndex = Math.round(messyScroll / cardWithAndMargin);
+			const straightenedScroll = cardIndex * cardWithAndMargin;
+			myref.current.scrollTo({
+				//top: myref.current.top //which is undefined anws
+				left: straightenedScroll,
+				behavior: 'smooth',
+			});
+			// setMouseOverCard(spots[cardIndex].id);
+			setClickedCard(spots[cardIndex]);
+			// console.log('spot name:', spots[cardIndex].place.name);
+		}
 	};
 
 	const placeHolderText = (
@@ -130,12 +138,12 @@ function ScrollBoardWithinMap(props) {
 
 				{clickedCard ? (
 					<SidePanelCard spot={clickedCard} showSidePanel={showSidePanel}>
-						<p
+						<IconButton
 							className={classes.toggleButton}
 							onClick={() => setShowSidePanel((prev) => !prev)}
 						>
-							Toggle
-						</p>
+							<ArrowBackOutlinedIcon />
+						</IconButton>
 					</SidePanelCard>
 				) : null}
 
@@ -167,12 +175,14 @@ function ScrollBoardWithinMap(props) {
 									/>
 							  ))
 							: placeHolderText}
-						<div className={classes.rightPadding}>blank</div>
-						{/* {provided.placeholder} */}
+						<div
+							style={{ height: '5px', minWidth: '3.5vw', clear: 'both' }}
+						></div>
 					</div>
 					{/* )}
 					</Droppable> */}
 					<div className={classes.gSearchButton}>{gSearchButton}</div>
+					<div className={classes.rightButtons}>{rightButtons}</div>
 				</div>
 			</GoogleMapWithScrollBoard>
 		</>

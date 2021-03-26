@@ -160,21 +160,21 @@ function GoogleMapWithScrollBoard({
 				bounds.extend(newPoint);
 			}
 
-			const size = {
-				width: window.innerWidth * 0.5, // Map width in pixels
-				height: window.innerHeight, // Map height in pixels
-			};
+			// const size = {
+			// 	width: window.innerWidth * 0.5, // Map width in pixels
+			// 	height: window.innerHeight, // Map height in pixels
+			// };
 
-			const newBounds = {
-				ne: {
-					lat: bounds.getNorthEast().lat(),
-					lng: bounds.getNorthEast().lng(),
-				},
-				sw: {
-					lat: bounds.getSouthWest().lat(),
-					lng: bounds.getSouthWest().lng(),
-				},
-			};
+			// const newBounds = {
+			// 	ne: {
+			// 		lat: bounds.getNorthEast().lat(),
+			// 		lng: bounds.getNorthEast().lng(),
+			// 	},
+			// 	sw: {
+			// 		lat: bounds.getSouthWest().lat(),
+			// 		lng: bounds.getSouthWest().lng(),
+			// 	},
+			// };
 
 			mapRef.current.fitBounds(bounds, {
 				top: 50,

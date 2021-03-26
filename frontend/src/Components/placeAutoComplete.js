@@ -84,6 +84,7 @@ function PlaceAutoComplete({
 				variant="outlined"
 				onChange={searchHandler}
 				autoFocus={true}
+				autoComplete="off"
 			/>
 			{sugestionsState.length !== 0 ? (
 				<List>

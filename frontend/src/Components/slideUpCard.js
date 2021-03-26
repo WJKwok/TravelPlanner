@@ -53,32 +53,30 @@ export const SidePanelCard = ({ spot, showSidePanel, children }) => {
 			{showSidePanel && (
 				<div className={classes.sidePanel}>
 					{children}
-					<Card elevation={0} className={classes.card}>
-						<CardActionArea>
-							<div className={classes.mediaCards}>
-								<SpotCardImages spotImgUrl={spot.imgUrl} />
-							</div>
-							<CardContent>
-								<Typography gutterBottom variant="h5" component="h2">
-									{spot.place.name}
-								</Typography>
-								<div
-									className={classes.content}
-									dangerouslySetInnerHTML={{
-										__html: marked(spot.content, { renderer }),
-									}}
-								/>
-								{spot.place.website && (
-									<a target="_blank" href={spot.place.website}>
-										Website
-									</a>
-								)}
-								<Typography variant="body2">
-									{spot.place.internationalPhoneNumber}
-								</Typography>
-								<Typography variant="body2">{spot.place.address}</Typography>
-							</CardContent>
-						</CardActionArea>
+					<Card elevation={0} className={classes.card} square>
+						<div className={classes.mediaCards}>
+							<SpotCardImages spotImgUrl={spot.imgUrl} />
+						</div>
+						<CardContent>
+							<Typography gutterBottom variant="h5" component="h2">
+								{spot.place.name}
+							</Typography>
+							<div
+								className={classes.content}
+								dangerouslySetInnerHTML={{
+									__html: marked(spot.content, { renderer }),
+								}}
+							/>
+							{spot.place.website && (
+								<a target="_blank" href={spot.place.website}>
+									Website
+								</a>
+							)}
+							<Typography variant="body2">
+								{spot.place.internationalPhoneNumber}
+							</Typography>
+							<Typography variant="body2">{spot.place.address}</Typography>
+						</CardContent>
 						<CardActions>
 							<Button size="small" color="primary">
 								Share
