@@ -12,12 +12,15 @@ export const ConfirmNavPrompt = ({ when, navigate }) => {
 	const [lastLocation, setLastLocation] = useState(null);
 	const [confirmedNavigation, setConfirmedNavigation] = useState(false);
 
+	console.log({ modalVisible, lastLocation, confirmedNavigation, when });
 	const closeModal = () => {
 		setModalVisible(false);
 	};
 
 	const handleBlockedNavigation = (nextLocation) => {
+		console.log('before if prompt');
 		if (!confirmedNavigation) {
+			console.log('after if prompt');
 			setModalVisible(true);
 			setLastLocation(nextLocation);
 			return false;
