@@ -169,7 +169,6 @@ export const SpotCardBase = (props) => {
 	const styleProps = { highlight };
 	const classes = useStyles(styleProps);
 	const [expanded, setExpanded] = useState(props.expanded);
-	const [liked, setLiked] = useState(spot.liked);
 
 	const handleExpandClick = () => {
 		setExpanded((expanded) => !expanded);
@@ -183,7 +182,6 @@ export const SpotCardBase = (props) => {
 
 	const likeClickHandler = (e) => {
 		e.stopPropagation();
-		setLiked((liked) => !liked);
 		dispatch({ type: 'LIKE_TOGGLE', payload: { spotId: spot.id } });
 	};
 
@@ -315,7 +313,7 @@ export const SpotCardBase = (props) => {
 						</div>
 						{dragAndDroppable ? (
 							<div onClick={likeClickHandler}>
-								{liked ? (
+								{spot.liked ? (
 									<FavoriteIcon
 										fontSize="small"
 										color="error"

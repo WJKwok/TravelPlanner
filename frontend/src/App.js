@@ -90,6 +90,11 @@ function App() {
 										path="/web/planner/:guideBookId"
 										component={PlannerWeb}
 									/>
+									<UnAuthRoute
+										exact
+										path="/web/planner/:guideBookId/:tripId"
+										component={PlannerWeb}
+									/>
 									<Route
 										exact
 										path="/mobile/planner/:guideBookId"

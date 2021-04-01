@@ -15,6 +15,13 @@ import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 import SnackBar from './snackBar';
 
 const useStyles = makeStyles((theme) => ({
+	categoryBar: {
+		zIndex: 10,
+		position: 'absolute',
+		width: '100%',
+		top: 0,
+		left: 0,
+	},
 	cardsScroll: (props) => ({
 		// position: 'absolute',
 		// bottom: 0,
@@ -46,15 +53,15 @@ const useStyles = makeStyles((theme) => ({
 		zIndex: 5,
 		width: props.sidePanel ? 'calc(100vw - 408px)' : '100vw',
 	}),
-	paddingRight: {
+	leftButtons: {
 		position: 'absolute',
 		bottom: '100%',
-		left: 20,
+		left: 15,
 	},
 	rightButtons: {
 		position: 'absolute',
 		bottom: '100%',
-		right: 20,
+		right: 15,
 	},
 }));
 
@@ -115,9 +122,9 @@ function ScrollBoardWithinMap(props) {
 				clickedCard={clickedCard}
 				showSidePanel={showSidePanel && clickedCard}
 			>
-				{catBar}
+				<div className={classes.categoryBar}>{catBar}</div>
 				{clickedCard ? (
-					<SidePanelCard spot={clickedCard} showSidePanel={showSidePanel}>
+					<SidePanelCard spotId={clickedCard.id} showSidePanel={showSidePanel}>
 						<div
 							className={classes.toggleButton}
 							onClick={() => setShowSidePanel((prev) => !prev)}
@@ -159,7 +166,7 @@ function ScrollBoardWithinMap(props) {
 							</div>
 						)}
 					</Droppable>
-					<div className={classes.paddingRight}>{gSearchButton}</div>
+					<div className={classes.leftButtons}>{gSearchButton}</div>
 					<div className={classes.rightButtons}>{rightButtons}</div>
 				</div>
 			</GoogleMapWithScrollBoard>

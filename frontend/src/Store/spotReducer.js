@@ -20,6 +20,14 @@ export const spotReducer = (state, action) => {
 				unsavedChanges: false,
 			};
 			return tripLoaded;
+		case 'LOAD_MAP':
+			const { map } = action.payload;
+			const loadedMap = loadMap(map);
+			const mapLoaded = {
+				...loadedMap,
+				unsavedChanges: false,
+			};
+			return mapLoaded;
 		case 'ADD_SPOTS':
 			const { newSpots } = action.payload;
 			console.log('newSpots: ', newSpots);
@@ -67,32 +75,71 @@ export const spotReducer = (state, action) => {
 	}
 };
 
+const initialState = {
+	spots: {},
+	unsavedChanges: false,
+	startDate: moment().startOf('date'),
+	numberOfDays: 2,
+	destination: 'Berlin',
+	columns: {
+		'filtered-spots': {
+			id: 'filtered-spots',
+			title: 'filtered-spots',
+			spotIds: [],
+		},
+		day1: {
+			id: 'day1',
+			title: 'day1',
+			spotIds: [],
+		},
+		day2: {
+			id: 'day2',
+			title: 'day2',
+			spotIds: [],
+		},
+	},
+	filteredBoard: ['filtered-spots'],
+	dayBoard: ['day1', 'day2'],
+};
+
 const clearState = () => {
+	return initialState;
+};
+
+const loadMap = (trip) => {
+	let spots = {};
+	const spotIds = [];
+	trip.spotsArray.forEach((spot) => {
+		spotIds.push(spot.id);
+		if (trip.likedSpots.includes(spot.id)) {
+			spots[spot.id] = {
+				...spot,
+				liked: true,
+			};
+		} else {
+			spots[spot.id] = spot;
+		}
+	});
+
+	const columns = {};
+	columns['filtered-spots'] = {
+		id: 'filtered-spots',
+		title: 'filtered-spots',
+		spotIds,
+	};
+
 	const newState = {
-		spots: {},
-		unsavedChanges: false,
-		startDate: moment().startOf('date'),
-		numberOfDays: 2,
-		destination: 'Berlin',
+		...initialState,
+		spots,
 		columns: {
-			'filtered-spots': {
+			...initialState.columns,
+			['filtered-spots']: {
 				id: 'filtered-spots',
 				title: 'filtered-spots',
-				spotIds: [],
-			},
-			day1: {
-				id: 'day1',
-				title: 'day1',
-				spotIds: [],
-			},
-			day2: {
-				id: 'day2',
-				title: 'day2',
-				spotIds: [],
+				spotIds,
 			},
 		},
 		filteredBoard: ['filtered-spots'],
-		dayBoard: ['day1', 'day2'],
 	};
 
 	return newState;

@@ -6,13 +6,6 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import Tooltip from '@material-ui/core/Tooltip';
 import SnackBar from '../snackBar';
 const useStyles = makeStyles((theme) => ({
-	chipAndSnack: {
-		zIndex: 10,
-		position: 'absolute',
-		width: '100%',
-		top: 0,
-		left: 0,
-	},
 	chipRow: {
 		display: 'flex',
 		overflowX: 'auto',
@@ -49,7 +42,7 @@ const CategoryChipBar = ({
 	const classes = useStyles();
 
 	return (
-		<div className={classes.chipAndSnack}>
+		<>
 			<Paper
 				component="ul"
 				className={classes.categoryChipBoard}
@@ -75,7 +68,7 @@ const CategoryChipBar = ({
 				</div>
 			</Paper>
 			<SnackBar />
-		</div>
+		</>
 	);
 };
 

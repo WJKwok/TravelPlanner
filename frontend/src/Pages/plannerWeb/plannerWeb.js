@@ -21,6 +21,7 @@ import { SnackBarContext } from '../../Store/SnackBarContext';
 import AuthModal from '../../Components/AuthModal';
 import ConfirmNavPrompt from '../../Components/confirmNavPrompt';
 import ProfileIconButton from '../../Components/profileIconButton';
+import ListIcon from '@material-ui/icons/List';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -35,6 +36,8 @@ import { Image } from 'cloudinary-react';
 import Icon from '@material-ui/core/Icon';
 import ScrollBoardWithinMap from '../../Components/scrollBoardWithinMapWeb';
 import ScrollBoardWithinMapMobile from '../../Components/scrollBoardWithinMapMobile';
+import { ListCard } from '../../Components/listCard';
+import { ListPage } from 'Components/listPage';
 
 const useStyles = makeStyles((theme) => ({
 	headerImage: {
@@ -85,10 +88,6 @@ const useStyles = makeStyles((theme) => ({
 		'&:focus': {
 			outline: 'none',
 		},
-		'&:hover': {
-			backgroundColor: 'black',
-			color: 'white',
-		},
 	},
 	imageIcon: {
 		display: 'flex',
@@ -119,6 +118,7 @@ function Planner(props) {
 	const [guideData, setGuideData] = useState({});
 	const [registerOpen, setRegisterOpen] = useState(false);
 	const [searchModalOpen, setSearchModalOpen] = useState(false);
+	const [isListView, setIsListView] = useState(false);
 	const guideId = props.match.params.guideBookId;
 
 	const theme = useTheme();
@@ -175,11 +175,12 @@ function Planner(props) {
 				...trip.categoriesInTrip,
 				hasGooglePlacesInTrip ? 'Searched' : null,
 			]);
-			getCategories(trip.guide.categories, trip.categoriesInTrip);
+			getCategories(trip.guide.categories, []);
 			setGuideData(trip.guide);
 			setLoaded(true);
-			setStartedSearch(hasGooglePlacesInTrip);
-			dispatch({ type: 'LOAD_TRIP', payload: { trip } });
+			// setStartedSearch(hasGooglePlacesInTrip);
+			// showOnlyLiked();
+			dispatch({ type: 'LOAD_MAP', payload: { map: trip } });
 		},
 		onError(err) {
 			console.log('GETTRIP error', err);
@@ -415,6 +416,7 @@ function Planner(props) {
 	});
 
 	const saveItinerary = () => {
+		console.log('spotState:', spotState);
 		const dayKeyArray = spotState.dayBoard;
 		let categoriesInDayBoard = [];
 		let googlePlacesInTrip = [];
@@ -614,46 +616,66 @@ function Planner(props) {
 		// );
 
 		if (isMobile) {
-			return (
-				<ScrollBoardWithinMapMobile
-					dragAndDroppable={true}
-					key={columnId}
-					boardId={columnId}
-					spots={spots}
-					coordinates={guideData.coordinates}
-					catBar={
-						<CategoryChipBar
-							categoryChips={categoryChips}
-							toggleChipHandler={toggleChipHandler}
-							showOnlyLiked={showOnlyLiked}
-						/>
-					}
-					gSearchButton={
-						<ButtonGroup
-							variant="contained"
-							aria-label="contained primary button group"
-						>
-							<Button
-								data-testid="google-search-button"
-								onClick={() => setSearchModalOpen(true)}
-								className={classes.iconButton}
+			if (isListView) {
+				return (
+					<ListPage
+						spots={spots}
+						catBar={
+							<CategoryChipBar
+								categoryChips={categoryChips}
+								toggleChipHandler={toggleChipHandler}
+								showOnlyLiked={showOnlyLiked}
+							/>
+						}
+						setIsListView={setIsListView}
+					/>
+				);
+			} else {
+				return (
+					<ScrollBoardWithinMapMobile
+						dragAndDroppable={true}
+						key={columnId}
+						boardId={columnId}
+						spots={spots}
+						coordinates={guideData.coordinates}
+						catBar={
+							<CategoryChipBar
+								categoryChips={categoryChips}
+								toggleChipHandler={toggleChipHandler}
+								showOnlyLiked={showOnlyLiked}
+							/>
+						}
+						gSearchButton={
+							<ButtonGroup
+								variant="contained"
+								aria-label="contained primary button group"
+								classes={{
+									groupedContained: classes.iconButton,
+								}}
 							>
-								<Icon classes={{ root: classes.iconRoot }}>
-									<img className={classes.imageIcon} src="/images/search.png" />
-								</Icon>
-							</Button>
-							<Button
-								id="save"
-								onClick={saveItinerary}
-								className={classes.iconButton}
-							>
-								<SaveIcon />
-							</Button>
-						</ButtonGroup>
-					}
-					rightButtons={<ProfileIconButton />}
-				/>
-			);
+								<Button
+									data-testid="google-search-button"
+									onClick={() => setSearchModalOpen(true)}
+								>
+									<Icon classes={{ root: classes.iconRoot }}>
+										<img
+											className={classes.imageIcon}
+											src="/images/search.png"
+										/>
+									</Icon>
+								</Button>
+								<Button id="save" onClick={saveItinerary}>
+									<SaveIcon />
+								</Button>
+								<Button id="list" onClick={() => setIsListView(true)}>
+									<ListIcon />
+								</Button>
+							</ButtonGroup>
+						}
+						rightButtons={<ProfileIconButton />}
+					/>
+				);
+			}
 		}
 		return (
 			<ScrollBoardWithinMap
@@ -673,6 +695,9 @@ function Planner(props) {
 					<ButtonGroup
 						variant="contained"
 						aria-label="contained primary button group"
+						classes={{
+							groupedContained: classes.iconButton,
+						}}
 					>
 						<Button
 							data-testid="google-search-button"

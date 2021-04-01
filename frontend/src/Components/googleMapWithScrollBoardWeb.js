@@ -3,7 +3,7 @@ import GoogleMapReact from 'google-map-react';
 import { fitBounds } from 'google-map-react';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { MapMarker } from './mapMarkerWeb';
+import { MapMarker } from './mapMarkerWebAndMobile';
 
 const useStyles = makeStyles((theme) => ({
 	gMap: {

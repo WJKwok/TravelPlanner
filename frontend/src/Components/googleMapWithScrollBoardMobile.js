@@ -3,7 +3,7 @@ import GoogleMapReact from 'google-map-react';
 import { fitBounds } from 'google-map-react';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { MapMarker } from './mapMarkerWeb';
+import { MapMarker } from './mapMarkerWebAndMobile';
 
 const useStyles = makeStyles((theme) => ({
 	gMap: {
@@ -22,7 +22,6 @@ function GoogleMapWithScrollBoard({
 	spots,
 	coordinates,
 	pinClicked,
-	mouseOverCard,
 	resizable,
 	children,
 	clickedCard,
@@ -97,7 +96,6 @@ function GoogleMapWithScrollBoard({
 				lng={place.location[1]}
 				text={`${index + 1}`}
 				onClick={() => pinClicked(index, spot)}
-				mouseOverId={mouseOverCard}
 				clickedCardId={clickedCard ? clickedCard.id : null}
 				category={spot.categories[0]}
 				liked={spot.liked}

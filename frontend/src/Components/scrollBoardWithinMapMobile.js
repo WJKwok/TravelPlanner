@@ -10,11 +10,18 @@ import IconButton from '@material-ui/core/IconButton';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Paper from '@material-ui/core/Paper';
 import { SpotCardBase } from './spotCardBaseMobile';
-import { SidePanelCard } from './slideUpCard';
+import { SlideUpCard } from './slideUpCard';
 import debounce from 'lodash/debounce';
 import ArrowBackOutlinedIcon from '@material-ui/icons/ArrowBackOutlined';
 
 const useStyles = makeStyles((theme) => ({
+	categoryBar: {
+		zIndex: 10,
+		position: 'absolute',
+		width: '100%',
+		top: 0,
+		left: 0,
+	},
 	cardsScroll: (props) => ({
 		// position: 'absolute',
 		// bottom: 0,
@@ -33,9 +40,9 @@ const useStyles = makeStyles((theme) => ({
 	toggleButton: {
 		position: 'absolute',
 		zIndex: 5,
-		top: 20,
-		left: 20,
-		backgroundColor: 'white',
+		top: 16,
+		left: 16,
+		backgroundColor: 'rgba(255, 255, 255, 0.5)',
 		color: 'black',
 		padding: 5,
 	},
@@ -97,7 +104,7 @@ function ScrollBoardWithinMap(props) {
 			//top: myref.current.top //which is undefined anws
 			left: pixel,
 		});
-		setMouseOverCard(spot.id);
+		// setMouseOverCard(spot.id);
 		setClickedCard(spot);
 	};
 
@@ -131,20 +138,19 @@ function ScrollBoardWithinMap(props) {
 				coordinates={coordinates}
 				resizable={true}
 				pinClicked={executeScroll}
-				mouseOverCard={mouseOverCard}
+				// mouseOverCard={mouseOverCard}
 				clickedCard={clickedCard}
 			>
-				{catBar}
-
+				<div className={classes.categoryBar}>{catBar}</div>
 				{clickedCard ? (
-					<SidePanelCard spot={clickedCard} showSidePanel={showSidePanel}>
+					<SlideUpCard spotId={clickedCard.id} showSidePanel={showSidePanel}>
 						<IconButton
 							className={classes.toggleButton}
 							onClick={() => setShowSidePanel((prev) => !prev)}
 						>
 							<ArrowBackOutlinedIcon />
 						</IconButton>
-					</SidePanelCard>
+					</SlideUpCard>
 				) : null}
 
 				<div className={classes.bottomBar}>
@@ -166,7 +172,7 @@ function ScrollBoardWithinMap(props) {
 										index={index}
 										expanded={false}
 										// highlight={clickedCard && clickedCard.id === spot.id}
-										mouseOver={(id) => setMouseOverCard(id)}
+										// mouseOver={(id) => setMouseOverCard(id)}
 										dragAndDroppable={dragAndDroppable}
 										cardClickedHandler={() => {
 											setClickedCard(spot);

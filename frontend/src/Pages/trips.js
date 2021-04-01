@@ -111,6 +111,13 @@ function Trips() {
 	const tripCards = loading
 		? ''
 		: trips.map((trip) => {
+				console.log(
+					'process.env.REACT_APP_NEW_UI',
+					process.env.REACT_APP_NEW_UI
+				);
+				const cardLink = process.env.REACT_APP_NEW_UI
+					? `web/planner/${trip.guide.id}/${trip.id}`
+					: `/planner/${trip.guide.id}/${trip.id}`;
 				return (
 					<Card
 						className={classes.tripCard}
@@ -121,7 +128,7 @@ function Trips() {
 							className={classes.headerThumbnail}
 							image={trip.guide.coverImage}
 						/>
-						<Link to={`/planner/${trip.guide.id}/${trip.id}`}>
+						<Link to={cardLink}>
 							<CardContent className={classes.headerTitle}>
 								<Typography variant="h5">{trip.guide.city}</Typography>
 								<Typography data-testid="trip-date" variant="subtitle1">
