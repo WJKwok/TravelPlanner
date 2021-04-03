@@ -37,9 +37,20 @@ const useStyles = makeStyles((theme) => ({
 		height: theme.cardWidth * 0.5,
 		objectFit: 'cover',
 	},
+	onlyMediaInsta: {
+		width: '100%',
+		height: '100vw',
+		objectFit: 'cover',
+	},
 	media: {
 		width: '90%',
 		height: theme.cardWidth * 0.5,
+		objectFit: 'cover',
+		marginRight: 3,
+	},
+	mediaInsta: {
+		width: '90%',
+		height: '100vw',
 		objectFit: 'cover',
 		marginRight: 3,
 	},
@@ -141,6 +152,51 @@ export const SpotCardImages = ({ spotImgUrl }) => {
 					data-testid="existing-image"
 					key={img}
 					className={classes.media}
+					cloudName={process.env.REACT_APP_CLOUD_NAME}
+					publicId={img}
+				/>
+			);
+			return image;
+		});
+	}
+
+	return spotCardImages;
+};
+
+export const SpotCardImagesInstaStyle = ({ spotImgUrl }) => {
+	const classes = useStyles();
+	let spotCardImages;
+
+	if (spotImgUrl.length === 0) {
+		return null;
+	}
+
+	if (spotImgUrl.length === 1) {
+		spotCardImages = isCloudinaryImage(spotImgUrl[0]) ? (
+			<img className={classes.onlyMediaInsta} src={spotImgUrl[0]} />
+		) : (
+			<Image
+				className={classes.onlyMediaInsta}
+				cloudName={process.env.REACT_APP_CLOUD_NAME}
+				publicId={spotImgUrl[0]}
+			/>
+		);
+	}
+
+	if (spotImgUrl.length > 1) {
+		spotCardImages = spotImgUrl.map((img) => {
+			const image = isCloudinaryImage(img) ? (
+				<img
+					data-testid="existing-image"
+					className={classes.onlyMediaInsta}
+					key={img}
+					src={img}
+				/>
+			) : (
+				<Image
+					data-testid="existing-image"
+					key={img}
+					className={classes.onlyMediaInsta}
 					cloudName={process.env.REACT_APP_CLOUD_NAME}
 					publicId={img}
 				/>

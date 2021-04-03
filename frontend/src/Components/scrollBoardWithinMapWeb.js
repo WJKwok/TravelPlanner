@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 
 import moment from 'moment';
@@ -94,13 +94,23 @@ function ScrollBoardWithinMap(props) {
 
 	console.log('children spotcard', window.innerWidth);
 
-	const cardWith = isMobile ? window.innerWidth * 0.75 : theme.cardWidth;
+	useEffect(() => {
+		if (myref.current) {
+			myref.current.scrollTo({
+				//top: myref.current.top //which is undefined anws
+				left: 0,
+				behavior: 'smooth',
+			});
+		}
+	}, [spots.length]);
+
+	const cardWith = theme.cardWidth;
 	console.log('cardWith', cardWith);
 	const executeScroll = (index, spot) => {
-		const pixel = index * cardWith + 10;
+		const pixel = index * (cardWith + 10) + 10;
 		console.log('pixel', pixel);
 		console.log('map marker:', spot.id);
-		myref.scrollLeft = pixel;
+		myref.current.scrollLeft = pixel;
 		setMouseOverCard(spot.id);
 		setClickedCard(spot);
 		setShowSidePanel(true);
@@ -134,38 +144,37 @@ function ScrollBoardWithinMap(props) {
 					</SidePanelCard>
 				) : null}
 				<div className={classes.bottomBar}>
-					<Droppable droppableId={boardId} direction="horizontal">
-						{(provided) => (
-							<div
-								ref={(ref) => setRef(provided.innerRef, ref)}
-								{...provided.droppableProps}
-								className={classes.cardsScroll}
-							>
-								{spots.length > 0
-									? spots.map((spot, index) => (
-											<SpotCardBase
-												key={spot.id}
-												spot={spot}
-												day={day}
-												index={index}
-												expanded={false}
-												highlight={clickedCard && clickedCard.id === spot.id}
-												mouseOver={(id) => setMouseOverCard(id)}
-												dragAndDroppable={dragAndDroppable}
-												cardClickedHandler={() => {
-													setClickedCard(spot);
-													setShowSidePanel(true);
-												}}
-											/>
-									  ))
-									: placeHolderText}
-								<div
-									style={{ height: '5px', minWidth: '10px', clear: 'both' }}
-								></div>
-								{provided.placeholder}
-							</div>
-						)}
-					</Droppable>
+					{/* <Droppable droppableId={boardId} direction="horizontal">
+						{(provided) => ( */}
+					<div
+						// ref={(ref) => setRef(provided.innerRef, ref)}
+						// {...provided.droppableProps}
+						ref={myref}
+						className={classes.cardsScroll}
+					>
+						{spots.length > 0
+							? spots.map((spot, index) => (
+									<SpotCardBase
+										key={spot.id}
+										spot={spot}
+										day={day}
+										index={index}
+										expanded={false}
+										highlight={clickedCard && clickedCard.id === spot.id}
+										mouseOver={(id) => setMouseOverCard(id)}
+										dragAndDroppable={dragAndDroppable}
+										cardClickedHandler={() => {
+											setClickedCard(spot);
+											setShowSidePanel(true);
+										}}
+									/>
+							  ))
+							: placeHolderText}
+						<div
+							style={{ height: '5px', minWidth: '10px', clear: 'both' }}
+						></div>
+						{/* {provided.placeholder} */}
+					</div>
 					<div className={classes.leftButtons}>{gSearchButton}</div>
 					<div className={classes.rightButtons}>{rightButtons}</div>
 				</div>

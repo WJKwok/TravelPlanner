@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 
 import moment from 'moment';
@@ -93,6 +93,14 @@ function ScrollBoardWithinMap(props) {
 	// 	dropRefFunction(ref);
 	// };
 	*/
+
+	useEffect(() => {
+		myref.current.scrollTo({
+			//top: myref.current.top //which is undefined anws
+			left: 0,
+			behavior: 'smooth',
+		});
+	}, [spots.length]);
 
 	const cardWithAndMargin = window.innerWidth * 0.93;
 	const executeScroll = (index, spot) => {
