@@ -7,12 +7,17 @@ const initialState = {
 };
 
 if (localStorage.getItem('jwtToken')) {
-	const decodedToken = jwtDecode(localStorage.getItem('jwtToken'));
+	const decodedJwtToken = jwtDecode(localStorage.getItem('jwtToken'));
+	const decodedRefreshToken = jwtDecode(localStorage.getItem('refreshToken'));
 
-	if (decodedToken.exp * 1000 < Date.now()) {
+	if (
+		decodedJwtToken.exp * 1000 < Date.now() &&
+		decodedRefreshToken.exp * 1000 < Date.now()
+	) {
 		localStorage.removeItem('jwtToken');
+		localStorage.removeItem('refreshToken');
 	} else {
-		initialState.user = decodedToken;
+		initialState.user = decodedJwtToken;
 	}
 }
 
