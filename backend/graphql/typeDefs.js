@@ -71,6 +71,7 @@ module.exports = gql`
 		hours: [String]
 		internationalPhoneNumber: String
 		website: String
+		reviews: String
 	}
 	input PlaceInput {
 		id: String!

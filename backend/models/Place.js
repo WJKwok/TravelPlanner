@@ -12,6 +12,7 @@ const placeSchema = new Schema({
 	updatedAt: String,
 	internationalPhoneNumber: String,
 	website: String,
+	reviews: String,
 });
 
 module.exports = model('Place', placeSchema);

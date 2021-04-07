@@ -63,6 +63,7 @@ module.exports.getGooglePlaceForUpdate = async (placeId) => {
 				hours: result.opening_hours ? result.opening_hours.weekday_text : null,
 				internationalPhoneNumber: result.international_phone_number,
 				website: result.website,
+				reviews: JSON.stringify(result.reviews),
 			};
 			return googlePlace;
 		} else {

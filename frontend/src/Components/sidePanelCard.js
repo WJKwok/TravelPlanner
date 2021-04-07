@@ -12,6 +12,13 @@ import { SpotCardImages } from './loggingImage';
 import marked from 'marked';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import StarRateIcon from '@material-ui/icons/StarRate';
+import Divider from '@material-ui/core/Divider';
+import Rating from '@material-ui/lab/Rating';
+import Avatar from '@material-ui/core/Avatar';
+import moment from 'moment';
+
+import { OpeningHoursAccordion } from './openingHoursAccordion';
 
 const useStyles = makeStyles((theme) => ({
 	sidePanel: (props) => ({
@@ -35,6 +42,23 @@ const useStyles = makeStyles((theme) => ({
 		'&::-webkit-scrollbar': {
 			display: 'none',
 		},
+	},
+	review: {
+		marginBottom: '1em',
+	},
+	reviewHeader: {
+		display: 'flex',
+		alignItems: 'center',
+	},
+	smallAvatar: {
+		marginRight: 5,
+	},
+	ratingRow: {
+		display: 'flex',
+		alignItems: 'center',
+	},
+	divider: {
+		margin: '15px 0px',
 	},
 	content: {
 		paddingBottom: '2em',
@@ -62,6 +86,11 @@ export const SidePanelCard = ({ spotId, showSidePanel, children }) => {
 		dispatch({ type: 'LIKE_TOGGLE', payload: { spotId: spotId } });
 	};
 
+	const reviews = JSON.parse(spot.place.reviews);
+	console.log('reviews', JSON.parse(spot.place.reviews));
+
+	const momentTime = moment(reviews[1].time);
+
 	return (
 		<div className={classes.sidePanel}>
 			{children}
@@ -77,16 +106,27 @@ export const SidePanelCard = ({ spotId, showSidePanel, children }) => {
 							<FavoriteBorderIcon data-testid="hollow-heart" />
 						)}
 					</div>
-					<Typography gutterBottom variant="h5" component="h2">
-						{spot.place.name}
+
+					<Typography variant="h5">{spot.place.name}</Typography>
+					<Typography variant="body2" className={classes.ratingRow}>
+						{spot.place.rating}
+						<StarRateIcon color="error" data-testid="filled-heart" /> (
+						{spot.place.userRatingsTotal})
 					</Typography>
 
+					<Typography variant="subtitle1">
+						{spot.categories.join(', ')}
+					</Typography>
+
+					<Divider className={classes.divider} />
+					<OpeningHoursAccordion openingHours={spot.place.hours} />
 					<div
 						className={classes.content}
 						dangerouslySetInnerHTML={{
 							__html: marked(spot.content, { renderer }),
 						}}
 					/>
+
 					{spot.place.website && (
 						<a target="_blank" href={spot.place.website}>
 							Website
@@ -96,15 +136,35 @@ export const SidePanelCard = ({ spotId, showSidePanel, children }) => {
 						{spot.place.internationalPhoneNumber}
 					</Typography>
 					<Typography variant="body2">{spot.place.address}</Typography>
+					<Divider className={classes.divider} />
+					<div>
+						{reviews.map((review) => (
+							<div className={classes.review}>
+								<div className={classes.reviewHeader}>
+									<Avatar
+										src={review.profile_photo_url}
+										className={classes.smallAvatar}
+									/>
+									<div>
+										<Typography variant="subtitle1">
+											{review.author_name}
+										</Typography>
+										<Rating
+											value={review.rating}
+											precision={0.5}
+											size="small"
+											readOnly
+										/>
+									</div>
+								</div>
+								<Typography variant="caption">
+									{moment(review.time * 1000).from(moment())}
+								</Typography>
+								<Typography variant="body2">{review.text}</Typography>
+							</div>
+						))}
+					</div>
 				</CardContent>
-				<CardActions>
-					<Button size="small" color="primary">
-						Share
-					</Button>
-					<Button size="small" color="primary">
-						Learn More
-					</Button>
-				</CardActions>
 			</Card>
 		</div>
 	);

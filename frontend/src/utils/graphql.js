@@ -15,6 +15,7 @@ export const SPOT_DATA = gql`
 			internationalPhoneNumber
 			website
 			address
+			reviews
 		}
 		categories
 		imgUrl

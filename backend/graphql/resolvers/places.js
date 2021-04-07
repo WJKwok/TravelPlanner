@@ -78,6 +78,7 @@ module.exports = {
 					place.website = updatedPlace.website;
 					place.internationalPhoneNumber =
 						updatedPlace.internationalPhoneNumber;
+					place.reviews = updatedPlace.reviews;
 					place.updatedAt = new Date().toISOString();
 
 					await place.save();
