@@ -1,51 +1,32 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useQuery, useLazyQuery, useMutation, gql } from '@apollo/client';
-import { DragDropContext } from 'react-beautiful-dnd';
-import moment from 'moment';
+import React, { useContext, useState } from 'react';
 
-import { SPOT_DATA } from '../../utils/graphql';
-
-import CategoryChipBar, {
-	currentlySelectedChips,
-} from '../../Components/categoryChipBarWeb';
-import { iconDict } from '../../Components/spotIcons';
-import AppBar from '../../Components/appBar';
-import SpotsBoard from '../../Components/spotsBoard';
-import DayBoard from '../../Components/dayBoard';
-import DatePicker from '../../Components/datePicker';
-import PlaceAutoComplete from '../../Components/placeAutoComplete';
 import { SpotContext } from '../../Store/SpotContext';
 import { AuthContext } from '../../Store/AuthContext';
 import { SnackBarContext } from '../../Store/SnackBarContext';
 
+import { useQuery, useLazyQuery, useMutation, gql } from '@apollo/client';
+import { SPOT_DATA } from '../../utils/graphql';
+
+import CategoryChipBar from '../../Components/categoryChipBarWeb';
+import ScrollBoardWithinMap from '../../Components/scrollBoardWithinMapWeb';
+import ScrollBoardWithinMapMobile from '../../Components/scrollBoardWithinMapMobile';
+import { ListPage } from 'Components/listPage';
 import AuthModal from '../../Components/AuthModal';
 import ConfirmNavPrompt from '../../Components/confirmNavPrompt';
 import ProfileIconButton from '../../Components/profileIconButton';
-import ListIcon from '@material-ui/icons/List';
+import DatePicker from '../../Components/datePicker';
+import PlaceAutoComplete from '../../Components/placeAutoComplete';
 
+import ListIcon from '@material-ui/icons/List';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import Paper from '@material-ui/core/Paper';
-import IconButton from '@material-ui/core/IconButton';
 import SaveIcon from '@material-ui/icons/Save';
-import CardMedia from '@material-ui/core/CardMedia';
 import Dialog from '@material-ui/core/Dialog';
-import { Image } from 'cloudinary-react';
 import Icon from '@material-ui/core/Icon';
-import ScrollBoardWithinMap from '../../Components/scrollBoardWithinMapWeb';
-import ScrollBoardWithinMapMobile from '../../Components/scrollBoardWithinMapMobile';
-import { ListCard } from '../../Components/listCard';
-import { ListPage } from 'Components/listPage';
 
 const useStyles = makeStyles((theme) => ({
-	headerImage: {
-		position: 'relative',
-		width: '100%',
-		height: 200,
-		marginBottom: 30,
-	},
 	searchDialogSize: {
 		minHeight: 300,
 		padding: '13px',
@@ -55,32 +36,6 @@ const useStyles = makeStyles((theme) => ({
 		[theme.breakpoints.down(430)]: {
 			margin: '0px 0px 10px 10px',
 		},
-	},
-	searchAndChips: {
-		position: 'absolute',
-		bottom: -45,
-		left: 0,
-		right: 0,
-		padding: 10,
-		margin: '0 auto',
-		alignItems: 'baseline',
-		[theme.breakpoints.down(430)]: {
-			padding: '10px 0px',
-		},
-	},
-	dayBoardContainer: {
-		display: 'flex',
-		borderRadius: 5,
-		padding: '10px 0px 20px 10px',
-		overflowX: 'auto',
-		'&::-webkit-scrollbar': {
-			display: 'none',
-		},
-	},
-	dateAndSave: {
-		display: 'flex',
-		alignItems: 'center',
-		padding: '0px 10px',
 	},
 	iconButton: {
 		backgroundColor: 'white',
@@ -109,77 +64,32 @@ function Planner(props) {
 	const { setSnackMessage } = useContext(SnackBarContext);
 
 	const classes = useStyles();
-	const [categoryChips, setCategoryChips] = useState([]);
-	const [queriedVariables, setQueriedVariables] = useState([]);
-	const [startedSearch, setStartedSearch] = useState(false);
 	const [newSearchItem, setNewSearchItem] = useState({});
 	const [tripId, setTripId] = useState(props.match.params.tripId);
-	const [loaded, setLoaded] = useState(false);
-	const [guideData, setGuideData] = useState({});
+
 	const [registerOpen, setRegisterOpen] = useState(false);
 	const [searchModalOpen, setSearchModalOpen] = useState(false);
 	const [isListView, setIsListView] = useState(false);
+
 	const guideId = props.match.params.guideBookId;
 
 	const theme = useTheme();
 	const isMobile = useMediaQuery(`(max-width:${theme.maxMobileWidth}px)`);
 
-	console.log('tripId :', tripId, guideId);
-	console.log('user exists? ', authState);
-
-	// useEffect(() => {
-	// 	if (tripId === undefined) {
-	// 		dispatch({ type: 'CLEAR_STATE' });
-	// 	}
-	// }, []);
-
-	useEffect(() => {
-		if (startedSearch) {
-			const searchChip = {
-				key: 'Searched',
-				label: 'Searched',
-				icon: iconDict['Searched'],
-				clicked: true,
-			};
-
-			const categoriesAndSearch = [searchChip, ...categoryChips];
-			setCategoryChips(categoriesAndSearch);
-		}
-	}, [startedSearch]);
-
-	console.log('queriedVariables: ', queriedVariables);
-
 	useQuery(GET_GUIDE, {
 		skip: tripId,
 		onCompleted({ getGuide }) {
-			console.log('guide: ', getGuide);
-			getCategories(getGuide.categories);
-			setGuideData(getGuide);
-			setLoaded(true);
+			dispatch({ type: 'LOAD_GUIDE', payload: { guide: getGuide } });
 		},
 		variables: {
 			guideId,
 		},
 	});
 
-	// const [getTrip] =
 	useQuery(GET_TRIP, {
 		skip: tripId === undefined,
 		onCompleted({ getTrip: trip }) {
-			//console.log(JSON.stringify(trip));
 			console.log('get trip: ', trip);
-			// categories in trip are clicked
-			const hasGooglePlacesInTrip = trip.googlePlacesInTrip.length > 0;
-			setQueriedVariables([
-				...queriedVariables,
-				...trip.categoriesInTrip,
-				hasGooglePlacesInTrip ? 'Searched' : null,
-			]);
-			getCategories(trip.guide.categories, []);
-			setGuideData(trip.guide);
-			setLoaded(true);
-			// setStartedSearch(hasGooglePlacesInTrip);
-			// showOnlyLiked();
 			dispatch({ type: 'LOAD_MAP', payload: { map: trip } });
 		},
 		onError(err) {
@@ -190,151 +100,42 @@ function Planner(props) {
 
 	const [getSpotsForCategoryInGuide, { variables }] = useLazyQuery(GET_SPOTS, {
 		onCompleted({ getSpotsForCategoryInGuide }) {
-			console.log('variables', variables);
-			console.log('getSpotsForCategoryInGuide:', getSpotsForCategoryInGuide);
 			dispatch({
 				type: 'ADD_SPOTS',
-				payload: { newSpots: getSpotsForCategoryInGuide },
+				payload: {
+					newSpots: getSpotsForCategoryInGuide,
+					category: variables.category,
+					spotToHighlightID: variables.itemId,
+				},
 			});
-			if (getSpotsForCategoryInGuide.length > 0) {
-				setQueriedVariables([...queriedVariables, variables.category]);
-			}
 		},
 	});
 
 	const [getSpot] = useLazyQuery(GET_SPOT, {
 		onCompleted({ getSpot }) {
-			//deconstruct from data
 			if (!getSpot) {
 				dispatch({ type: 'ADD_SEARCH_ITEM', payload: { newSearchItem } });
-				setStartedSearch(true);
 				setSnackMessage({
 					text: "Spot has been added in 'Searched' :)",
 					code: 'Confirm',
 				});
-				setQueriedVariables([...queriedVariables, 'Searched']);
 			} else {
 				const itemCategory = getSpot.categories[0];
 				getSpotsForCategoryInGuide({
 					variables: {
 						guideId,
 						category: itemCategory,
+						itemId: getSpot.id,
 					},
 				});
 				setSnackMessage({
 					text: `item is in ${itemCategory} :)`,
 					code: 'Info',
 				});
-				chipClickedTrue(itemCategory);
+				// chipClickedTrue(itemCategory); //TODO:
 			}
 		},
 	});
-
-	const getCategories = (guideCategories, clickedCategories = []) => {
-		let categories = guideCategories.map((category) => {
-			console.log('getCategories', iconDict.Default);
-			return {
-				key: category,
-				label: category,
-				icon: iconDict[category] ? iconDict[category] : iconDict.Default,
-				clicked: clickedCategories.includes(category) ? true : false,
-			};
-		});
-
-		// let likedCategory = {
-		// 	key: 'Liked',
-		// 	label: 'Liked',
-		// 	icon: iconDict['Liked'],
-		// 	clicked: false,
-		// };
-
-		console.log('building chips... :', categories);
-		setCategoryChips(categories);
-	};
-
-	const chipClickedTrue = (chipName) => {
-		const chipsClone = [...categoryChips];
-		const objectIndex = categoryChips.findIndex(
-			(chip) => chip.key === chipName
-		);
-		chipsClone[objectIndex].clicked = true;
-		setCategoryChips(chipsClone);
-	};
-
-	const showOnlyLiked = () => {
-		const chipsClone = [...categoryChips];
-		const chipsAllUnlcicked = chipsClone.map((chip) =>
-			Object.assign(chip, { clicked: false })
-		);
-		setCategoryChips(chipsAllUnlcicked);
-	};
-
-	const toggleChipHandler = (clickedChip) => {
-		const chipsClone = [...categoryChips];
-		const objectIndex = categoryChips.findIndex(
-			(chip) => chip.key === clickedChip.key
-		);
-
-		// if (
-		// 	clickedChip.label === 'Liked' &&
-		// 	chipsClone[objectIndex].clicked === false
-		// ) {
-		// 	chipsClone.map((chip) => (chip.clicked = false)); // if without assigning it to a new variable, it would modify the original
-		// }
-
-		chipsClone[objectIndex].clicked = !categoryChips[objectIndex].clicked;
-		setCategoryChips(chipsClone);
-
-		if (
-			chipsClone[objectIndex].clicked &&
-			!queriedVariables.includes(clickedChip.label)
-		) {
-			console.log('querying:', clickedChip.label);
-			getSpotsForCategoryInGuide({
-				variables: {
-					guideId,
-					category: clickedChip.label,
-				},
-			});
-		}
-	};
-
-	const searchedItemClicked = (searchedItem) => {
-		setSearchModalOpen(false);
-		for (var key in spotState.spots) {
-			if (spotState.spots[key].place.id === searchedItem.id) {
-				console.log('STOP DO NOT ADD');
-				setSnackMessage({ text: 'Item already exists', code: 'Info' });
-				return;
-			}
-		}
-
-		const reshapedItem = {
-			categories: ['Searched'],
-			content: 'hello',
-			guide: 'Searched',
-			id: searchedItem.id,
-			imgUrl: ['https://i.imgur.com/zbBglmB.jpg'],
-			place: {
-				id: searchedItem.id,
-				location: [searchedItem.location.lat, searchedItem.location.lng],
-				name: searchedItem.name,
-				rating: searchedItem.rating,
-				userRatingsTotal: searchedItem.userRatingsTotal,
-				businessStatus: searchedItem.businessStatus,
-				hours: searchedItem.hours,
-			},
-		};
-
-		setNewSearchItem(reshapedItem);
-
-		getSpot({
-			variables: {
-				guideId,
-				placeId: searchedItem.id,
-			},
-		});
-	};
 
 	const [submitTrip] = useMutation(SUBMIT_TRIP, {
 		onCompleted({ submitTrip }) {
@@ -402,7 +203,7 @@ function Planner(props) {
 							...data.getTrip,
 							filteredSpots: spotState.columns['filtered-spots'].spotIds,
 							spotsArray: Object.values(spotState.spots),
-							categoriesInTrip: queriedVariables,
+							categoriesInTrip: spotState.queriedCategories, //TODO: get categories from liked spots
 						},
 					},
 				});
@@ -442,12 +243,6 @@ function Planner(props) {
 					categoriesNotYetIncluded
 				);
 			}
-
-			// if (categories[0] === 'Searched') {
-			// 	googlePlacesInTrip.push(daySpotsArrayFlattened[j]);
-			// } else if (!categoriesInDayBoard.includes(category)) {
-			// 	categoriesInDayBoard.push(category);
-			// }
 		}
 
 		const allspots = spotState.spots;
@@ -506,80 +301,45 @@ function Planner(props) {
 		}
 	};
 
-	const onDragEnd = (result) => {
-		const { destination, source, draggableId } = result;
-
-		if (!destination) {
-			return;
-		}
-
-		if (
-			destination.droppableId === source.droppableId &&
-			destination.index === source.index
-		) {
-			return;
-		}
-
-		const start = spotState.columns[source.droppableId];
-		const finish = spotState.columns[destination.droppableId];
-
-		//if moving within the same column
-		if (start === finish) {
-			//no reordering within spots
-			if (start.id === 'filtered-spots') {
+	const searchedItemClicked = (searchedItem) => {
+		setSearchModalOpen(false);
+		for (var key in spotState.spots) {
+			if (spotState.spots[key].place.id === searchedItem.id) {
+				console.log('STOP DO NOT ADD');
+				dispatch({
+					type: 'HIGHLIGHT_EXISTING_ITEM',
+					payload: { searchedItem: spotState.spots[key] },
+				});
+				setSnackMessage({ text: 'Item already exists', code: 'Info' });
 				return;
 			}
-
-			const column = spotState.columns[source.droppableId];
-			const newspots = Array.from(column.spotIds);
-			newspots.splice(source.index, 1);
-			newspots.splice(destination.index, 0, draggableId);
-
-			const newColumn = {
-				...column,
-				spotIds: newspots,
-			};
-
-			const newOrder = {
-				...spotState,
-				columns: {
-					...spotState.columns,
-					[newColumn.id]: newColumn,
-				},
-			};
-
-			console.log('reording within same column', newOrder);
-			dispatch({ type: 'REORDER', payload: { newOrder } });
-			return;
 		}
 
-		//moving from one list to another
-
-		let startspots = Array.from(start.spotIds);
-		startspots = startspots.filter((el) => el != draggableId);
-		const newStart = {
-			...start,
-			spotIds: startspots,
-		};
-
-		const finishspots = Array.from(finish.spotIds);
-		finishspots.splice(destination.index, 0, draggableId);
-		const newFinish = {
-			...finish,
-			spotIds: finishspots,
-		};
-
-		const newOrder = {
-			...spotState,
-			columns: {
-				...spotState.columns,
-				[newStart.id]: newStart,
-				[newFinish.id]: newFinish,
+		const reshapedItem = {
+			categories: ['Searched'],
+			content: 'hello',
+			guide: 'Searched',
+			id: searchedItem.id,
+			imgUrl: ['https://i.imgur.com/zbBglmB.jpg'],
+			place: {
+				id: searchedItem.id,
+				location: [searchedItem.location.lat, searchedItem.location.lng],
+				name: searchedItem.name,
+				rating: searchedItem.rating,
+				userRatingsTotal: searchedItem.userRatingsTotal,
+				businessStatus: searchedItem.businessStatus,
+				hours: searchedItem.hours,
 			},
 		};
 
-		console.log('moving to a different columns', newOrder);
-		dispatch({ type: 'REORDER', payload: { newOrder } });
+		setNewSearchItem(reshapedItem);
+
+		getSpot({
+			variables: {
+				guideId,
+				placeId: searchedItem.id,
+			},
+		});
 	};
 
 	const renderSpotsBoard = () => {
@@ -589,44 +349,24 @@ function Planner(props) {
 			(spotId) => spotState.spots[spotId]
 		);
 
-		// const likedChipIndex = categoryChips.findIndex(
-		// 	(chip) => chip.key === 'Liked'
-		// );
-		// const isLikedChipClicked = categoryChips[likedChipIndex].clicked;
-
-		const selectedCategories = currentlySelectedChips(categoryChips);
+		const selectedCategories = spotState.clickedCategories;
 		const filteredSpots = unfilteredSpots.filter((spot) =>
 			spot.categories.some((cat) => selectedCategories.includes(cat))
 		);
 
 		const likedSpots = unfilteredSpots.filter((spot) => spot.liked);
 		const spots = [...new Set([...filteredSpots, ...likedSpots])];
-		// const spots = isLikedChipClicked
-		// 	? [...new Set([...filteredSpots, ...likedSpots])]
-		// 	: filteredSpots;
 
 		console.log('filtering spots: ', spots);
 
-		// return (
-		// 	<GoogleMapWithScrollBoard
-		// 		spots={spots}
-		// 		coordinates={guideData.coordinates}
-		// 		resizable={true}
-		// 	/>
-		// );
+		console.log('main coordinates:', spotState.guide.coordinates);
 
 		if (isMobile) {
 			if (isListView) {
 				return (
 					<ListPage
 						spots={spots}
-						catBar={
-							<CategoryChipBar
-								categoryChips={categoryChips}
-								toggleChipHandler={toggleChipHandler}
-								showOnlyLiked={showOnlyLiked}
-							/>
-						}
+						catBar={<CategoryChipBar />}
 						setIsListView={setIsListView}
 					/>
 				);
@@ -637,14 +377,8 @@ function Planner(props) {
 						key={columnId}
 						boardId={columnId}
 						spots={spots}
-						coordinates={guideData.coordinates}
-						catBar={
-							<CategoryChipBar
-								categoryChips={categoryChips}
-								toggleChipHandler={toggleChipHandler}
-								showOnlyLiked={showOnlyLiked}
-							/>
-						}
+						coordinates={spotState.guide.coordinates}
+						catBar={<CategoryChipBar />}
 						gSearchButton={
 							<ButtonGroup
 								variant="contained"
@@ -683,14 +417,8 @@ function Planner(props) {
 				key={columnId}
 				boardId={columnId}
 				spots={spots}
-				coordinates={guideData.coordinates}
-				catBar={
-					<CategoryChipBar
-						categoryChips={categoryChips}
-						toggleChipHandler={toggleChipHandler}
-						showOnlyLiked={showOnlyLiked}
-					/>
-				}
+				coordinates={spotState.guide.coordinates}
+				catBar={<CategoryChipBar />}
 				gSearchButton={
 					<ButtonGroup
 						variant="contained"
@@ -720,21 +448,13 @@ function Planner(props) {
 				rightButtons={<ProfileIconButton />}
 			/>
 		);
-
-		{
-			/* <CategoryChipBar
-					categoryChips={categoryChips}
-					toggleChipHandler={toggleChipHandler}
-				/>
-			</ScrollBoardWithinMap> */
-		}
 	};
 
 	const placeAutoCompletePlaceHolderText = 'Google a place of interest 🙌';
 	console.log('unsaved web?', spotState.unsavedChanges);
-	return loaded ? (
+
+	return spotState.guide ? (
 		<div>
-			{/* <AppBar offset={true} partnerLogo={guideData.logo} /> */}
 			<ConfirmNavPrompt
 				when={spotState.unsavedChanges === true}
 				navigate={(path) => props.history.push(path)}
@@ -747,88 +467,14 @@ function Planner(props) {
 				<div className={classes.searchDialogSize}>
 					<PlaceAutoComplete
 						clickFunction={searchedItemClicked}
-						city={guideData.city}
-						coordinates={guideData.coordinates}
+						city={spotState.guide.city}
+						coordinates={spotState.guide.coordinates}
 						placeHolderText={placeAutoCompletePlaceHolderText}
 					/>
 				</div>
 			</Dialog>
 
-			{/* <CardMedia className={classes.headerImage} image={guideData.plannerImage}>
-				<div className={classes.searchAndChips}>
-					<Button
-						className={classes.searchButton}
-						variant="contained"
-						color="default"
-						size="medium"
-						data-testid="google-search-button"
-						startIcon={
-							<Icon classes={{ root: classes.iconRoot }}>
-								<img className={classes.imageIcon} src="/images/search.png" />
-							</Icon>
-						}
-						onClick={() => setSearchModalOpen(true)}
-					>
-						Search
-					</Button>
-					<CategoryChipBar
-						categoryChips={categoryChips}
-						toggleChipHandler={toggleChipHandler}
-					/>
-				</div>
-			</CardMedia> */}
-			{/* <Button
-				className={classes.searchButton}
-				variant="contained"
-				color="default"
-				size="medium"
-				data-testid="google-search-button"
-				startIcon={
-					<Icon classes={{ root: classes.iconRoot }}>
-						<img className={classes.imageIcon} src="/images/search.png" />
-					</Icon>
-				}
-				onClick={() => setSearchModalOpen(true)}
-			>
-				Search
-			</Button> */}
-			{/* <CategoryChipBar
-				categoryChips={categoryChips}
-				toggleChipHandler={toggleChipHandler}
-			/> */}
-
-			<DragDropContext onDragEnd={onDragEnd}>
-				<div>{renderSpotsBoard()}</div>
-				{/* <div className={classes.dateAndSave}>
-					<DatePicker />
-					<IconButton
-						id="save"
-						className={classes.saveButton}
-						onClick={saveItinerary}
-					>
-						<SaveIcon />
-					</IconButton>
-				</div> */}
-				{/* <div className={classes.dayBoardContainer}>
-					{spotState.dayBoard.map((columnId, index) => {
-						const column = spotState.columns[columnId];
-						const spots = column.spotIds.map(
-							(spotId) => spotState.spots[spotId]
-						);
-						let date = moment(spotState.startDate).add(index, 'days');
-
-						return (
-							<DayBoard
-								key={columnId}
-								boardId={columnId}
-								date={date}
-								spots={spots}
-								coordinates={guideData.coordinates}
-							/>
-						);
-					})}
-				</div> */}
-			</DragDropContext>
+			<div>{renderSpotsBoard()}</div>
 			<AuthModal
 				registerOpen={registerOpen}
 				setRegisterOpen={setRegisterOpen}
@@ -837,11 +483,26 @@ function Planner(props) {
 	) : null;
 }
 
+const GET_GUIDE = gql`
+	query getGuide($guideId: ID!) {
+		getGuide(guideId: $guideId) {
+			id
+			name
+			city
+			coordinates
+			categories
+			plannerImage
+			logo
+		}
+	}
+`;
+
 const GET_TRIP = gql`
 	query getTrip($tripId: ID!) {
 		getTrip(tripId: $tripId) {
 			id
 			guide {
+				id
 				name
 				city
 				coordinates
@@ -941,19 +602,6 @@ const GET_SPOTS = gql`
 	${SPOT_DATA}
 `;
 
-const GET_GUIDE = gql`
-	query getGuide($guideId: ID!) {
-		getGuide(guideId: $guideId) {
-			name
-			city
-			coordinates
-			categories
-			plannerImage
-			logo
-		}
-	}
-`;
-
 export default Planner;
 
 /* to look up cache
@@ -987,17 +635,3 @@ const getFilteredData = () => {
   }
 }
 */
-
-/*
-  <div className={classes.explanation}>
-    <p>A sample Berlin guidebook implementation. Features:</p>
-    <ul>
-      <li>Filter categories as you like (except for 'cafe' - it's a dummy)</li>
-      <li>Click on map pins to autoscroll to index cards</li>
-      <li>Drag and drop cards to DayBoards below to plan your itinerary</li>
-      <li>Number of dayboards will render according to Datepicker selection</li>
-    </ul> 
-  </div>
-*/
-
-// console.log(ObjectId.isValid(newSearchItem.id) && ObjectId(newSearchItem.id).toString() === newSearchItem.id)

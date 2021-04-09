@@ -12,6 +12,8 @@ import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import { SpotCardImages } from './loggingImage';
 import marked from 'marked';
+import { GoogleReviews } from './googleReviews';
+import { Divider } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
 	sidePanel: (props) => ({
@@ -36,6 +38,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 	content: {
 		paddingBottom: '2em',
+	},
+	divider: {
+		margin: '15px 0px',
 	},
 	likeButton: {
 		paddingBottom: '1em',
@@ -96,7 +101,10 @@ export const SlideUpCard = ({ spotId, showSidePanel, children }) => {
 								{spot.place.internationalPhoneNumber}
 							</Typography>
 							<Typography variant="body2">{spot.place.address}</Typography>
+							<Divider className={classes.divider} />
+							<GoogleReviews reviews={spot.place.reviews} />
 						</CardContent>
+
 						<CardActions>
 							<Button size="small" color="primary">
 								Share

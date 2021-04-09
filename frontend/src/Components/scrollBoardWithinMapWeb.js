@@ -1,5 +1,7 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import { Droppable } from 'react-beautiful-dnd';
+
+import { SpotContext } from '../Store/SpotContext';
 
 import moment from 'moment';
 import GoogleMapWithScrollBoard from './googleMapWithScrollBoardWeb';
@@ -77,6 +79,7 @@ function ScrollBoardWithinMap(props) {
 		gSearchButton,
 		rightButtons,
 	} = props;
+	const { spotState } = useContext(SpotContext);
 
 	const [mouseOverCard, setMouseOverCard] = useState(undefined);
 	const [clickedCard, setClickedCard] = useState(null);
@@ -87,10 +90,6 @@ function ScrollBoardWithinMap(props) {
 	const [day, setDay] = useState(moment().startOf('date').day());
 
 	let myref = useRef(null);
-	const setRef = (dropRefFunction, ref) => {
-		myref = ref;
-		dropRefFunction(ref);
-	};
 
 	console.log('children spotcard', window.innerWidth);
 
@@ -104,22 +103,32 @@ function ScrollBoardWithinMap(props) {
 		}
 	}, [spots.length]);
 
+	useEffect(() => {
+		if (spotState.spotToHighlightID) {
+			const spotToHighlightIndex = spots.findIndex(
+				(spot) => spot.id === spotState.spotToHighlightID
+			);
+			executeScroll(spotToHighlightIndex, spots[spotToHighlightIndex], false);
+		}
+	}, [spotState.spotToHighlightID]);
+
 	const cardWith = theme.cardWidth;
 	console.log('cardWith', cardWith);
-	const executeScroll = (index, spot) => {
+	const executeScroll = (index, spot, showSidePanel = true) => {
 		const pixel = index * (cardWith + 10) + 10;
 		console.log('pixel', pixel);
 		console.log('map marker:', spot.id);
 		myref.current.scrollLeft = pixel;
 		setMouseOverCard(spot.id);
 		setClickedCard(spot);
-		setShowSidePanel(true);
+		setShowSidePanel(showSidePanel);
 	};
 
 	const placeHolderText = (
 		<p>Click on the category chips above 👆 to display cards.</p>
 	);
 
+	console.log('web coordinates:', coordinates);
 	return (
 		<>
 			{/* <DaySelectMenu day={day} dayChangeHandler={setDay} /> */}

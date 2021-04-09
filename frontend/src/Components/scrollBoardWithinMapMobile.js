@@ -107,9 +107,7 @@ function ScrollBoardWithinMap(props) {
 		const pixel = index * cardWithAndMargin;
 		console.log('pixel', pixel);
 		console.log('map marker:', spot.id);
-		// myref.current.scrollLeft = pixel;
 		myref.current.scrollTo({
-			//top: myref.current.top //which is undefined anws
 			left: pixel,
 		});
 		// setMouseOverCard(spot.id);
@@ -130,7 +128,6 @@ function ScrollBoardWithinMap(props) {
 			});
 			// setMouseOverCard(spots[cardIndex].id);
 			setClickedCard(spots[cardIndex]);
-			// console.log('spot name:', spots[cardIndex].place.name);
 		}
 	};
 
@@ -138,6 +135,7 @@ function ScrollBoardWithinMap(props) {
 		<p>Click on the category chips above 👆 to display cards.</p>
 	);
 
+	console.log('mobile coordinates:', coordinates);
 	return (
 		<>
 			{/* <DaySelectMenu day={day} dayChangeHandler={setDay} /> */}

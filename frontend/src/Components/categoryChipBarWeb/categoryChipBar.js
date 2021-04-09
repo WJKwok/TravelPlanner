@@ -1,6 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { SpotContext } from '../../Store/SpotContext';
+
+import { useLazyQuery, gql } from '@apollo/client';
+import { SPOT_DATA } from '../../utils/graphql';
+
 import Paper from '@material-ui/core/Paper';
-import { makeStyles, Snackbar } from '@material-ui/core';
+import { iconDict } from '../../Components/spotIcons';
+import { makeStyles } from '@material-ui/core';
 import CategoryChip from './categoryChip';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -20,11 +26,6 @@ const useStyles = makeStyles((theme) => ({
 		display: 'flex',
 		alignItems: 'center',
 		padding: '3px 0px 3px 0px',
-		// zIndex: 10,
-		// position: 'absolute',
-		// width: '100%',
-		// top: 0,
-		// left: 0,
 		marginBottom: 0,
 	},
 	heartButton: {
@@ -34,12 +35,61 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const CategoryChipBar = ({
-	categoryChips,
-	toggleChipHandler,
-	showOnlyLiked,
-}) => {
+const CategoryChipBar = () => {
 	const classes = useStyles();
+	const { dispatch, spotState } = useContext(SpotContext);
+
+	let categories = spotState.guide.categories.map((category) => {
+		return {
+			key: category,
+			label: category,
+			icon: iconDict[category] ? iconDict[category] : iconDict.Default,
+			clicked: spotState.clickedCategories.includes(category) ? true : false,
+		};
+	});
+
+	const showOnlyLiked = () => {
+		dispatch({
+			type: 'NEW_CLICKED_CATEGORIES',
+			payload: { newClickedCategories: [] },
+		});
+	};
+
+	const toggleChipHandler = (clickedChip) => {
+		const currentClickedCategories = spotState.clickedCategories;
+		let newClickedCategories = [];
+		if (currentClickedCategories.includes(clickedChip.label)) {
+			newClickedCategories = currentClickedCategories.filter(
+				(el) => el !== clickedChip.label
+			);
+		} else {
+			newClickedCategories = [...currentClickedCategories, clickedChip.label];
+			getSpotsForCategoryInGuide({
+				variables: {
+					guideId: spotState.guide.id,
+					category: clickedChip.label,
+				},
+			});
+		}
+
+		dispatch({
+			type: 'NEW_CLICKED_CATEGORIES',
+			payload: { newClickedCategories },
+		});
+	};
+
+	const [getSpotsForCategoryInGuide, { variables }] = useLazyQuery(GET_SPOTS, {
+		onCompleted({ getSpotsForCategoryInGuide }) {
+			console.log('getSpotsForCategoryInGuideVariables', variables);
+			dispatch({
+				type: 'ADD_SPOTS',
+				payload: {
+					newSpots: getSpotsForCategoryInGuide,
+					category: variables.category,
+				},
+			});
+		},
+	});
 
 	return (
 		<>
@@ -55,7 +105,7 @@ const CategoryChipBar = ({
 					</div>
 				</Tooltip>
 				<div className={classes.chipRow}>
-					{categoryChips.map((data) => {
+					{categories.map((data) => {
 						return (
 							<li key={data.key}>
 								<CategoryChip
@@ -73,3 +123,12 @@ const CategoryChipBar = ({
 };
 
 export default CategoryChipBar;
+
+const GET_SPOTS = gql`
+	query getSpotsForCategoryInGuide($guideId: ID!, $category: String!) {
+		getSpotsForCategoryInGuide(guideId: $guideId, category: $category) {
+			...SpotData
+		}
+	}
+	${SPOT_DATA}
+`;

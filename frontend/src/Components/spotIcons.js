@@ -13,11 +13,15 @@ export const iconDict = {
 	'Green Space': '🌳',
 	'Local Dish': '🥘',
 	'Michelin Eat': '🤤',
+	'Activities/Sports': '🚴‍♀️',
+	'Culture/Museum': '🏛',
+	Photography: '📷',
 	Restaurant: '🍴',
 	'Night Life': '👯‍♂️',
 	Bar: '🍻',
 	Liked: '😍',
 	Event: '🎉',
+	Searched: '🔍',
 };
 
 /*

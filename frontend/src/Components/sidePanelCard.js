@@ -18,6 +18,7 @@ import Rating from '@material-ui/lab/Rating';
 import Avatar from '@material-ui/core/Avatar';
 import moment from 'moment';
 
+import { GoogleReviews } from './googleReviews';
 import { OpeningHoursAccordion } from './openingHoursAccordion';
 
 const useStyles = makeStyles((theme) => ({
@@ -86,11 +87,6 @@ export const SidePanelCard = ({ spotId, showSidePanel, children }) => {
 		dispatch({ type: 'LIKE_TOGGLE', payload: { spotId: spotId } });
 	};
 
-	const reviews = JSON.parse(spot.place.reviews);
-	console.log('reviews', JSON.parse(spot.place.reviews));
-
-	const momentTime = moment(reviews[1].time);
-
 	return (
 		<div className={classes.sidePanel}>
 			{children}
@@ -137,33 +133,7 @@ export const SidePanelCard = ({ spotId, showSidePanel, children }) => {
 					</Typography>
 					<Typography variant="body2">{spot.place.address}</Typography>
 					<Divider className={classes.divider} />
-					<div>
-						{reviews.map((review) => (
-							<div className={classes.review}>
-								<div className={classes.reviewHeader}>
-									<Avatar
-										src={review.profile_photo_url}
-										className={classes.smallAvatar}
-									/>
-									<div>
-										<Typography variant="subtitle1">
-											{review.author_name}
-										</Typography>
-										<Rating
-											value={review.rating}
-											precision={0.5}
-											size="small"
-											readOnly
-										/>
-									</div>
-								</div>
-								<Typography variant="caption">
-									{moment(review.time * 1000).from(moment())}
-								</Typography>
-								<Typography variant="body2">{review.text}</Typography>
-							</div>
-						))}
-					</div>
+					<GoogleReviews reviews={spot.place.reviews} />
 				</CardContent>
 			</Card>
 		</div>

@@ -4,14 +4,11 @@ import { AuthRoute, UnAuthRoute, AdminRoute } from './utils/AuthRoute';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import Container from '@material-ui/core/Container';
 import Planner from './Pages/planner';
 import PlannerWeb from './Pages/plannerWeb';
-import PlannerMobile from './Pages/plannerMobile';
 import Logger from './Pages/logger';
 import Landing from './Pages/landing';
 import Trips from './Pages/trips';
-import SnackBar from './Components/snackBar';
 
 import PlaceContextProvider from './Store/PlaceContext';
 import SnackBarContextProvider from './Store/SnackBarContext';
@@ -94,11 +91,6 @@ function App() {
 										exact
 										path="/web/planner/:guideBookId/:tripId"
 										component={PlannerWeb}
-									/>
-									<Route
-										exact
-										path="/mobile/planner/:guideBookId"
-										component={PlannerMobile}
 									/>
 								</BrowserRouter>
 							</ThemeProvider>

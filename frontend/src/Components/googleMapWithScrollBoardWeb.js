@@ -35,6 +35,16 @@ function GoogleMapWithScrollBoard({
 		lat: coordinates[0],
 		lng: coordinates[1],
 	});
+
+	useEffect(() => {
+		setCenter({
+			lat: coordinates[0],
+			lng: coordinates[1],
+		});
+		setZoom(11);
+	}, [coordinates]);
+
+	console.log('mapcenter web:', center);
 	const [zoom, setZoom] = useState(11);
 
 	const paddedBounds = (npad, spad, epad, wpad) => {
@@ -71,39 +81,11 @@ function GoogleMapWithScrollBoard({
 
 	useEffect(() => {
 		if (clickedCard) {
-			// const markerInBound = new mapsRef.current.LatLngBounds();
-			// .contains({
-			// 	lat: clickedCard.place.location[0],
-			// 	lng: clickedCard.place.location[1],
-			// });
-
-			// console.log('markerInBound', mapsRef.current.getBounds());
-			// if (markerInBound) {
-			// 	return;
-			// }
-
-			// top: 50,
-			// 	right: 0,
-			// 	bottom: 200,
-			// 	left: showSidePanel ? 408 : 0,
-
-			// 	paddedBounds(50, 0, 200, 408)
-
 			let isInView = paddedBounds(50, 200, 0, 408).contains({
 				lat: clickedCard.place.location[0],
 				lng: clickedCard.place.location[1],
 			});
 
-			// let isInView = mapRef.current.getBounds().contains({
-			// 	lat: clickedCard.place.location[0],
-			// 	lng: clickedCard.place.location[1],
-			// });
-
-			console.log('isInView', isInView);
-			// console.log("card center" {
-			// 	lat: clickedCard.place.location[0],
-			// 	lng: clickedCard.place.location[1],
-			// })
 			if (!isInView) {
 				setCenter({
 					lat: clickedCard.place.location[0],
@@ -160,41 +142,18 @@ function GoogleMapWithScrollBoard({
 				bounds.extend(newPoint);
 			}
 
-			// const size = {
-			// 	width: window.innerWidth * 0.5, // Map width in pixels
-			// 	height: window.innerHeight, // Map height in pixels
-			// };
-
-			// const newBounds = {
-			// 	ne: {
-			// 		lat: bounds.getNorthEast().lat(),
-			// 		lng: bounds.getNorthEast().lng(),
-			// 	},
-			// 	sw: {
-			// 		lat: bounds.getSouthWest().lat(),
-			// 		lng: bounds.getSouthWest().lng(),
-			// 	},
-			// };
-
 			mapRef.current.fitBounds(bounds, {
 				top: 50,
 				right: 0,
 				bottom: 200,
 				left: showSidePanel ? 408 : 0,
 			});
-
-			// let { zoom, center } = fitBounds(newBounds, size);
-			// console.log({ zoom, center });
-
-			// setZoom(zoom);
-			// setCenter(center);
 		}
 	}, [spots.length]);
 
 	//https://github.com/google-map-react/google-map-react/issues/986
 	const handleChange = (maps) => {
 		setZoom(maps.zoom);
-		setCenter(maps.center);
 	};
 
 	// to be able to use 'new mapsRef.current.LatLngBounds()'

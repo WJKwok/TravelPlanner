@@ -33,6 +33,8 @@ function GoogleMapWithScrollBoard({
 		lat: coordinates[0],
 		lng: coordinates[1],
 	});
+
+	console.log('mapcenter mobile:', center);
 	const [zoom, setZoom] = useState(11);
 
 	const paddedBounds = (npad, spad, epad, wpad) => {
@@ -136,28 +138,6 @@ function GoogleMapWithScrollBoard({
 				bottom: 180,
 				left: 0,
 			});
-
-			// const size = {
-			// 	width: window.innerWidth, // Map width in pixels
-			// 	height: window.innerHeight, // Map height in pixels
-			// };
-
-			// const newBounds = {
-			// 	ne: {
-			// 		lat: bounds.getNorthEast().lat(),
-			// 		lng: bounds.getNorthEast().lng(),
-			// 	},
-			// 	sw: {
-			// 		lat: bounds.getSouthWest().lat(),
-			// 		lng: bounds.getSouthWest().lng(),
-			// 	},
-			// };
-
-			// let { zoom, center } = fitBounds(newBounds, size);
-			// console.log({ zoom, center });
-
-			// setZoom(zoom);
-			// setCenter(center);
 		}
 	}, [spots.length]);
 

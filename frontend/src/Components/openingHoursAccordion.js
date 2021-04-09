@@ -97,7 +97,7 @@ export const OpeningHoursAccordion = ({ openingHours }) => {
 		setExpanded(!expanded);
 	};
 
-	return (
+	return openingHours ? (
 		<div className={classes.root}>
 			<div className={classes.summaryContent}>
 				<ScheduleIcon className={classes.icon} />
@@ -119,5 +119,5 @@ export const OpeningHoursAccordion = ({ openingHours }) => {
 				<BasicTable openingHours={openingHours} />
 			</Collapse>
 		</div>
-	);
+	) : null;
 };
