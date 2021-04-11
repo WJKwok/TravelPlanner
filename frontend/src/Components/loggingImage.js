@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	onlyMedia: {
 		width: '100%',
-		height: theme.cardWidth * 0.5,
+		height: theme.cardWidth,
 		objectFit: 'cover',
 	},
 	onlyMediaInsta: {
@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	media: {
 		width: '90%',
-		height: theme.cardWidth * 0.5,
+		height: theme.cardWidth,
 		objectFit: 'cover',
 		marginRight: 3,
 	},

@@ -20,6 +20,7 @@ import moment from 'moment';
 
 import { GoogleReviews } from './googleReviews';
 import { OpeningHoursAccordion } from './openingHoursAccordion';
+import GoogleDirectionLink from './googleDirectionLink';
 
 const useStyles = makeStyles((theme) => ({
 	sidePanel: (props) => ({
@@ -36,6 +37,9 @@ const useStyles = makeStyles((theme) => ({
 	card: {
 		height: 'calc(100vh - 50px)',
 		overflowY: 'auto',
+		'&::-webkit-scrollbar': {
+			display: 'none',
+		},
 	},
 	mediaCards: {
 		display: 'flex',
@@ -106,8 +110,7 @@ export const SidePanelCard = ({ spotId, showSidePanel, children }) => {
 					<Typography variant="h5">{spot.place.name}</Typography>
 					<Typography variant="body2" className={classes.ratingRow}>
 						{spot.place.rating}
-						<StarRateIcon color="error" data-testid="filled-heart" /> (
-						{spot.place.userRatingsTotal})
+						<StarRateIcon color="error" /> ({spot.place.userRatingsTotal})
 					</Typography>
 
 					<Typography variant="subtitle1">
@@ -131,7 +134,9 @@ export const SidePanelCard = ({ spotId, showSidePanel, children }) => {
 					<Typography variant="body2">
 						{spot.place.internationalPhoneNumber}
 					</Typography>
-					<Typography variant="body2">{spot.place.address}</Typography>
+					<GoogleDirectionLink place={spot.place}>
+						<Typography variant="body2">{spot.place.address}</Typography>
+					</GoogleDirectionLink>
 					<Divider className={classes.divider} />
 					<GoogleReviews reviews={spot.place.reviews} />
 				</CardContent>

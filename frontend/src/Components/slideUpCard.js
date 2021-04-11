@@ -10,10 +10,14 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import { SpotCardImages } from './loggingImage';
+import StarRateIcon from '@material-ui/icons/StarRate';
 import marked from 'marked';
-import { GoogleReviews } from './googleReviews';
 import { Divider } from '@material-ui/core';
+
+import { SpotCardImages } from './loggingImage';
+import { GoogleReviews } from './googleReviews';
+import GoogleDirectionLink from './googleDirectionLink';
+import { OpeningHoursAccordion } from './openingHoursAccordion';
 
 const useStyles = makeStyles((theme) => ({
 	sidePanel: (props) => ({
@@ -28,6 +32,9 @@ const useStyles = makeStyles((theme) => ({
 	card: {
 		height: 'inherit',
 		overflowY: 'auto',
+		'&::-webkit-scrollbar': {
+			display: 'none',
+		},
 	},
 	mediaCards: {
 		display: 'flex',
@@ -35,6 +42,10 @@ const useStyles = makeStyles((theme) => ({
 		'&::-webkit-scrollbar': {
 			display: 'none',
 		},
+	},
+	ratingRow: {
+		display: 'flex',
+		alignItems: 'center',
 	},
 	content: {
 		paddingBottom: '2em',
@@ -83,9 +94,18 @@ export const SlideUpCard = ({ spotId, showSidePanel, children }) => {
 									<FavoriteBorderIcon data-testid="hollow-heart" />
 								)}
 							</div>
-							<Typography gutterBottom variant="h5" component="h2">
-								{spot.place.name}
+
+							<Typography variant="h5">{spot.place.name}</Typography>
+							<Typography variant="body2" className={classes.ratingRow}>
+								{spot.place.rating}
+								<StarRateIcon color="error" data-testid="filled-heart" /> (
+								{spot.place.userRatingsTotal})
 							</Typography>
+							<Typography variant="subtitle1">
+								{spot.categories.join(', ')}
+							</Typography>
+							<Divider className={classes.divider} />
+							<OpeningHoursAccordion openingHours={spot.place.hours} />
 							<div
 								className={classes.content}
 								dangerouslySetInnerHTML={{
@@ -100,7 +120,9 @@ export const SlideUpCard = ({ spotId, showSidePanel, children }) => {
 							<Typography variant="body2">
 								{spot.place.internationalPhoneNumber}
 							</Typography>
-							<Typography variant="body2">{spot.place.address}</Typography>
+							<GoogleDirectionLink place={spot.place}>
+								<Typography variant="body2">{spot.place.address}</Typography>
+							</GoogleDirectionLink>
 							<Divider className={classes.divider} />
 							<GoogleReviews reviews={spot.place.reviews} />
 						</CardContent>
