@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 
 import { SpotContext } from '../../Store/SpotContext';
 import { AuthContext } from '../../Store/AuthContext';
@@ -75,6 +75,13 @@ function Planner(props) {
 
 	const theme = useTheme();
 	const isMobile = useMediaQuery(`(max-width:${theme.maxMobileWidth}px)`);
+
+	useEffect(() => {
+		return () => {
+			console.log('clearing state...');
+			dispatch({ type: 'CLEAR_STATE' });
+		};
+	}, [dispatch]);
 
 	useQuery(GET_GUIDE, {
 		skip: tripId,
@@ -204,6 +211,9 @@ function Planner(props) {
 							filteredSpots: spotState.columns['filtered-spots'].spotIds,
 							spotsArray: Object.values(spotState.spots),
 							categoriesInTrip: spotState.queriedCategories, //TODO: get categories from liked spots
+							likedSpots: spotState.columns['filtered-spots'].spotIds.filter(
+								(spot) => spotState.spots[spot].liked
+							),
 						},
 					},
 				});
@@ -286,7 +296,7 @@ function Planner(props) {
 					},
 				});
 			} else {
-				console.log(tripId);
+				console.log('trip is edited', tripId);
 				editTrip({
 					variables: {
 						tripId,

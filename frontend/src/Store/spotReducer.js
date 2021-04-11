@@ -3,6 +3,8 @@ import { initialData } from './initial-data';
 
 export const spotReducer = (state, action) => {
 	switch (action.type) {
+		case 'CLEAR_STATE':
+			return initialData;
 		case 'LOAD_GUIDE':
 			const { guide } = action.payload;
 			const loadedGuide = loadGuide(guide);

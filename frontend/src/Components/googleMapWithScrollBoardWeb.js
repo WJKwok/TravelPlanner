@@ -36,14 +36,6 @@ function GoogleMapWithScrollBoard({
 		lng: coordinates[1],
 	});
 
-	useEffect(() => {
-		setCenter({
-			lat: coordinates[0],
-			lng: coordinates[1],
-		});
-		setZoom(11);
-	}, [coordinates]);
-
 	console.log('mapcenter web:', center);
 	const [zoom, setZoom] = useState(11);
 
