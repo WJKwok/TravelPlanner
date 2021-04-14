@@ -1,3 +1,5 @@
+import {Place} from '../types'
+
 // "proxy": "https://maps.googleapis.com/maps/api",
 const googlePlacesApi = process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
 // const baseUrl = 'https://maps.googleapis.com/maps/api'
@@ -14,27 +16,29 @@ export const fetchOnePlaceId = async (placeId) => {
   const response = await fetch(
     `/place/details/json?placeid=${placeId}&key=${googlePlacesApi}`
   );
-  const placeData = await response.json();
 
-  console.log('place data: ', placeData);
-  let placeObject = {};
-  placeObject['id'] = placeId;
-  placeObject['name'] = placeData.result.name;
-  placeObject['rating'] = placeData.result.rating;
-  placeObject['userRatingsTotal'] = placeData.result.user_ratings_total;
-  placeObject['photoRef'] = placeData.result.photos
-    ? placeData.result.photos[0].photo_reference
-    : '0';
-  placeObject['location'] = placeData.result.geometry.location;
-  placeObject['address'] = placeData.result.formatted_address;
-  placeObject['businessStatus'] = placeData.result.business_status;
-  placeObject['hours'] = placeData.result.opening_hours
-    ? placeData.result.opening_hours.weekday_text
-    : null;
-  placeObject['website'] = placeData.result.website;
-  placeObject['internationalPhoneNumber'] =
-    placeData.result.formatted_phone_number;
-  placeObject['reviews'] = JSON.stringify(placeData.result.reviews);
+  const placeData = await response.json();
+  const dataResult = placeData.result;
+
+  let placeObject: Place = {
+    id: placeId,
+    name: dataResult.name,
+    rating: dataResult.rating,
+    userRatingsTotal: dataResult.user_ratings_total,
+    // photoRef: dataResult.photos
+    //   ? dataResult.photos[0].photo_reference
+    //   : '0',
+    location: dataResult.geometry.location,
+    address: dataResult.formatted_address,
+    businessStatus: dataResult.business_status,
+    hours: dataResult.opening_hours
+      ? dataResult.opening_hours.weekday_text
+      : null,
+    website: dataResult.website,
+    internationalPhoneNumber: dataResult.formatted_phone_number,
+    reviews: JSON.stringify(dataResult.reviews),
+  };
+
   return placeObject;
 };
 
