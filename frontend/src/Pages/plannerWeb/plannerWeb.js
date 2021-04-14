@@ -238,32 +238,9 @@ function Planner(props) {
 
   const saveItinerary = () => {
     console.log('spotState:', spotState);
-    const dayKeyArray = spotState.dayBoard;
-    let categoriesInDayBoard = [];
+
     let googlePlacesInTrip = [];
-    let daySpotsArray = [];
-
-    for (let i = 0; i < dayKeyArray.length; i++) {
-      daySpotsArray.push(spotState.columns[dayKeyArray[i]].spotIds);
-    }
-
-    const daySpotsArrayFlattened = daySpotsArray.flat();
-
-    for (let j = 0; j < daySpotsArrayFlattened.length; j++) {
-      const categories = spotState.spots[daySpotsArrayFlattened[j]].categories;
-
-      const categoriesNotYetIncluded = categories.filter(
-        (cat) => cat !== 'Searched' && !categoriesInDayBoard.includes(cat)
-      );
-      if (categories[0] === 'Searched') {
-        googlePlacesInTrip.push(daySpotsArrayFlattened[j]);
-      } else if (categoriesNotYetIncluded.length > 0) {
-        categoriesInDayBoard.push.apply(
-          categoriesInDayBoard,
-          categoriesNotYetIncluded
-        );
-      }
-    }
+    let daySpotsArray = [[]];
 
     const allspots = spotState.spots;
     const likedSpots = Object.keys(allspots).filter((id) => allspots[id].liked);
@@ -278,12 +255,9 @@ function Planner(props) {
       }
     }
 
-    const categoriesInTrip = [
-      ...new Set([...likedCategory, ...categoriesInDayBoard]),
-    ];
+    const categoriesInTrip = likedCategory;
 
-    console.log('categoriesInTrip', categoriesInTrip);
-    if (daySpotsArrayFlattened.length === 0 && likedSpots.length === 0) {
+    if (likedSpots.length === 0) {
       setSnackMessage({
         text: 'Your itinerary is empty or you have no liked spots',
         code: 'Error',
@@ -355,6 +329,9 @@ function Planner(props) {
         businessStatus: searchedItem.businessStatus,
         hours: searchedItem.hours,
         reviews: searchedItem.reviews,
+        internationalPhoneNumber: searchedItem.internationalPhoneNumber,
+        website: searchedItem.website,
+        address: searchedItem.address,
       },
     };
 
