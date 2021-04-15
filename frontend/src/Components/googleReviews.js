@@ -14,9 +14,24 @@ const useStyles = makeStyles((theme) => ({
 	reviewHeader: {
 		display: 'flex',
 		alignItems: 'center',
+		paddingBottom: 8,
 	},
 	smallAvatar: {
 		marginRight: 5,
+		width: 30,
+		height: 30,
+	},
+	authorName: {
+		fontSize: '1em',
+		lineHeight: 1,
+	},
+	ratingAndDate: {
+		display: 'flex',
+		alignItems: 'center',
+	},
+	date: {
+		paddingLeft: 5,
+		fontSize: '0.7em',
 	},
 }));
 
@@ -32,22 +47,29 @@ export const GoogleReviews = ({ reviews }) => {
 				<div key={review.time} className={classes.review}>
 					<div className={classes.reviewHeader}>
 						<Avatar
+							variant="rounded"
 							src={review.profile_photo_url}
 							className={classes.smallAvatar}
 						/>
 						<div>
-							<Typography variant="subtitle1">{review.author_name}</Typography>
-							<Rating
-								value={review.rating}
-								precision={0.5}
-								size="small"
-								readOnly
-							/>
+							<Typography className={classes.authorName}>
+								{review.author_name}
+							</Typography>
+
+							<div className={classes.ratingAndDate}>
+								<Rating
+									value={review.rating}
+									precision={0.5}
+									size="small"
+									readOnly
+								/>
+								<Typography className={classes.date}>
+									{moment(review.time * 1000).from(moment())}
+								</Typography>
+							</div>
 						</div>
 					</div>
-					<Typography variant="caption">
-						{moment(review.time * 1000).from(moment())}
-					</Typography>
+
 					<Typography variant="body2">{review.text}</Typography>
 				</div>
 			))}

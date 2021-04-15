@@ -36,10 +36,11 @@ const useStyles = makeStyles((theme) => ({
 			minWidth: '75%',
 		},
 		boxShadow: props.highlight ? '0 0 0 3px #1a73e8' : null,
-	}),
-	header: {
 		display: 'flex',
-	},
+	}),
+	// header: {
+
+	// },
 	headerInfo: {
 		flexGrow: 1,
 		overflowX: 'scroll',
@@ -64,19 +65,10 @@ const useStyles = makeStyles((theme) => ({
 	editButton: {
 		cursor: 'pointer',
 	},
-	emoji: {
-		fontSize: 20,
-		lineHeight: 1,
-		paddingRight: 3,
-	},
-	index: {
-		fontWeight: 600,
-		fontSize: 15,
-	},
 	spotTitle: {
 		fontSize: '1em',
 		lineHeight: 'normal',
-		padding: '5px 0px',
+		paddingBottom: 3,
 		// overflowX: 'auto',
 		whiteSpace: 'nowrap',
 		// '&::-webkit-scrollbar': {
@@ -94,6 +86,7 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: '0.8em',
 		overflow: 'hidden',
 		textOverflow: 'ellipsis',
+		color: '#4C4C4C',
 	},
 	spotSubtitle: {
 		marginRight: 5,
@@ -118,23 +111,8 @@ const useStyles = makeStyles((theme) => ({
 		display: 'flex',
 		alignItems: 'center',
 	},
-	collapseContent: {
-		maxHeight: 200,
-		overflowY: 'scroll',
-		'&::-webkit-scrollbar': {
-			display: 'none',
-		},
-	},
-	mediaCards: {
-		display: 'flex',
-		overflowX: 'auto',
-		overflowX: 'scroll',
-		'&::-webkit-scrollbar': {
-			display: 'none',
-		},
-	},
-	content: {
-		paddingBottom: '2em',
+	icon: {
+		fontSize: '1.25rem',
 	},
 }));
 
@@ -234,18 +212,21 @@ export const SpotCardBase = (props) => {
 					data-testid="event-card-date"
 					className={
 						eventIsOnRightDayBoard
-							? classes.spotSubtitle
+							? classes.categoryOverflow
 							: classes.spotEventWrongDay
 					}
 				>
 					{moment(spot.date).format('Do MMM YYYY')}
 				</Typography>
-				<Typography className={classes.spotSubtitle}>
-					{spot.place.name}
-				</Typography>
 				<Typography className={classes.categoryOverflow}>
-					{spot.categories.join(', ')}
+					23:00 till late
 				</Typography>
+				{/* <Typography className={classes.spotSubtitle}>
+					{spot.place.name}
+				</Typography> */}
+				{/* <Typography className={classes.categoryOverflow}>
+					{spot.categories.join(', ')}
+				</Typography> */}
 			</>
 		) : (
 			<>
@@ -267,8 +248,8 @@ export const SpotCardBase = (props) => {
 		<Card
 			id="spot-card"
 			ref={provided && provided.innerRef}
-			{...(provided ? { ...provided.draggableProps } : {})}
-			{...(provided ? { ...provided.dragHandleProps } : {})}
+			// {...(provided ? { ...provided.draggableProps } : {})}
+			// {...(provided ? { ...provided.dragHandleProps } : {})}
 			// {...provided.draggableProps}
 			// {...provided.dragHandleProps}
 			className={classes.root}
@@ -276,73 +257,42 @@ export const SpotCardBase = (props) => {
 			// elevation={highlight ? 24 : 1}
 			onMouseEnter={mouseOver ? () => mouseOver(spot.id) : null}
 			onMouseLeave={mouseOver ? () => mouseOver(null) : null}
+			onClick={cardClickedHandler}
 		>
-			<div
-				className={classes.header}
-				onClick={cardClickedHandler}
-				data-testid="spot-card"
-			>
-				{expanded ? (
-					''
-				) : (
-					<CardMedia className={classes.headerThumbnail}>
-						<HeaderThumbnail spotImgUrl={spot.imgUrl[0]} />
-					</CardMedia>
-				)}
+			<CardMedia className={classes.headerThumbnail}>
+				<HeaderThumbnail spotImgUrl={spot.imgUrl[0]} />
+			</CardMedia>
 
-				<CardContent className={classes.headerInfo}>
-					<div className={classes.ratingHeartRow}>
-						<div className={classes.ratingRow}>
-							{spot.place.rating}
-							<StarRateIcon color="error" data-testid="filled-heart" /> (
-							{spot.place.userRatingsTotal})
-						</div>
-						{dragAndDroppable ? (
-							<div onClick={likeClickHandler}>
-								{spot.liked ? (
-									<FavoriteIcon color="error" data-testid="filled-heart" />
-								) : (
-									<FavoriteBorderIcon data-testid="hollow-heart" />
-								)}
-							</div>
-						) : (
-							<div className={classes.editButton} onClick={editClickHandler}>
-								<EditOutlinedIcon data-testid="edit-pen" />
-							</div>
-						)}
+			<CardContent className={classes.headerInfo}>
+				<div className={classes.ratingHeartRow}>
+					<div className={classes.ratingRow}>
+						{spot.place.rating}
+						<StarRateIcon color="error" data-testid="filled-heart" /> (
+						{spot.place.userRatingsTotal})
 					</div>
-					{cardHeader}
-				</CardContent>
-			</div>
-			<Collapse
-				data-testid={`collapseContent-${spot.id}`}
-				className={classes.collapseContent}
-				in={expanded}
-				timeout="auto"
-				unmountOnExit
-			>
-				<div className={classes.mediaCards}>
-					<SpotCardImages spotImgUrl={spot.imgUrl} />
-				</div>
-				<CardContent>
-					<div
-						className={classes.content}
-						dangerouslySetInnerHTML={{
-							__html: marked(spot.content, { renderer }),
-						}}
-					/>
-					{spot.place.website && (
-						<a target="_blank" href={spot.place.website}>
-							Website
-						</a>
+					{dragAndDroppable ? (
+						<div onClick={likeClickHandler}>
+							{spot.liked ? (
+								<FavoriteIcon
+									color="error"
+									classes={{ root: classes.icon }}
+									data-testid="filled-heart"
+								/>
+							) : (
+								<FavoriteBorderIcon
+									classes={{ root: classes.icon }}
+									data-testid="hollow-heart"
+								/>
+							)}
+						</div>
+					) : (
+						<div className={classes.editButton} onClick={editClickHandler}>
+							<EditOutlinedIcon data-testid="edit-pen" />
+						</div>
 					)}
-					<Typography variant="body2">
-						{spot.place.internationalPhoneNumber}
-					</Typography>
-					<Typography variant="body2">{spot.place.address}</Typography>
-				</CardContent>
-			</Collapse>
-			{/* <GoogleDirectionLink place={spot.place}/> */}
+				</div>
+				{cardHeader}
+			</CardContent>
 		</Card>
 	);
 };

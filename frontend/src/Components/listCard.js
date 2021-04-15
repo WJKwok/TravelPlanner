@@ -14,13 +14,16 @@ import { SpotCardImagesInstaStyle } from './loggingImage';
 import marked from 'marked';
 import { set } from 'react-ga';
 import { iconDict } from './spotIcons';
+import StarRateIcon from '@material-ui/icons/StarRate';
+
+import { OpeningHoursAccordion } from './openingHoursAccordion';
 
 const useStyles = makeStyles((theme) => ({
 	header: {
 		display: 'flex',
 		alignItems: 'center',
 		paddingLeft: 16,
-		paddingBottom: 3,
+		paddingBottom: 7,
 	},
 	icon: {
 		display: 'flex',
@@ -61,6 +64,16 @@ const useStyles = makeStyles((theme) => ({
 	},
 	likeButton: {
 		padding: '0.5em 0em',
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+	},
+	ratingRow: {
+		display: 'flex',
+		alignItems: 'center',
+		backgroundColor: 'antiquewhite',
+		padding: '0px 5px',
+		borderRadius: 5,
 	},
 }));
 
@@ -105,12 +118,25 @@ export const ListCard = ({ spotId }) => {
 			</div>
 			<div className={classes.cardContent}>
 				<div className={classes.likeButton} onClick={likeClickHandler}>
+					<Typography variant="body2" className={classes.ratingRow}>
+						{spot.place.rating}
+						<StarRateIcon color="error" /> ({spot.place.userRatingsTotal})
+					</Typography>
+
+					{/* <p className={classes.ratingRow}>
+						{spot.place.rating}
+						<span>
+							<StarRateIcon color="error" />{' '}
+						</span>
+						({spot.place.userRatingsTotal})
+					</p> */}
 					{spot.liked ? (
 						<FavoriteIcon color="error" data-testid="filled-heart" />
 					) : (
 						<FavoriteBorderIcon data-testid="hollow-heart" />
 					)}
 				</div>
+				<OpeningHoursAccordion openingHours={spot.place.hours} />
 				<div className={classes.contentDiv}>
 					<div
 						className={hidePreview ? classes.hideContent : null}
@@ -126,11 +152,13 @@ export const ListCard = ({ spotId }) => {
 						}}
 					/>
 				</div>
+
 				{spot.place.website && (
 					<a target="_blank" href={spot.place.website}>
 						Website
 					</a>
 				)}
+
 				<Typography variant="body2">
 					{spot.place.internationalPhoneNumber}
 				</Typography>

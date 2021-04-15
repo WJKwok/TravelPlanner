@@ -1,12 +1,9 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { SpotContext } from '../Store/SpotContext';
 import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
+
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
+
 import Typography from '@material-ui/core/Typography';
 import { SpotCardImages } from './loggingImage';
 import marked from 'marked';
@@ -14,34 +11,12 @@ import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import StarRateIcon from '@material-ui/icons/StarRate';
 import Divider from '@material-ui/core/Divider';
-import Rating from '@material-ui/lab/Rating';
-import Avatar from '@material-ui/core/Avatar';
-import moment from 'moment';
 
 import { GoogleReviews } from './googleReviews';
 import { OpeningHoursAccordion } from './openingHoursAccordion';
 import GoogleDirectionLink from './googleDirectionLink';
-import { SpotCardContent } from './spotCardContent';
 
 const useStyles = makeStyles((theme) => ({
-	sidePanel: (props) => ({
-		position: 'absolute',
-		bottom: 0,
-		left: 0,
-		backgroundColor: 'white',
-		height: '100vh',
-		width: props.showSidePanel ? 408 : 0,
-		zIndex: 6,
-		paddingTop: 37,
-		boxShadow: '0 0 20px rgb(0 0 0 / 30%)',
-	}),
-	card: {
-		height: 'calc(100vh - 50px)',
-		overflowY: 'auto',
-		'&::-webkit-scrollbar': {
-			display: 'none',
-		},
-	},
 	mediaCards: {
 		display: 'flex',
 		overflowX: 'auto',
@@ -60,7 +35,6 @@ const useStyles = makeStyles((theme) => ({
 	review: {
 		marginBottom: '1em',
 	},
-
 	ratingRow: {
 		display: 'flex',
 		alignItems: 'center',
@@ -81,9 +55,8 @@ renderer.link = (href, title, text) => {
 	return html.replace(/^<a /, '<a target="_blank" rel="nofollow" ');
 };
 
-export const SidePanelCard = ({ spotId, showSidePanel, children }) => {
-	const styleProps = { showSidePanel };
-	const classes = useStyles(styleProps);
+export const SpotCardContent = ({ spotId }) => {
+	const classes = useStyles();
 	const { dispatch, spotState } = useContext(SpotContext);
 	const spot = spotState.spots[spotId];
 	const likeClickHandler = (e) => {
@@ -92,11 +65,51 @@ export const SidePanelCard = ({ spotId, showSidePanel, children }) => {
 	};
 
 	return (
-		<div className={classes.sidePanel}>
-			{children}
-			<Card elevation={0} className={classes.card} square>
-				<SpotCardContent spotId={spotId} />
-			</Card>
-		</div>
+		<>
+			<div className={classes.mediaCards}>
+				<SpotCardImages spotImgUrl={spot.imgUrl} />
+			</div>
+			<CardContent>
+				<div className={classes.titleAndFav}>
+					<div className={classes.spotTitle}>{spot.place.name}</div>
+					<div onClick={likeClickHandler}>
+						{spot.liked ? (
+							<FavoriteIcon color="error" data-testid="filled-heart" />
+						) : (
+							<FavoriteBorderIcon data-testid="hollow-heart" />
+						)}
+					</div>
+				</div>
+
+				<Typography variant="body2" className={classes.ratingRow}>
+					{spot.place.rating}
+					<StarRateIcon color="error" /> ({spot.place.userRatingsTotal})
+				</Typography>
+				<Typography variant="body2">{spot.categories.join(', ')}</Typography>
+
+				<Divider className={classes.divider} />
+				<OpeningHoursAccordion openingHours={spot.place.hours} />
+				<div
+					className={classes.content}
+					dangerouslySetInnerHTML={{
+						__html: marked(spot.content, { renderer }),
+					}}
+				/>
+
+				{spot.place.website && (
+					<a target="_blank" href={spot.place.website}>
+						Website
+					</a>
+				)}
+				<Typography variant="body2">
+					{spot.place.internationalPhoneNumber}
+				</Typography>
+				<GoogleDirectionLink place={spot.place}>
+					<Typography variant="body2">{spot.place.address}</Typography>
+				</GoogleDirectionLink>
+				<Divider className={classes.divider} />
+				<GoogleReviews reviews={spot.place.reviews} />
+			</CardContent>
+		</>
 	);
 };

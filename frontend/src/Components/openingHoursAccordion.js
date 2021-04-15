@@ -14,6 +14,7 @@ import Divider from '@material-ui/core/Divider';
 import Collapse from '@material-ui/core/Collapse';
 import clsx from 'clsx';
 import IconButton from '@material-ui/core/IconButton';
+import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -23,6 +24,9 @@ const useStyles = makeStyles((theme) => ({
 	summaryContent: {
 		display: 'flex',
 	},
+	firstLine: {
+		marginBottom: 0,
+	},
 	hoursRow: {
 		display: 'flex',
 		whiteSpace: 'pre-wrap',
@@ -30,9 +34,7 @@ const useStyles = makeStyles((theme) => ({
 	icon: {
 		marginRight: 20,
 	},
-	table: {
-		paddingLeft: 40,
-	},
+	table: {},
 	tableCell: {
 		borderBottom: 'none',
 		padding: '5px 0px',
@@ -97,21 +99,23 @@ export const OpeningHoursAccordion = ({ openingHours }) => {
 		setExpanded(!expanded);
 	};
 
+	const day = moment().startOf('date').day();
+	const dayIndex = day === 0 ? 6 : day - 1;
+
 	return openingHours ? (
 		<div className={classes.root}>
-			<div className={classes.summaryContent}>
-				<ScheduleIcon className={classes.icon} />
-				<p>
+			<div className={classes.summaryContent} onClick={handleExpandClick}>
+				{/* <ScheduleIcon className={classes.icon} /> */}
+				<p className={classes.firstLine}>
 					{expanded
 						? 'Opening Hours:'
-						: `Today: ${openingHours[0].split(': ')[1]}`}
+						: `Today: ${openingHours[dayIndex].split(': ')[1]}`}
 				</p>
 
 				<ExpandMoreIcon
 					className={clsx(classes.expand, {
 						[classes.expandOpen]: expanded,
 					})}
-					onClick={handleExpandClick}
 				/>
 			</div>
 

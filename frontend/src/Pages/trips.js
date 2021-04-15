@@ -10,6 +10,9 @@ import AppBar from '../Components/appBar';
 import Button from '@material-ui/core/Button';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import AddCircleOutlineRoundedIcon from '@material-ui/icons/AddCircleOutlineRounded';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import {
 	Card,
 	CardMedia,
@@ -40,14 +43,11 @@ const useStyles = makeStyles((theme) => ({
 		width: 100,
 	},
 	headerTitle: {
-		flex: '1 0 auto',
+		flex: 1,
 	},
-	nextButton: {
-		marginLeft: 'auto',
-		'&:hover': {
-			backgroundColor: 'transparent',
-			color: 'red',
-		},
+	menuButton: {
+		margin: '10px 5px',
+		cursor: 'pointer',
 	},
 }));
 
@@ -55,6 +55,16 @@ function Trips() {
 	const { authState, dispatch: authDispatch } = useContext(AuthContext);
 	const { dispatch: placeDispatch } = useContext(SpotContext);
 	const { setSnackMessage } = useContext(SnackBarContext);
+
+	const [anchorEl, setAnchorEl] = React.useState(null);
+
+	const handleMenuClick = (event) => {
+		setAnchorEl(event.currentTarget);
+	};
+
+	const handleMenuClose = () => {
+		setAnchorEl(null);
+	};
 
 	const classes = useStyles();
 
@@ -124,30 +134,53 @@ function Trips() {
 						key={trip.id}
 						data-testid={`tripCard-${trip.id}`}
 					>
-						<CardMedia
-							className={classes.headerThumbnail}
-							image={trip.guide.coverImage}
-						/>
-						<Link to={cardLink}>
+						<Link
+							to={cardLink}
+							style={{ textDecoration: 'none', display: 'flex', flex: 1 }}
+						>
+							<CardMedia
+								className={classes.headerThumbnail}
+								image={trip.guide.coverImage}
+							/>
+
 							<CardContent className={classes.headerTitle}>
 								<Typography variant="h5">{trip.guide.city}</Typography>
-								<Typography data-testid="trip-date" variant="subtitle1">
+								<Typography variant="subtitle1">
+									{trip.likedSpots.length} Spots
+								</Typography>
+								{/* <Typography data-testid="trip-date" variant="subtitle1">
 									{moment(trip.startDate).format('DD MMM')} -{' '}
 									{moment(trip.startDate)
 										.add(trip.dayLists.length - 1, 'days')
 										.format('DD MMM')}
-								</Typography>
+								</Typography> */}
 							</CardContent>
 						</Link>
-						<IconButton
-							data-testid="delete-trip"
-							className={classes.nextButton}
-							disableRipple={true}
-							disableFocusRipple={true}
-							onClick={() => deleteHandler(trip.id)}
-						>
-							<HighlightOffIcon />
-						</IconButton>
+						<div>
+							<MoreVertIcon
+								aria-controls="simple-menu"
+								aria-haspopup="true"
+								onClick={handleMenuClick}
+								className={classes.menuButton}
+							/>
+							<Menu
+								id="simple-menu"
+								anchorEl={anchorEl}
+								keepMounted
+								open={Boolean(anchorEl)}
+								onClose={handleMenuClose}
+							>
+								<MenuItem onClick={handleMenuClose}>Share</MenuItem>
+								<MenuItem
+									onClick={() => {
+										deleteHandler(trip.id);
+										handleMenuClose();
+									}}
+								>
+									Delete
+								</MenuItem>
+							</Menu>
+						</div>
 					</Card>
 				);
 		  });
@@ -194,6 +227,7 @@ const GET_USER_TRIPS = gql`
 			}
 			dayLists
 			startDate
+			likedSpots
 		}
 	}
 `;
