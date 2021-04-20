@@ -21,7 +21,10 @@ import {
 	IconButton,
 	makeStyles,
 } from '@material-ui/core';
-import moment from 'moment';
+
+import { europeanCountries, flagDict } from '../utils/flags';
+import Avatar from '@material-ui/core/Avatar';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -49,6 +52,19 @@ const useStyles = makeStyles((theme) => ({
 		margin: '10px 5px',
 		cursor: 'pointer',
 	},
+	flags: {
+		display: 'flex',
+		flexWrap: 'wrap',
+	},
+	flag: {
+		fontSize: '2em',
+		marginRight: 5,
+		marginBottom: 5,
+		backgroundColor: 'antiquewhite',
+	},
+	overlay: {
+		opacity: 0.2,
+	},
 }));
 
 function Trips() {
@@ -61,9 +77,23 @@ function Trips() {
 	const handleMenuClick = (event) => {
 		setAnchorEl(event.currentTarget);
 	};
-
 	const handleMenuClose = () => {
 		setAnchorEl(null);
+	};
+
+	const visitedCountries = ['Germany', 'Netherlands', 'Belgium', 'Greece'];
+	const remainingCountries = europeanCountries.filter(
+		(country) => !visitedCountries.includes(country)
+	);
+
+	const FlagComponent = ({ flag, visited, countryName }) => {
+		return (
+			<Tooltip title={countryName} arrow>
+				<Avatar className={classes.flag}>
+					<p className={visited ? null : classes.overlay}>{flag}</p>
+				</Avatar>
+			</Tooltip>
+		);
 	};
 
 	const classes = useStyles();
@@ -212,6 +242,26 @@ function Trips() {
 					<AddCircleOutlineRoundedIcon fontSize="large" />
 				</IconButton>
 			</Link>
+			<p>
+				European Countries visited: {visitedCountries.length} /{' '}
+				{remainingCountries.length}
+			</p>
+			<div className={classes.flags}>
+				{visitedCountries.map((country) => (
+					<FlagComponent
+						flag={flagDict[country]}
+						visited={true}
+						countryName={country}
+					/>
+				))}
+				{remainingCountries.map((country) => (
+					<FlagComponent
+						flag={flagDict[country]}
+						visited={false}
+						countryName={country}
+					/>
+				))}
+			</div>
 		</div>
 	);
 }
