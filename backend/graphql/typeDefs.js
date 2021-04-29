@@ -59,6 +59,8 @@ module.exports = gql`
 		spotsArray: [Spot]
 		filteredSpots: [ID]
 		likedSpots: [ID]
+		shared: Boolean
+		sharedWith: [String]
 	}
 	type Place {
 		id: ID!
@@ -97,6 +99,9 @@ module.exports = gql`
 	input AuthInput {
 		idToken: String!
 	}
+	type Subscription {
+		sharedTripEdited(tripId: ID!): Trip
+	}
 	type Query {
 		getUsers: [User]
 		getUserItineraries(userId: ID!): [Itinerary]!
@@ -107,6 +112,7 @@ module.exports = gql`
 		getGuide(guideId: ID!): Guide!
 		getSpotsForCategoryInGuide(guideId: ID!, category: String!): [Spot]!
 		getSpot(guideId: ID!, placeId: String!): Spot
+		getSpots(spotIds: [String]): [Spot]
 		getAllSpotsForGuide(guideId: ID!): [Spot]!
 	}
 	type Mutation {
@@ -133,6 +139,7 @@ module.exports = gql`
 			googlePlacesInTrip: [String]!
 		): Trip!
 		deleteTrip(tripId: ID!): String!
+		shareTrip(tripId: ID!, emails: [String]): Trip
 		savePlace(placeInput: PlaceInput!): Place!
 		updatePlaces: Boolean!
 		saveSpot(spotInput: SpotInput!, placeInput: PlaceInput!): Spot!
