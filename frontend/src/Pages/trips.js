@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, gql } from '@apollo/client';
 
@@ -21,10 +21,14 @@ import {
 	IconButton,
 	makeStyles,
 } from '@material-ui/core';
+import Popover from '@material-ui/core/Popover';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 import { europeanCountries, flagDict } from '../utils/flags';
 import Avatar from '@material-ui/core/Avatar';
 import Tooltip from '@material-ui/core/Tooltip';
+import ShareDialog from '../Components/shareDialog';
+import { TripCard } from '../Components/tripCard';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -38,32 +42,27 @@ const useStyles = makeStyles((theme) => ({
 		justifyContent: 'space-between',
 		paddingBottom: 20,
 	},
-	tripCard: {
-		marginBottom: 15,
-		display: 'flex',
-	},
-	headerThumbnail: {
-		width: 100,
-	},
-	headerTitle: {
-		flex: 1,
-	},
-	menuButton: {
-		margin: '10px 5px',
-		cursor: 'pointer',
-	},
 	flags: {
 		display: 'flex',
 		flexWrap: 'wrap',
 	},
-	flag: {
+}));
+
+const flagStyles = makeStyles((theme) => ({
+	flag: (props) => ({
 		fontSize: '2em',
 		marginRight: 5,
 		marginBottom: 5,
-		backgroundColor: 'antiquewhite',
-	},
+		backgroundColor: props.color,
+	}),
 	overlay: {
 		opacity: 0.2,
+	},
+	popover: {
+		pointerEvents: 'none',
+	},
+	paper: {
+		padding: theme.spacing(1),
 	},
 }));
 
@@ -72,27 +71,77 @@ function Trips() {
 	const { dispatch: placeDispatch } = useContext(SpotContext);
 	const { setSnackMessage } = useContext(SnackBarContext);
 
-	const [anchorEl, setAnchorEl] = React.useState(null);
-
-	const handleMenuClick = (event) => {
-		setAnchorEl(event.currentTarget);
-	};
-	const handleMenuClose = () => {
-		setAnchorEl(null);
-	};
-
-	const visitedCountries = ['Germany', 'Netherlands', 'Belgium', 'Greece'];
+	const visitedCountries = [
+		{ name: 'Germany', progress: 40 },
+		{ name: 'Netherlands', progress: 70 },
+		{ name: 'Belgium', progress: 100 },
+		{ name: 'Greece', progress: 20 },
+	];
 	const remainingCountries = europeanCountries.filter(
-		(country) => !visitedCountries.includes(country)
+		(country) => !visitedCountries.includes(country.name)
 	);
 
-	const FlagComponent = ({ flag, visited, countryName }) => {
+	const FlagComponent = ({ flag, visited, countryName, progress }) => {
+		let color = 'white';
+
+		if (progress) {
+			if (progress === 100) {
+				color = '#FFD700';
+			} else if (progress >= 50) {
+				color = '#C0C0C0';
+			} else {
+				color = '#cd7f32';
+			}
+		}
+
+		const styleProps = {
+			color,
+		};
+		console.log('color:', color, progress);
+		const classes = flagStyles(styleProps);
+		const [anchorEl, setAnchorEl] = React.useState(null);
+
+		const handlePopoverOpen = (event) => {
+			setAnchorEl(event.currentTarget);
+		};
+
+		const handlePopoverClose = () => {
+			setAnchorEl(null);
+		};
+
+		const open = Boolean(anchorEl);
+
 		return (
-			<Tooltip title={countryName} arrow>
-				<Avatar className={classes.flag}>
+			<>
+				<Avatar
+					className={classes.flag}
+					onMouseEnter={handlePopoverOpen}
+					onMouseLeave={handlePopoverClose}
+				>
 					<p className={visited ? null : classes.overlay}>{flag}</p>
 				</Avatar>
-			</Tooltip>
+				<Popover
+					id="mouse-over-popover"
+					className={classes.popover}
+					classes={{
+						paper: classes.paper,
+					}}
+					open={open}
+					anchorEl={anchorEl}
+					anchorOrigin={{
+						vertical: 'bottom',
+						horizontal: 'left',
+					}}
+					onClose={handlePopoverClose}
+					disableRestoreFocus
+				>
+					<Typography>{countryName}</Typography>
+					<LinearProgress
+						variant="determinate"
+						value={visited ? progress : 0}
+					/>
+				</Popover>
+			</>
 		);
 	};
 
@@ -150,70 +199,9 @@ function Trips() {
 	console.log(trips);
 	const tripCards = loading
 		? ''
-		: trips.map((trip) => {
-				console.log(
-					'process.env.REACT_APP_NEW_UI',
-					process.env.REACT_APP_NEW_UI
-				);
-				const cardLink = process.env.REACT_APP_NEW_UI
-					? `web/planner/${trip.guide.id}/${trip.id}`
-					: `/planner/${trip.guide.id}/${trip.id}`;
-				return (
-					<Card
-						className={classes.tripCard}
-						key={trip.id}
-						data-testid={`tripCard-${trip.id}`}
-					>
-						<Link
-							to={cardLink}
-							style={{ textDecoration: 'none', display: 'flex', flex: 1 }}
-						>
-							<CardMedia
-								className={classes.headerThumbnail}
-								image={trip.guide.coverImage}
-							/>
-
-							<CardContent className={classes.headerTitle}>
-								<Typography variant="h5">{trip.guide.city}</Typography>
-								<Typography variant="subtitle1">
-									{trip.likedSpots.length} Spots
-								</Typography>
-								{/* <Typography data-testid="trip-date" variant="subtitle1">
-									{moment(trip.startDate).format('DD MMM')} -{' '}
-									{moment(trip.startDate)
-										.add(trip.dayLists.length - 1, 'days')
-										.format('DD MMM')}
-								</Typography> */}
-							</CardContent>
-						</Link>
-						<div>
-							<MoreVertIcon
-								aria-controls="simple-menu"
-								aria-haspopup="true"
-								onClick={handleMenuClick}
-								className={classes.menuButton}
-							/>
-							<Menu
-								id="simple-menu"
-								anchorEl={anchorEl}
-								keepMounted
-								open={Boolean(anchorEl)}
-								onClose={handleMenuClose}
-							>
-								<MenuItem onClick={handleMenuClose}>Share</MenuItem>
-								<MenuItem
-									onClick={() => {
-										deleteHandler(trip.id);
-										handleMenuClose();
-									}}
-								>
-									Delete
-								</MenuItem>
-							</Menu>
-						</div>
-					</Card>
-				);
-		  });
+		: trips.map((trip) => (
+				<TripCard trip={trip} deleteHandler={deleteHandler} />
+		  ));
 
 	return (
 		<div className={classes.root}>
@@ -247,15 +235,20 @@ function Trips() {
 				{remainingCountries.length}
 			</p>
 			<div className={classes.flags}>
-				{visitedCountries.map((country) => (
-					<FlagComponent
-						flag={flagDict[country]}
-						visited={true}
-						countryName={country}
-					/>
-				))}
+				{visitedCountries
+					.sort((a, b) => b.progress - a.progress)
+					.map((country) => (
+						<FlagComponent
+							key={country.name}
+							flag={flagDict[country.name]}
+							visited={true}
+							countryName={country.name}
+							progress={country.progress}
+						/>
+					))}
 				{remainingCountries.map((country) => (
 					<FlagComponent
+						key={country}
 						flag={flagDict[country]}
 						visited={false}
 						countryName={country}
@@ -278,6 +271,7 @@ const GET_USER_TRIPS = gql`
 			dayLists
 			startDate
 			likedSpots
+			sharedWith
 		}
 	}
 `;

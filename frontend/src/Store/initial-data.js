@@ -3,7 +3,7 @@ import moment from 'moment';
 export const initialData = {
 	spots: {},
 	startDate: moment().startOf('date'),
-	numberOfDays: 1,
+	numberOfDays: 2,
 	columns: {
 		'filtered-spots': {
 			id: 'filtered-spots',
@@ -15,10 +15,18 @@ export const initialData = {
 			title: 'day1',
 			spotIds: [],
 		},
+		day2: {
+			id: 'day2',
+			title: 'day2',
+			spotIds: [],
+		},
 	},
 	filteredBoard: ['filtered-spots'],
-	dayBoard: ['day1'],
-	guide: undefined,
+	dayBoard: ['day1', 'day2'],
+	guide: {
+		id: undefined,
+		categories: [],
+	},
 	clickedCategories: [],
 	queriedCategories: [],
 	spotToHighlightID: '',

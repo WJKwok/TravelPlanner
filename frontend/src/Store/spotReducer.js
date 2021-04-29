@@ -5,6 +5,15 @@ export const spotReducer = (state, action) => {
 	switch (action.type) {
 		case 'CLEAR_STATE':
 			return initialData;
+		case 'SYNC_SHARED_TRIP':
+			const { shouldAdd, shouldRemove, newLikedSpots } = action.payload;
+			const syncedTrip = syncTrip(
+				state,
+				shouldAdd,
+				shouldRemove,
+				newLikedSpots
+			);
+			return syncedTrip;
 		case 'LOAD_GUIDE':
 			const { guide } = action.payload;
 			const loadedGuide = loadGuide(guide);
@@ -94,6 +103,64 @@ const loadGuide = (guide) => {
 		...initialData,
 		guide,
 		clickedCategories: [],
+	};
+
+	return newState;
+};
+
+const syncTrip = (state, shouldAdd, shouldRemove, newLikedSpots) => {
+	let mappedSpots = {};
+	let newSpotIds = [];
+
+	if (newLikedSpots) {
+		for (var i = 0; i < newLikedSpots.length; i++) {
+			mappedSpots[newLikedSpots[i].id] = newLikedSpots[i];
+			newSpotIds.push(newLikedSpots[i].id);
+		}
+	}
+
+	const stateWithNewSpots = {
+		...state,
+		spots: {
+			...state.spots,
+			...mappedSpots,
+		},
+		columns: {
+			...state.columns,
+			'filtered-spots': {
+				...state.columns['filtered-spots'],
+				spotIds: [
+					...new Set([
+						...state.columns['filtered-spots'].spotIds,
+						...newSpotIds,
+					]),
+				],
+			},
+		},
+	};
+
+	const syncedSpots = {};
+	shouldAdd.forEach(
+		(spotId) =>
+			(syncedSpots[spotId] = {
+				...stateWithNewSpots.spots[spotId],
+				liked: true,
+			})
+	);
+	shouldRemove.forEach(
+		(spotId) =>
+			(syncedSpots[spotId] = {
+				...stateWithNewSpots.spots[spotId],
+				liked: false,
+			})
+	);
+
+	const newState = {
+		...stateWithNewSpots,
+		spots: {
+			...stateWithNewSpots.spots,
+			...syncedSpots,
+		},
 	};
 
 	return newState;

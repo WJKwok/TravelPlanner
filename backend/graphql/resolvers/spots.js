@@ -1,6 +1,8 @@
 const Spot = require('../../models/Spot');
 const Place = require('../../models/Place');
 const checkAuth = require('../../utils/checkAuth');
+const { getGooglePlace } = require('../../utils/googlePlaceApi');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 module.exports = {
 	Query: {
@@ -15,6 +17,32 @@ module.exports = {
 			} catch (err) {
 				throw new Error(err);
 			}
+		},
+		async getSpots(_, { spotIds }) {
+			// split array into google place and spots
+
+			const googlePlaces = [];
+			const guideSpots = [];
+			spotIds.forEach((id) => {
+				console.log('id', id);
+				if (ObjectId.isValid(id) && ObjectId(id).toString() === id) {
+					guideSpots.push(id);
+				} else {
+					googlePlaces.push(id);
+				}
+			});
+
+			// await places and spots
+			const placesFromGoogle = await Promise.all(
+				googlePlaces.map((placeId) => getGooglePlace(placeId))
+			);
+			const spotsFromGuide = await Promise.all(
+				guideSpots.map((spotId) => Spot.findById(spotId).populate('place'))
+			);
+
+			// return both with liked: true
+			console.log('getspots', [...placesFromGoogle, ...spotsFromGuide]);
+			return [...placesFromGoogle, ...spotsFromGuide];
 		},
 		async getAllSpotsForGuide(_, { guideId }) {
 			try {

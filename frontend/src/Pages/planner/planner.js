@@ -586,21 +586,23 @@ function Planner(props) {
 		// 	/>
 		// );
 
-		// <SpotsBoard
-		// 		dragAndDroppable={true}
-		// 		boardId={columnId}
-		// 		spots={spots}
-		// 		coordinates={guideData.coordinates}
-		// 	/>
 		return (
-			<ScrollBoardWithinMap
+			<SpotsBoard
 				dragAndDroppable={true}
-				key={columnId}
 				boardId={columnId}
 				spots={spots}
 				coordinates={guideData.coordinates}
 			/>
 		);
+		// return (
+		// 	<ScrollBoardWithinMap
+		// 		dragAndDroppable={true}
+		// 		key={columnId}
+		// 		boardId={columnId}
+		// 		spots={spots}
+		// 		coordinates={guideData.coordinates}
+		// 	/>
+		// );
 	};
 
 	const placeAutoCompletePlaceHolderText = 'Google a place of interest 🙌';

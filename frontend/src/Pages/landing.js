@@ -53,9 +53,10 @@ function Landing() {
 					getOptionLabel={(option) => option.city}
 					onChange={(_, newValue) => {
 						if (newValue) {
-							const pushLink = process.env.REACT_APP_NEW_UI
-								? `web/planner/${newValue.id}`
-								: `/planner/${newValue.id}`;
+							const pushLink =
+								process.env.REACT_APP_NEW_UI === 'true'
+									? `web/planner/${newValue.id}`
+									: `/planner/${newValue.id}`;
 							history.push(pushLink);
 						}
 					}}

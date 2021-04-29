@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { ApolloServer } = require('apollo-server');
+const { ApolloServer, PubSub } = require('apollo-server');
 const mongoose = require('mongoose');
 
 //const { MONGODB } = require('./config');
@@ -9,10 +9,14 @@ const resolvers = require('./graphql/resolvers');
 const url = process.env.MONGODB_URI;
 const PORT = process.env.PORT || 5010;
 
+const pubsub = new PubSub();
 const server = new ApolloServer({
+	subscriptions: {
+		path: '/subscriptions',
+	},
 	typeDefs,
 	resolvers,
-	context: ({ req, res }) => ({ req, res }),
+	context: ({ req, res }) => ({ req, res, pubsub }),
 });
 
 mongoose

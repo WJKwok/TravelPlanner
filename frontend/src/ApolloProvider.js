@@ -8,10 +8,14 @@ import {
 	InMemoryCache,
 	fromPromise,
 	ApolloProvider,
+	split,
 	gql,
 } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import { setContext } from '@apollo/client/link/context';
+
+import { getMainDefinition } from '@apollo/client/utilities';
+import { WebSocketLink } from '@apollo/client/link/ws';
 
 const getNewToken = () => {
 	console.log('refreshToken', localStorage.getItem('refreshToken'));
@@ -72,6 +76,25 @@ const httpLink = createHttpLink({
 			: 'http://localhost:5010/',
 });
 
+const wsLink = new WebSocketLink({
+	uri: 'ws://localhost:5010/subscriptions',
+	options: {
+		reconnect: true,
+	},
+});
+
+const splitLink = split(
+	({ query }) => {
+		const definition = getMainDefinition(query);
+		return (
+			definition.kind === 'OperationDefinition' &&
+			definition.operation === 'subscription'
+		);
+	},
+	wsLink,
+	httpLink
+);
+
 const authLink = setContext(() => {
 	const token = localStorage.getItem('jwtToken');
 	return {
@@ -82,7 +105,7 @@ const authLink = setContext(() => {
 });
 
 export const client = new ApolloClient({
-	link: ApolloLink.from([errorLink, authLink, httpLink]),
+	link: ApolloLink.from([errorLink, authLink, splitLink]),
 	cache: new InMemoryCache(),
 });
 
