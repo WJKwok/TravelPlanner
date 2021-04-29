@@ -77,7 +77,10 @@ const httpLink = createHttpLink({
 });
 
 const wsLink = new WebSocketLink({
-	uri: 'ws://localhost:5010/subscriptions',
+	uri:
+		process.env.NODE_ENV === 'production'
+			? 'ws://travel-planner-backend.herokuapp.com/subscriptions'
+			: 'ws://localhost:5010/subscriptions',
 	options: {
 		reconnect: true,
 	},
