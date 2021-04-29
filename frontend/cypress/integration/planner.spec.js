@@ -88,7 +88,7 @@ describe('Planner', function () {
 		cy.get('[data-testid="collapseContent-5f7864e5a1fea03c638ead0b"]').should(
 			'not.exist'
 		);
-		cy.get('[data-testid="5f7864e5a1fea03c638ead0b"]').click('topRight');
+		cy.get('[data-testid="5f7864e5a1fea03c638ead0b"]').click();
 		cy.get('[data-testid="collapseContent-5f7864e5a1fea03c638ead0b"]');
 
 		// navigating away without saving will open navPrompt; then stay

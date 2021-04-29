@@ -110,8 +110,9 @@ it('test as non-user', () => {
 					cy.get('[data-testid=trip-date]').contains(
 						`${todaysDate[1]} - ${tmrDate[1]}`
 					);
-					cy.get('[data-testid=delete-trip]').click();
+					cy.get('[data-testid=more-actions]').click();
 				});
+			cy.get('[data-testid=delete-trip]').last().click();
 			cy.get('[data-testid*=tripCard]').should('have.length', tripsLength - 1);
 		});
 });
