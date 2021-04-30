@@ -45,7 +45,7 @@ export const TripCard = ({ trip, deleteHandler }) => {
 		setAnchorEl(null);
 	};
 
-	console.log('a simple edit 2');
+	console.log('a simple edit 3');
 	const cardLink =
 		process.env.REACT_APP_NEW_UI === 'true'
 			? `/web/planner/${trip.guide.id}/${trip.id}`
