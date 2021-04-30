@@ -1,4 +1,8 @@
 {
+	"name": "travelplanner",
+	"version": "1.0.0",
+	"description": "1. clone the project",
+	"main": "index.js",
 	"scripts": {
 		"start": "react-scripts start",
 		"build": "react-scripts build",
@@ -8,8 +12,22 @@
 	},
 	"husky": {
 		"hooks": {
-			"pre-commit": "npm test",
-			"pre-push": "cd frontend && npx cypress open"
+			"pre-commit": "npm run lint && npm test",
+			"pre-push": "npm run lint && npm test"
 		}
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/WJKwok/TravelPlanner.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/WJKwok/TravelPlanner/issues"
+	},
+	"homepage": "https://github.com/WJKwok/TravelPlanner#readme",
+	"devDependencies": {
+		"cross-env": "^7.0.3",
+		"husky": "^6.0.0"
 	}
 }
