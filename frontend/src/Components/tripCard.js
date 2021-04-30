@@ -50,8 +50,6 @@ export const TripCard = ({ trip, deleteHandler }) => {
 			? `/web/planner/${trip.guide.id}/${trip.id}`
 			: `/planner/${trip.guide.id}/${trip.id}`;
 
-	console.log('new ui?', process.env.REACT_APP_NEW_UI === 'true', cardLink);
-	console.log('node env?', process.env.NODE_ENV);
 	return (
 		<Card
 			className={classes.tripCard}
