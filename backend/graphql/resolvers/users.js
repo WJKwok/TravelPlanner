@@ -91,11 +91,11 @@ module.exports = {
 				throw new UserInputError('Errors', { errors });
 			}
 
-			const user = await User.findOne({ username });
+			const user = await User.findOne({ email });
 			if (user) {
-				throw new UserInputError('Username is taken', {
+				throw new UserInputError('email has been registered', {
 					errors: {
-						username: 'This username is taken',
+						email: 'This email has been registered',
 					},
 				});
 			}
