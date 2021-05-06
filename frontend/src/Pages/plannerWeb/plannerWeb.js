@@ -13,6 +13,9 @@ import {
 } from '@apollo/client';
 import { SPOT_DATA } from '../../utils/graphql';
 
+import { useSubmitTrip } from '../../graphqlHooks/useSubmitTrip';
+import { useEditTrip } from '../../graphqlHooks/useEditTrip';
+
 import CategoryChipBar from '../../Components/categoryChipBarWeb';
 import ScrollBoardWithinMap from '../../Components/scrollBoardWithinMapWeb';
 import ScrollBoardWithinMapMobile from '../../Components/scrollBoardWithinMapMobile';
@@ -81,6 +84,9 @@ function Planner(props) {
 
 	const theme = useTheme();
 	const isMobile = useMediaQuery(`(max-width:${theme.maxMobileWidth}px)`);
+
+	const submitTrip = useSubmitTrip(dispatch, setSnackMessage, authState);
+	const editTrip = useEditTrip(dispatch, setSnackMessage);
 
 	useEffect(() => {
 		return () => {
@@ -217,98 +223,6 @@ function Planner(props) {
 			});
 		},
 		variables: { tripId },
-	});
-
-	const [submitTrip] = useMutation(SUBMIT_TRIP, {
-		onCompleted({ submitTrip }) {
-			console.log(submitTrip);
-			setTripId(submitTrip.id);
-			dispatch({ type: 'TRIP_SAVED' });
-			setSnackMessage({ text: 'Your trip has been saved:)', code: 'Confirm' });
-		},
-		update(proxy, result) {
-			console.log('submitTrip result:', result);
-
-			try {
-				const data = proxy.readQuery({
-					query: GET_USER_TRIPS,
-					variables: {
-						userId: authState.user.id,
-					},
-				});
-
-				// writing to cache so that the query doesn't have to recall
-				// for queries with variables, it is impt to define it during write query, else it would be a different cache, and it wouldn't be read.
-				proxy.writeQuery({
-					query: GET_USER_TRIPS,
-					variables: {
-						userId: authState.user.id,
-					},
-					data: {
-						getUserTrips: [...data.getUserTrips, result.data.submitTrip],
-					},
-				});
-			} catch (err) {
-				console.log('update cache error:', err);
-			}
-		},
-		onError(err) {
-			console.log(err);
-		},
-	});
-
-	const [editTrip] = useMutation(EDIT_TRIP, {
-		onCompleted({ editTrip }) {
-			console.log('Trip edited', editTrip);
-			setTripId(editTrip.id);
-			dispatch({ type: 'TRIP_SAVED' });
-			setSnackMessage({ text: 'Your trip has been saved:)', code: 'Confirm' });
-		},
-		update(proxy, result) {
-			try {
-				const data = proxy.readQuery({
-					query: GET_TRIP,
-					variables: {
-						tripId,
-					},
-				});
-
-				console.log(
-					'spotState.spots',
-					spotState.spots,
-					Object.values(spotState.spots)
-				);
-				// writing to cache so that the query doesn't have to recall
-				// for queries with variables, it is impt to define it during write query, else it would be a different cache, and it wouldn't be read.
-				proxy.writeQuery({
-					query: GET_TRIP,
-					variables: {
-						tripId,
-					},
-					data: {
-						getTrip: {
-							...data.getTrip,
-							filteredSpots: spotState.columns['filtered-spots'].spotIds,
-							spotsArray: [...Object.values(spotState.spots)],
-							categoriesInTrip: spotState.queriedCategories, //TODO: get categories from liked spots
-							likedSpots: spotState.columns['filtered-spots'].spotIds.filter(
-								(spot) => spotState.spots[spot].liked
-							),
-							googlePlacesInTrip: spotState.columns[
-								'filtered-spots'
-							].spotIds.filter(
-								(spot) => spotState.spots[spot].categories[0] === 'Searched'
-							),
-						},
-					},
-				});
-			} catch (err) {
-				console.log('update cache error:', err);
-			}
-		},
-		onError(err) {
-			console.log(err);
-		},
 	});
 
 	const saveItinerary = () => {
@@ -600,67 +514,6 @@ const GET_TRIP = gql`
 		}
 	}
 	${SPOT_DATA}
-`;
-
-const SUBMIT_TRIP = gql`
-	mutation submitTrip(
-		$guide: ID!
-		$startDate: String!
-		$dayLists: [[String]]!
-		$categoriesInTrip: [String]!
-		$likedSpots: [String]!
-		$googlePlacesInTrip: [String]!
-	) {
-		submitTrip(
-			guide: $guide
-			startDate: $startDate
-			dayLists: $dayLists
-			categoriesInTrip: $categoriesInTrip
-			likedSpots: $likedSpots
-			googlePlacesInTrip: $googlePlacesInTrip
-		) {
-			id
-		}
-	}
-`;
-
-const EDIT_TRIP = gql`
-	mutation editTrip(
-		$tripId: ID!
-		$startDate: String!
-		$dayLists: [[String]]!
-		$categoriesInTrip: [String]!
-		$likedSpots: [String]!
-		$googlePlacesInTrip: [String]!
-	) {
-		editTrip(
-			tripId: $tripId
-			startDate: $startDate
-			dayLists: $dayLists
-			categoriesInTrip: $categoriesInTrip
-			likedSpots: $likedSpots
-			googlePlacesInTrip: $googlePlacesInTrip
-		) {
-			id
-			dayLists
-			startDate
-		}
-	}
-`;
-
-const GET_USER_TRIPS = gql`
-	query getUserTrips($userId: ID!) {
-		getUserTrips(userId: $userId) {
-			id
-			guide {
-				id
-				coverImage
-				city
-			}
-			dayLists
-			startDate
-		}
-	}
 `;
 
 const GET_SPOT = gql`
