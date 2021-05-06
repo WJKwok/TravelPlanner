@@ -85,7 +85,12 @@ function Planner(props) {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(`(max-width:${theme.maxMobileWidth}px)`);
 
-	const submitTrip = useSubmitTrip(dispatch, setSnackMessage, authState);
+	const submitTrip = useSubmitTrip(
+		dispatch,
+		setSnackMessage,
+		authState,
+		setTripId
+	);
 	const editTrip = useEditTrip(dispatch, setSnackMessage);
 
 	useEffect(() => {
@@ -94,6 +99,12 @@ function Planner(props) {
 			dispatch({ type: 'CLEAR_STATE' });
 		};
 	}, [dispatch]);
+
+	useEffect(() => {
+		if (spotState.recentLikeToggledSpotId && authState.user) {
+			saveItinerary();
+		}
+	}, [spotState.recentLikeToggledSpotId]);
 
 	useQuery(GET_GUIDE, {
 		skip: tripId,
@@ -106,7 +117,7 @@ function Planner(props) {
 	});
 
 	useQuery(GET_TRIP, {
-		skip: tripId === undefined,
+		skip: tripId === undefined || spotState.guide.id !== undefined,
 		onCompleted({ getTrip: trip }) {
 			console.log('get trip: ', trip);
 			dispatch({ type: 'LOAD_MAP', payload: { map: trip } });

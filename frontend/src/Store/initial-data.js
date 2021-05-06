@@ -31,4 +31,5 @@ export const initialData = {
 	queriedCategories: [],
 	spotToHighlightID: '',
 	unsavedChanges: false,
+	recentLikeToggledSpotId: undefined,
 };

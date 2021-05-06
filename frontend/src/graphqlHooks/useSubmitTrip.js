@@ -1,11 +1,16 @@
 import React from 'react';
 import { useMutation, gql } from '@apollo/client';
 
-export const useSubmitTrip = (dispatch, setSnackMessage, authState) => {
+export const useSubmitTrip = (
+	dispatch,
+	setSnackMessage,
+	authState,
+	setTripId
+) => {
 	const [submitTrip] = useMutation(SUBMIT_TRIP, {
 		onCompleted({ submitTrip }) {
 			console.log(submitTrip);
-			// setTripId(submitTrip.id);
+			setTripId(submitTrip.id);
 			dispatch({ type: 'TRIP_SAVED' });
 			setSnackMessage({ text: 'Your trip has been saved:)', code: 'Confirm' });
 		},

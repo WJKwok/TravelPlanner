@@ -321,6 +321,9 @@ const updateLikes = (state, spotId) => {
 		liked: newLikeState,
 	};
 
+	//To react to changes that needs to be saved
+	const isSpotLastToggled = spotId === state.recentLikeToggledSpotId;
+
 	console.log('spotToToggle', spotToToggle);
 	const newState = {
 		...state,
@@ -330,6 +333,7 @@ const updateLikes = (state, spotId) => {
 				...spotToToggle,
 			},
 		},
+		recentLikeToggledSpotId: isSpotLastToggled ? 'stillNeedToSave' : spotId,
 	};
 
 	return newState;
