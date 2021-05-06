@@ -101,7 +101,7 @@ function ScrollBoardWithinMap(props) {
 				behavior: 'smooth',
 			});
 		}
-	}, [spots.length]);
+	}, [spotState.clickedCategories.length]);
 
 	useEffect(() => {
 		if (spotState.spotToHighlightID) {

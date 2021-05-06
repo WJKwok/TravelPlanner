@@ -1,4 +1,5 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
+import { SpotContext } from '../Store/SpotContext';
 import { Droppable } from 'react-beautiful-dnd';
 
 import moment from 'moment';
@@ -78,6 +79,8 @@ function ScrollBoardWithinMap(props) {
 		rightButtons,
 	} = props;
 
+	const { spotState } = useContext(SpotContext);
+
 	const [mouseOverCard, setMouseOverCard] = useState(undefined);
 	const [clickedCard, setClickedCard] = useState(null);
 	const [showSidePanel, setShowSidePanel] = useState(false);
@@ -100,7 +103,7 @@ function ScrollBoardWithinMap(props) {
 			left: 0,
 			behavior: 'smooth',
 		});
-	}, [spots.length]);
+	}, [spotState.clickedCategories.length]);
 
 	const cardWithAndMargin = window.innerWidth * 0.93;
 	const executeScroll = (index, spot) => {

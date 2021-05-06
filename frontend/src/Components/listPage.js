@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
+import { SpotContext } from '../Store/SpotContext';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { ListCard } from './listCard';
@@ -35,6 +36,7 @@ export const ListPage = ({ spots, catBar, setIsListView }) => {
 	const classes = useStyles();
 
 	let myref = useRef(null);
+	const { spotState } = useContext(SpotContext);
 
 	useEffect(() => {
 		console.log('ref', myref);
@@ -42,7 +44,7 @@ export const ListPage = ({ spots, catBar, setIsListView }) => {
 			top: 0,
 			behavior: 'smooth',
 		});
-	}, [spots.length]);
+	}, [spotState.clickedCategories.length]);
 
 	return (
 		<div className={classes.root}>
