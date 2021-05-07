@@ -25,6 +25,7 @@ import ConfirmNavPrompt from '../../Components/confirmNavPrompt';
 import ProfileIconButton from '../../Components/profileIconButton';
 import DatePicker from '../../Components/datePicker';
 import PlaceAutoComplete from '../../Components/placeAutoComplete';
+import { LeftButtonGroup } from '../../Components/leftButtonGroup';
 
 import ListIcon from '@material-ui/icons/List';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -39,31 +40,6 @@ const useStyles = makeStyles((theme) => ({
 	searchDialogSize: {
 		minHeight: 300,
 		padding: '13px',
-	},
-	searchButton: {
-		margin: '0px 0px 5px 0px',
-		[theme.breakpoints.down(430)]: {
-			margin: '0px 0px 10px 10px',
-		},
-	},
-	iconButton: {
-		backgroundColor: 'white',
-		color: 'black',
-		'&:focus': {
-			outline: 'none',
-		},
-	},
-	imageIcon: {
-		display: 'flex',
-		height: 'inherit',
-		width: 'inherit',
-	},
-	iconRoot: {
-		textAlign: 'center',
-	},
-	buttonGroup: {
-		backgroundColor: 'white',
-		color: 'black',
 	},
 }));
 
@@ -383,32 +359,14 @@ function Planner(props) {
 						spots={spots}
 						coordinates={spotState.guide.coordinates}
 						catBar={<CategoryChipBar />}
-						gSearchButton={
-							<ButtonGroup
-								variant="contained"
-								aria-label="contained primary button group"
-								classes={{
-									groupedContained: classes.iconButton,
-								}}
-							>
-								<Button
-									data-testid="google-search-button"
-									onClick={() => setSearchModalOpen(true)}
-								>
-									<Icon classes={{ root: classes.iconRoot }}>
-										<img
-											className={classes.imageIcon}
-											src="/images/search.png"
-										/>
-									</Icon>
-								</Button>
-								<Button id="save" onClick={saveItinerary}>
-									<SaveIcon />
-								</Button>
-								<Button id="list" onClick={() => setIsListView(true)}>
-									<ListIcon />
-								</Button>
-							</ButtonGroup>
+						leftButtonGroup={
+							<LeftButtonGroup
+								isLoggedIn={!authState.user}
+								isMobile={isMobile}
+								saveItinerary={saveItinerary}
+								setSearchModalOpen={setSearchModalOpen}
+								setIsListView={setIsListView}
+							/>
 						}
 						rightButtons={<ProfileIconButton />}
 					/>
@@ -423,31 +381,14 @@ function Planner(props) {
 				spots={spots}
 				coordinates={spotState.guide.coordinates}
 				catBar={<CategoryChipBar />}
-				gSearchButton={
-					<ButtonGroup
-						variant="contained"
-						aria-label="contained primary button group"
-						classes={{
-							groupedContained: classes.iconButton,
-						}}
-					>
-						<Button
-							data-testid="google-search-button"
-							onClick={() => setSearchModalOpen(true)}
-							className={classes.iconButton}
-						>
-							<Icon classes={{ root: classes.iconRoot }}>
-								<img className={classes.imageIcon} src="/images/search.png" />
-							</Icon>
-						</Button>
-						<Button
-							id="save"
-							onClick={saveItinerary}
-							className={classes.iconButton}
-						>
-							<SaveIcon />
-						</Button>
-					</ButtonGroup>
+				leftButtonGroup={
+					<LeftButtonGroup
+						isLoggedIn={!authState.user}
+						isMobile={isMobile}
+						saveItinerary={saveItinerary}
+						setSearchModalOpen={setSearchModalOpen}
+						setIsListView={setIsListView}
+					/>
 				}
 				rightButtons={<ProfileIconButton />}
 			/>

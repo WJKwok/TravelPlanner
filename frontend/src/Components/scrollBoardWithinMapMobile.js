@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
 		zIndex: 5,
 		width: '100vw',
 	}),
-	gSearchButton: {
+	leftButtonGroup: {
 		position: 'absolute',
 		bottom: '100%',
 		left: '5vw',
@@ -75,7 +75,7 @@ function ScrollBoardWithinMap(props) {
 		coordinates,
 		dragAndDroppable,
 		catBar,
-		gSearchButton,
+		leftButtonGroup,
 		rightButtons,
 	} = props;
 
@@ -196,7 +196,7 @@ function ScrollBoardWithinMap(props) {
 					</div>
 					{/* )}
 					</Droppable> */}
-					<div className={classes.gSearchButton}>{gSearchButton}</div>
+					<div className={classes.leftButtonGroup}>{leftButtonGroup}</div>
 					<div className={classes.rightButtons}>{rightButtons}</div>
 				</div>
 			</GoogleMapWithScrollBoard>

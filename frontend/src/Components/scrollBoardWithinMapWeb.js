@@ -76,7 +76,7 @@ function ScrollBoardWithinMap(props) {
 		coordinates,
 		dragAndDroppable,
 		catBar,
-		gSearchButton,
+		leftButtonGroup,
 		rightButtons,
 	} = props;
 	const { spotState } = useContext(SpotContext);
@@ -184,7 +184,7 @@ function ScrollBoardWithinMap(props) {
 						></div>
 						{/* {provided.placeholder} */}
 					</div>
-					<div className={classes.leftButtons}>{gSearchButton}</div>
+					<div className={classes.leftButtons}>{leftButtonGroup}</div>
 					<div className={classes.rightButtons}>{rightButtons}</div>
 				</div>
 			</GoogleMapWithScrollBoard>
