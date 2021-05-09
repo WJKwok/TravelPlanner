@@ -8,6 +8,7 @@ module.exports = gql`
 		refreshToken: String
 		username: String!
 		createdAt: String!
+		trips: [Trip]
 	}
 	type DayPlan {
 		placeIds: [String]!
@@ -59,7 +60,6 @@ module.exports = gql`
 		spotsArray: [Spot]
 		filteredSpots: [ID]
 		likedSpots: [ID]
-		shared: Boolean
 		sharedWith: [String]
 	}
 	type Place {

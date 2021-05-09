@@ -199,9 +199,27 @@ function Trips() {
 	console.log(trips);
 	const tripCards = loading
 		? ''
-		: trips.map((trip) => (
-				<TripCard trip={trip} deleteHandler={deleteHandler} />
-		  ));
+		: trips
+				.filter((trip) => trip.sharedWith.length === 0)
+				.map((trip) => (
+					<TripCard
+						user={authState.user}
+						trip={trip}
+						deleteHandler={deleteHandler}
+					/>
+				));
+
+	const sharedTripCards = loading
+		? ''
+		: trips
+				.filter((trip) => trip.sharedWith.length !== 0)
+				.map((trip) => (
+					<TripCard
+						user={authState.user}
+						trip={trip}
+						deleteHandler={deleteHandler}
+					/>
+				));
 
 	return (
 		<div className={classes.root}>
@@ -221,6 +239,8 @@ function Trips() {
 			</div>
 
 			{tripCards}
+			<Typography variant="h5">Shared</Typography>
+			{sharedTripCards}
 			<Link to={'/'}>
 				<IconButton
 					disableRipple={true}
@@ -263,6 +283,10 @@ const GET_USER_TRIPS = gql`
 	query getUserTrips($userId: ID!) {
 		getUserTrips(userId: $userId) {
 			id
+			user {
+				email
+				username
+			}
 			guide {
 				id
 				coverImage

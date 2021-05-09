@@ -3,13 +3,18 @@ const Trip = require('../../models/Trip');
 const Spot = require('../../models/Spot');
 const checkAuth = require('../../utils/checkAuth');
 const { getGooglePlace } = require('../../utils/googlePlaceApi');
+const User = require('../../models/User');
 
 module.exports = {
 	Query: {
 		async getUserTrips(_, { userId }) {
 			try {
-				const trips = await Trip.find({ user: userId }).populate('guide');
-				return trips;
+				const users = await User.findById(userId).populate({
+					path: 'trips',
+					populate: { path: 'guide user' },
+				});
+
+				return users.trips;
 			} catch (err) {
 				throw new Error(err);
 			}
@@ -97,6 +102,7 @@ module.exports = {
 				categoriesInTrip,
 				likedSpots,
 				googlePlacesInTrip,
+				shared: [],
 			});
 
 			const submitted = await newTrip.save();
@@ -119,7 +125,10 @@ module.exports = {
 			try {
 				let trip = await Trip.findById(tripId);
 				if (trip) {
-					if (trip.user.toString() !== user.id) {
+					if (
+						trip.user.toString() !== user.id &&
+						!trip.sharedWith.includes(user.email)
+					) {
 						throw new ForbiddenError('User does not own this trip');
 					}
 
@@ -157,7 +166,6 @@ module.exports = {
 			const user = checkAuth(context);
 			const trip = await Trip.findById(tripId);
 			if (trip.user.toString() === user.id) {
-				trip.shared = true;
 				trip.sharedWith = emails;
 				await trip.save();
 				return trip;
