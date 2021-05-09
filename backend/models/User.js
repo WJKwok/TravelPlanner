@@ -6,6 +6,12 @@ const userSchema = new Schema({
 	email: String,
 	createdAt: String,
 	role: String,
+	trips: [
+		{
+			type: Schema.ObjectId,
+			ref: 'Trip',
+		},
+	],
 });
 
 module.exports = model('User', userSchema);

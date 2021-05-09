@@ -14,7 +14,6 @@ const tripSchema = new Schema({
 	categoriesInTrip: [],
 	likedSpots: [],
 	googlePlacesInTrip: [],
-	shared: Boolean,
 	sharedWith: [String],
 });
 

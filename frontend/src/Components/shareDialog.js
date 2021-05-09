@@ -41,6 +41,9 @@ export default function FormDialog({ trip, open, setOpen }) {
 		onCompleted({ shareTrip }) {
 			console.log('Trip shared', shareTrip);
 		},
+		onError(err) {
+			console.log(err);
+		},
 	});
 
 	return (

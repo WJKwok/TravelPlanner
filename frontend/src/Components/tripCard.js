@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export const TripCard = ({ trip, deleteHandler }) => {
+export const TripCard = ({ user, trip, deleteHandler }) => {
 	const classes = useStyles();
 
 	const [dialogOpen, setDialogOpen] = useState(false);
@@ -51,6 +51,7 @@ export const TripCard = ({ trip, deleteHandler }) => {
 			? `/web/planner/${trip.guide.id}/${trip.id}`
 			: `/planner/${trip.guide.id}/${trip.id}`;
 
+	const isTripOwner = trip.user.email === user.email;
 	return (
 		<Card
 			className={classes.tripCard}
@@ -69,9 +70,17 @@ export const TripCard = ({ trip, deleteHandler }) => {
 				<CardContent className={classes.headerTitle}>
 					<Typography variant="h5">{trip.guide.city}</Typography>
 					{process.env.REACT_APP_NEW_UI === 'true' ? (
-						<Typography variant="subtitle1">
-							{trip.likedSpots.length} Spots
-						</Typography>
+						<>
+							<Typography variant="subtitle1">
+								{trip.likedSpots.length} Spots
+							</Typography>
+							{trip.sharedWith.length > 0 ? (
+								<>
+									<p>Shared by {isTripOwner ? 'You' : trip.user.username}</p>
+									<p>Shared with {trip.sharedWith.join(', ')}</p>
+								</>
+							) : null}
+						</>
 					) : (
 						<Typography data-testid="trip-date" variant="subtitle1">
 							{moment(trip.startDate).format('DD MMM')} -{' '}
