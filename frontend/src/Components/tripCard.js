@@ -30,6 +30,14 @@ const useStyles = makeStyles((theme) => ({
 		margin: '10px 5px',
 		cursor: 'pointer',
 	},
+	sharedUsers: {
+		marginTop: '1em',
+	},
+	userTag: {
+		backgroundColor: 'antiqueWhite',
+		padding: '0px 3px',
+		borderRadius: 3,
+	},
 }));
 
 export const TripCard = ({ user, trip, deleteHandler }) => {
@@ -52,6 +60,10 @@ export const TripCard = ({ user, trip, deleteHandler }) => {
 			: `/planner/${trip.guide.id}/${trip.id}`;
 
 	const isTripOwner = trip.user.email === user.email;
+	const userTag = (label) => {
+		return <span className={classes.userTag}>{label}</span>;
+	};
+
 	return (
 		<Card
 			className={classes.tripCard}
@@ -75,10 +87,15 @@ export const TripCard = ({ user, trip, deleteHandler }) => {
 								{trip.likedSpots.length} Spots
 							</Typography>
 							{trip.sharedWith.length > 0 ? (
-								<>
-									<p>Shared by {isTripOwner ? 'You' : trip.user.username}</p>
-									<p>Shared with {trip.sharedWith.join(', ')}</p>
-								</>
+								<div className={classes.sharedUsers}>
+									<Typography variant="subtitle1">
+										Shared by{' '}
+										{isTripOwner ? userTag('You') : userTag(trip.user.username)}
+									</Typography>
+									<Typography variant="subtitle1">
+										Shared with {trip.sharedWith.map((email) => userTag(email))}
+									</Typography>
+								</div>
 							) : null}
 						</>
 					) : (
@@ -91,42 +108,46 @@ export const TripCard = ({ user, trip, deleteHandler }) => {
 					)}
 				</CardContent>
 			</Link>
-			<div>
-				<MoreVertIcon
-					data-testid="more-actions"
-					aria-controls="simple-menu"
-					aria-haspopup="true"
-					onClick={handleMenuClick}
-					className={classes.menuButton}
-				/>
-				<Menu
-					id="simple-menu"
-					anchorEl={anchorEl}
-					keepMounted
-					open={Boolean(anchorEl)}
-					onClose={handleMenuClose}
-				>
-					<MenuItem
-						onClick={() => {
-							console.log('share button clicked');
-							setDialogOpen(true);
-							handleMenuClose();
-						}}
-					>
-						Share
-					</MenuItem>
-					<MenuItem
-						data-testid="delete-trip"
-						onClick={() => {
-							deleteHandler(trip.id);
-							handleMenuClose();
-						}}
-					>
-						Delete
-					</MenuItem>
-				</Menu>
-			</div>
-			<ShareDialog open={dialogOpen} setOpen={setDialogOpen} trip={trip} />
+			{isTripOwner && (
+				<>
+					<div>
+						<MoreVertIcon
+							data-testid="more-actions"
+							aria-controls="simple-menu"
+							aria-haspopup="true"
+							onClick={handleMenuClick}
+							className={classes.menuButton}
+						/>
+						<Menu
+							id="simple-menu"
+							anchorEl={anchorEl}
+							keepMounted
+							open={Boolean(anchorEl)}
+							onClose={handleMenuClose}
+						>
+							<MenuItem
+								onClick={() => {
+									console.log('share button clicked');
+									setDialogOpen(true);
+									handleMenuClose();
+								}}
+							>
+								Share
+							</MenuItem>
+							<MenuItem
+								data-testid="delete-trip"
+								onClick={() => {
+									deleteHandler(trip.id);
+									handleMenuClose();
+								}}
+							>
+								Delete
+							</MenuItem>
+						</Menu>
+					</div>
+					<ShareDialog open={dialogOpen} setOpen={setDialogOpen} trip={trip} />
+				</>
+			)}
 		</Card>
 	);
 };
