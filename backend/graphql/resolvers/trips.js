@@ -4,6 +4,7 @@ const Spot = require('../../models/Spot');
 const checkAuth = require('../../utils/checkAuth');
 const { getGooglePlace } = require('../../utils/googlePlaceApi');
 const User = require('../../models/User');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 module.exports = {
 	Query: {
@@ -25,7 +26,6 @@ module.exports = {
 			const trip = await Trip.findById(tripId).populate('guide');
 			if (trip) {
 				console.log({
-					shared: trip.shared,
 					tripUser: trip.user.toString(),
 					userId: user.id,
 					tripShared: trip.sharedWith,
@@ -160,6 +160,53 @@ module.exports = {
 				}
 			} catch (err) {
 				throw new Error(err);
+			}
+		},
+		async shareTripAddUser(_, { tripId, email }, context) {
+			const user = checkAuth(context);
+			const trip = await Trip.findById(tripId);
+			const userToAdd = await User.findOne({ email });
+			if (trip.user.toString() !== user.id) {
+				throw new ForbiddenError('User does not own this trip');
+			} else if (!userToAdd) {
+				throw new Error(`Could not find user with ${email}`);
+			} else {
+				console.log('userToAdd', userToAdd);
+				try {
+					tripIdToObjectID = ObjectId(tripId);
+					trip.sharedWith = [...trip.sharedWith, userToAdd.email];
+					userToAdd.trips = [...userToAdd.trips, tripIdToObjectID];
+					await userToAdd.save();
+					await trip.save();
+					return trip;
+				} catch (err) {
+					throw new Error(err);
+				}
+			}
+		},
+		async shareTripRemoveUser(_, { tripId, email }, context) {
+			const user = checkAuth(context);
+			const trip = await Trip.findById(tripId);
+			const userToRemove = await User.findOne({ email });
+			if (trip.user.toString() !== user.id) {
+				throw new ForbiddenError('User does not own this trip');
+			} else if (!userToRemove) {
+				throw new Error(`Could not find user with ${email}`);
+			} else {
+				try {
+					trip.sharedWith = trip.sharedWith.filter(
+						(user) => user !== userToRemove.email
+					);
+					userToRemove.trips = userToRemove.trips.filter(
+						(trip) => trip.toString() !== tripId
+					);
+					console.log('userToRemove', userToRemove.trips, trip);
+					await userToRemove.save();
+					await trip.save();
+					return trip;
+				} catch (err) {
+					throw new Error(err);
+				}
 			}
 		},
 		async shareTrip(_, { tripId, emails }, context) {

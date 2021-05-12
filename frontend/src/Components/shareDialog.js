@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { SnackBarContext } from '../Store/SnackBarContext';
+
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -11,38 +13,66 @@ import Chip from '@material-ui/core/Chip';
 import { useMutation, gql } from '@apollo/client';
 
 export default function FormDialog({ trip, open, setOpen }) {
+	const { setSnackMessage } = useContext(SnackBarContext);
+
 	const [email, setEmail] = useState('');
+	const [emailToDelete, setEmailToDelete] = useState('');
 	const [emails, setEmails] = useState(trip.sharedWith);
 
 	const handleClose = () => {
-		shareTrip({
-			variables: {
-				tripId: trip.id,
-				emails,
-			},
-		});
 		setEmail('');
 		setOpen(false);
 	};
 
 	const handleEnter = () => {
-		const emailsCopy = emails;
-		const newEmails = [...emailsCopy, email];
-		setEmails(newEmails);
-		setEmail('');
+		shareTripAddUser({
+			variables: {
+				tripId: trip.id,
+				email,
+			},
+		});
 	};
 
 	const deleteOneEmail = (email) => {
-		const filteredEmail = emails.filter((e) => e !== email);
-		setEmails(filteredEmail);
+		setEmailToDelete(email);
+		shareTripRemoveUser({
+			variables: {
+				tripId: trip.id,
+				email,
+			},
+		});
 	};
 
-	const [shareTrip] = useMutation(SHARE_TRIP, {
-		onCompleted({ shareTrip }) {
-			console.log('Trip shared', shareTrip);
+	const [shareTripRemoveUser] = useMutation(SHARE_TRIP_REMOVE_USER, {
+		onCompleted({ shareTripRemoveUser }) {
+			console.log('Trip removed user', shareTripRemoveUser);
+			const filteredEmail = emails.filter((e) => e !== emailToDelete);
+			setEmails(filteredEmail);
+			setSnackMessage({ text: `Removed ${emailToDelete}`, code: 'Confirm' });
 		},
-		onError(err) {
-			console.log(err);
+		onError({ graphQLErrors, networkError }) {
+			if (graphQLErrors) {
+				setSnackMessage({
+					text: `Weird, could not delete ${emailToDelete}`,
+					code: 'Error',
+				});
+			}
+		},
+	});
+
+	const [shareTripAddUser] = useMutation(SHARE_TRIP_ADD_USER, {
+		onCompleted({ shareTripAddUser }) {
+			console.log('Trip added user', shareTripAddUser);
+			const emailsCopy = emails;
+			const newEmails = [...emailsCopy, email];
+			setEmails(newEmails);
+			setEmail('');
+			setSnackMessage({ text: `Added ${email}`, code: 'Confirm' });
+		},
+		onError({ graphQLErrors, networkError }) {
+			if (graphQLErrors) {
+				setSnackMessage({ text: `${graphQLErrors[0].message}`, code: 'Error' });
+			}
 		},
 	});
 
@@ -81,7 +111,7 @@ export default function FormDialog({ trip, open, setOpen }) {
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={handleClose} color="primary">
-						Share
+						Close
 					</Button>
 				</DialogActions>
 			</Dialog>
@@ -89,10 +119,20 @@ export default function FormDialog({ trip, open, setOpen }) {
 	);
 }
 
-const SHARE_TRIP = gql`
-	mutation shareTrip($tripId: ID!, $emails: [String]!) {
-		shareTrip(tripId: $tripId, emails: $emails) {
+const SHARE_TRIP_REMOVE_USER = gql`
+	mutation shareTripRemoveUser($tripId: ID!, $email: String!) {
+		shareTripRemoveUser(tripId: $tripId, email: $email) {
 			id
+			sharedWith
+		}
+	}
+`;
+
+const SHARE_TRIP_ADD_USER = gql`
+	mutation shareTripAddUser($tripId: ID!, $email: String!) {
+		shareTripAddUser(tripId: $tripId, email: $email) {
+			id
+			sharedWith
 		}
 	}
 `;
