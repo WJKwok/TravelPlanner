@@ -105,8 +105,15 @@ module.exports = {
 				shared: [],
 			});
 
-			const submitted = await newTrip.save();
-			return submitted;
+			const submittedTrip = await newTrip.save();
+			tripIdToObjectID = ObjectId(submittedTrip.id);
+
+			let userToAddTripTo = await User.findById(user.id);
+			console.log("user's trips", userToAddTripTo);
+			userToAddTripTo.trips = [...userToAddTripTo.trips, tripIdToObjectID];
+			await userToAddTripTo.save();
+
+			return submittedTrip;
 		},
 		async editTrip(
 			_,
@@ -153,7 +160,20 @@ module.exports = {
 			try {
 				const trip = await Trip.findById(tripId);
 				if (trip.user.toString() === user.id) {
-					trip.delete();
+					const usersWhoAreSharedThisTrip = await Promise.all(
+						trip.sharedWith.map((email) => User.findOne({ email }))
+					);
+
+					await Promise.all(
+						usersWhoAreSharedThisTrip.map((user) => {
+							user.trips = user.trips.filter(
+								(trip) => trip.toString() !== tripId
+							);
+							return user.save();
+						})
+					);
+
+					await trip.delete();
 					return trip.id;
 				} else {
 					throw new ForbiddenError('User does not own this trip');
@@ -207,17 +227,6 @@ module.exports = {
 				} catch (err) {
 					throw new Error(err);
 				}
-			}
-		},
-		async shareTrip(_, { tripId, emails }, context) {
-			const user = checkAuth(context);
-			const trip = await Trip.findById(tripId);
-			if (trip.user.toString() === user.id) {
-				trip.sharedWith = emails;
-				await trip.save();
-				return trip;
-			} else {
-				throw new ForbiddenError('User does not own this trip');
 			}
 		},
 	},

@@ -239,8 +239,12 @@ function Trips() {
 			</div>
 
 			{tripCards}
-			<Typography variant="h5">Shared</Typography>
-			{sharedTripCards}
+			{sharedTripCards.length > 0 && (
+				<>
+					<Typography variant="h5">Shared</Typography>
+					{sharedTripCards}
+				</>
+			)}
 			<Link to={'/'}>
 				<IconButton
 					disableRipple={true}

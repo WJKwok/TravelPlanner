@@ -139,7 +139,6 @@ module.exports = gql`
 			googlePlacesInTrip: [String]!
 		): Trip!
 		deleteTrip(tripId: ID!): String!
-		shareTrip(tripId: ID!, emails: [String]): Trip
 		shareTripAddUser(tripId: ID!, email: String): Trip
 		shareTripRemoveUser(tripId: ID!, email: String): Trip
 		savePlace(placeInput: PlaceInput!): Place!
