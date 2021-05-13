@@ -4,7 +4,7 @@ const guideSchema = new Schema({
 	name: String,
 	city: String,
 	coordinates: [Number],
-	categories: [],
+	categories: [String],
 	coverImage: String,
 	plannerImage: String,
 	logo: String,

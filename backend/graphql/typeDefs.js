@@ -49,6 +49,10 @@ module.exports = gql`
 		date: String
 		eventName: String
 	}
+	type GuideAndSpots {
+		guide: Guide
+		spots: [Spot]
+	}
 	type Trip {
 		id: ID
 		user: User!
@@ -113,7 +117,7 @@ module.exports = gql`
 		getSpotsForCategoryInGuide(guideId: ID!, category: String!): [Spot]!
 		getSpot(guideId: ID!, placeId: String!): Spot
 		getSpots(spotIds: [String]): [Spot]
-		getAllSpotsForGuide(guideId: ID!): [Spot]!
+		getAllSpotsForGuide(guideId: ID!): GuideAndSpots!
 	}
 	type Mutation {
 		register(registerInput: RegisterInput): User!

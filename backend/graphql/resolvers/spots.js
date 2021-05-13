@@ -1,5 +1,6 @@
 const Spot = require('../../models/Spot');
 const Place = require('../../models/Place');
+const Guide = require('../../models/Guide');
 const checkAuth = require('../../utils/checkAuth');
 const { getGooglePlace } = require('../../utils/googlePlaceApi');
 const ObjectId = require('mongoose').Types.ObjectId;
@@ -46,9 +47,13 @@ module.exports = {
 		},
 		async getAllSpotsForGuide(_, { guideId }) {
 			try {
+				const guide = await Guide.findById(guideId);
 				const spots = await Spot.find({ guide: guideId }).populate('place');
 				//console.log(spots);
-				return spots;
+				return {
+					guide,
+					spots,
+				};
 			} catch (err) {
 				throw new Error(err);
 			}

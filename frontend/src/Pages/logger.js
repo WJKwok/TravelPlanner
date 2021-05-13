@@ -1,115 +1,97 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect } from 'react';
+import { SpotContext } from '../Store/SpotContext';
 
+import CategoryChipBarWeb from '../Components/categoryChipBarWeb';
+import ScrollBoardWithinMap from '../Components/scrollBoardWithinMapWeb';
 import AppBar from '../Components/appBar';
-import SpotsBoard from '../Components/spotsBoard';
 import { LoggingForm } from '../Components/loggingForm';
-import { DragDropContext } from 'react-beautiful-dnd';
 
 import { SPOT_DATA } from '../utils/graphql';
-
-import CategoryChipBar, {
-	currentlySelectedChips,
-} from '../Components/categoryChipBar/';
-import { iconDict } from '../Components/spotIcons';
 
 import { useQuery, gql } from '@apollo/client';
 
 function Logger(props) {
 	const guideId = props.match.params.guideBookId;
-	const [guide, setGuide] = useState({});
+	const { spotState, dispatch } = useContext(SpotContext);
 
-	const [mapCoordinates, setMapCoordinates] = useState([]);
+	useEffect(() => {
+		return () => {
+			console.log('clearing state...');
+			dispatch({ type: 'CLEAR_STATE' });
+		};
+	}, [dispatch]);
 
-	const { data: { getAllSpotsForGuide: allSpots } = [] } = useQuery(
-		GET_ALL_SPOTS_IN_GUIDE,
-		{
-			// onCompleted({ getAllSpotsForGuide }) {
-			// 	console.log('guide: ', getGuide);
-			// 	setGuide(getGuide);
-			// 	getCategories(getGuide.categories, getGuide.categories);
-			// 	setMapCoordinates([...getGuide.coordinates]);
-			// },
-			onError(err) {
-				console.log(err);
-			},
-			variables: {
-				guideId,
-			},
-		}
-	);
-
-	const [categoryChips, setCategoryChips] = useState([]);
-
-	useQuery(GET_GUIDE, {
-		onCompleted({ getGuide }) {
-			console.log('guide: ', getGuide);
-			setGuide(getGuide);
-			getCategories(getGuide.categories, getGuide.categories);
-			setMapCoordinates([...getGuide.coordinates]);
+	useQuery(GET_ALL_SPOTS_IN_GUIDE, {
+		onCompleted({ getAllSpotsForGuide }) {
+			console.log('getAllSpotsForGuide', getAllSpotsForGuide);
+			dispatch({
+				type: 'ADD_SPOTS',
+				payload: {
+					newSpots: getAllSpotsForGuide.spots,
+					// category: getAllSpotsForGuide.guide.categories,
+				},
+			});
+			dispatch({
+				type: 'LOAD_GUIDE',
+				payload: { guide: getAllSpotsForGuide.guide },
+			});
+		},
+		onError(err) {
+			console.log(err);
 		},
 		variables: {
 			guideId,
 		},
 	});
 
-	const getCategories = (guideCategories, clickedCategories = []) => {
-		let categories = guideCategories.map((category) => {
-			return {
-				key: category,
-				label: category,
-				icon: iconDict[category] ? iconDict[category] : iconDict.Default,
-				clicked: clickedCategories.includes(category) ? true : false,
-			};
-		});
-
-		console.log('building chips... :', categories);
-		setCategoryChips(categories);
-	};
-
-	const toggleChipHandler = (clickedChip) => {
-		const chipsClone = [...categoryChips];
-		const objectIndex = categoryChips.findIndex(
-			(chip) => chip.key === clickedChip.key
-		);
-		chipsClone[objectIndex].clicked = !categoryChips[objectIndex].clicked;
-		setCategoryChips(chipsClone);
-	};
-
 	const renderSpotsBoard = () => {
-		const unfilteredSpots = allSpots;
-		console.log('allSpots', allSpots);
+		const columnId = spotState.filteredBoard[0];
+		const column = spotState.columns[columnId];
+		const unfilteredSpots = column.spotIds.map(
+			(spotId) => spotState.spots[spotId]
+		);
 
-		const selectedCategories = currentlySelectedChips(categoryChips);
+		const selectedCategories = spotState.clickedCategories;
 		const filteredSpots = unfilteredSpots.filter((spot) =>
 			spot.categories.some((cat) => selectedCategories.includes(cat))
 		);
 
+		const likedSpots = unfilteredSpots.filter((spot) => spot.liked);
+		const spots = [...new Set([...filteredSpots, ...likedSpots])];
+
+		console.log('filtering spots: ', spots);
+
+		console.log('main coordinates:', spotState.guide.coordinates);
+
 		return (
-			<SpotsBoard
+			<ScrollBoardWithinMap
 				dragAndDroppable={false}
-				key={guideId}
-				boardId={guideId}
-				spots={filteredSpots}
-				coordinates={mapCoordinates}
+				key={columnId}
+				boardId={columnId}
+				spots={spots}
+				coordinates={spotState.guide.coordinates}
+				catBar={<CategoryChipBarWeb />}
+				// leftButtonGroup={
+				// 	<LeftButtonGroup
+				// 		isLoggedIn={!authState.user}
+				// 		isMobile={isMobile}
+				// 		saveItinerary={saveItinerary}
+				// 		setSearchModalOpen={setSearchModalOpen}
+				// 		setIsListView={setIsListView}
+				// 	/>
+				// }
+				// rightButtons={<ProfileIconButton />}
 			/>
 		);
 	};
 
-	const onDragEnd = (result) => {
-		return;
-	};
+	console.log('spotstate', spotState);
 
 	return (
 		<>
 			<AppBar offset={true} />
-			<DragDropContext onDragEnd={onDragEnd}>
-				<CategoryChipBar
-					categoryChips={categoryChips}
-					toggleChipHandler={toggleChipHandler}
-				/>
-				{allSpots && renderSpotsBoard()}
-			</DragDropContext>
-			{guide.categories && <LoggingForm guide={guide} />}
+			{spotState.guide.id && renderSpotsBoard()}
+			{spotState.guide.categories && <LoggingForm guide={spotState.guide} />}
 		</>
 	);
 }
@@ -148,7 +130,17 @@ const GET_GUIDE = gql`
 const GET_ALL_SPOTS_IN_GUIDE = gql`
 	query getAllSpotsForGuide($guideId: ID!) {
 		getAllSpotsForGuide(guideId: $guideId) {
-			...SpotData
+			guide {
+				id
+				name
+				city
+				coordinates
+				categories
+				plannerImage
+			}
+			spots {
+				...SpotData
+			}
 		}
 	}
 	${SPOT_DATA}

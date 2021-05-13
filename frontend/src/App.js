@@ -70,11 +70,6 @@ function App() {
 											path="/planner/:guideBookId"
 											component={Planner}
 										/>
-										<AdminRoute
-											exact
-											path="/logger/:guideBookId"
-											component={Logger}
-										/>
 										<UnAuthRoute exact path="/trips" component={Trips} />
 										<UnAuthRoute
 											exact
@@ -82,6 +77,11 @@ function App() {
 											component={Planner}
 										/>
 									</div>
+									<AdminRoute
+										exact
+										path="/logger/:guideBookId"
+										component={Logger}
+									/>
 									<Route
 										exact
 										path="/web/planner/:guideBookId"
