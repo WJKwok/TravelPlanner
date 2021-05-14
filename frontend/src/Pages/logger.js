@@ -28,7 +28,7 @@ function Logger(props) {
 				type: 'ADD_SPOTS',
 				payload: {
 					newSpots: getAllSpotsForGuide.spots,
-					// category: getAllSpotsForGuide.guide.categories,
+					categories: getAllSpotsForGuide.guide.categories,
 				},
 			});
 			dispatch({
@@ -70,7 +70,7 @@ function Logger(props) {
 				boardId={columnId}
 				spots={spots}
 				coordinates={spotState.guide.coordinates}
-				catBar={<CategoryChipBarWeb />}
+				catBar={<CategoryChipBarWeb hideOnlyLikedButton={true} />}
 				// leftButtonGroup={
 				// 	<LeftButtonGroup
 				// 		isLoggedIn={!authState.user}

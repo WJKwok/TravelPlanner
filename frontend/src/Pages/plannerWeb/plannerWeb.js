@@ -115,7 +115,7 @@ function Planner(props) {
 					type: 'ADD_SPOTS',
 					payload: {
 						newSpots: getSpotsForCategoryInGuide,
-						category: variables.category,
+						categories: [variables.category],
 						spotToHighlightID: variables.itemId,
 					},
 				});

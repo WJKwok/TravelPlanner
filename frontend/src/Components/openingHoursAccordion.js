@@ -102,7 +102,7 @@ export const OpeningHoursAccordion = ({ openingHours }) => {
 	const day = moment().startOf('date').day();
 	const dayIndex = day === 0 ? 6 : day - 1;
 
-	return openingHours ? (
+	return openingHours && openingHours.length !== 0 ? (
 		<div className={classes.root}>
 			<div className={classes.summaryContent} onClick={handleExpandClick}>
 				{/* <ScheduleIcon className={classes.icon} /> */}

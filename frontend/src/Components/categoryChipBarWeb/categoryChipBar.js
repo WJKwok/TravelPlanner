@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const CategoryChipBar = () => {
+const CategoryChipBar = ({ hideOnlyLikedButton }) => {
 	const classes = useStyles();
 	const { dispatch, spotState } = useContext(SpotContext);
 
@@ -64,12 +64,14 @@ const CategoryChipBar = () => {
 			);
 		} else {
 			newClickedCategories = [...currentClickedCategories, clickedChip.label];
-			getSpotsForCategoryInGuide({
-				variables: {
-					guideId: spotState.guide.id,
-					category: clickedChip.label,
-				},
-			});
+			if (!spotState.queriedCategories.includes(clickedChip.label)) {
+				getSpotsForCategoryInGuide({
+					variables: {
+						guideId: spotState.guide.id,
+						category: clickedChip.label,
+					},
+				});
+			}
 		}
 
 		dispatch({
@@ -85,7 +87,7 @@ const CategoryChipBar = () => {
 				type: 'ADD_SPOTS',
 				payload: {
 					newSpots: getSpotsForCategoryInGuide,
-					category: variables.category,
+					categories: [variables.category],
 				},
 			});
 		},
@@ -99,11 +101,13 @@ const CategoryChipBar = () => {
 				square
 				elevation={0}
 			>
-				<Tooltip title="Show only liked spots" arrow>
-					<div className={classes.heartButton} onClick={showOnlyLiked}>
-						<FavoriteIcon color="error" />
-					</div>
-				</Tooltip>
+				{!hideOnlyLikedButton && (
+					<Tooltip title="Show only liked spots" arrow>
+						<div className={classes.heartButton} onClick={showOnlyLiked}>
+							<FavoriteIcon color="error" />
+						</div>
+					</Tooltip>
+				)}
 				<div className={classes.chipRow}>
 					{categories.map((data) => {
 						return (

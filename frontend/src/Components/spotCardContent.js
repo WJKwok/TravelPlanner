@@ -55,11 +55,14 @@ renderer.link = (href, title, text) => {
 	return html.replace(/^<a /, '<a target="_blank" rel="nofollow" ');
 };
 
-export const SpotCardContent = ({ spotId }) => {
+export const SpotCardContent = ({ spotId, dummySpot }) => {
 	const classes = useStyles();
 	const { dispatch, spotState } = useContext(SpotContext);
-	const spot = spotState.spots[spotId];
+	const spot = dummySpot ? dummySpot : spotState.spots[spotId];
 	const likeClickHandler = (e) => {
+		if (dummySpot) {
+			return;
+		}
 		e.stopPropagation();
 		dispatch({ type: 'LIKE_TOGGLE', payload: { spotId: spotId } });
 	};

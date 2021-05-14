@@ -16,7 +16,7 @@ export const spotReducer = (state, action) => {
 			return syncedTrip;
 		case 'LOAD_GUIDE':
 			const { guide } = action.payload;
-			const loadedGuide = loadGuide(guide);
+			const loadedGuide = loadGuide(state, guide);
 			console.log('loadedGuide', loadedGuide);
 			return loadedGuide;
 		case 'LOAD_MAP':
@@ -44,12 +44,12 @@ export const spotReducer = (state, action) => {
 			console.log('newSearchitemstate: ', newSearchAdded);
 			return newSearchAdded;
 		case 'ADD_SPOTS':
-			const { newSpots, category, spotToHighlightID } = action.payload;
+			const { newSpots, categories, spotToHighlightID } = action.payload;
 			console.log('newSpots: ', newSpots);
 			const newSpotsAdded = addNewSpots(
 				state,
 				newSpots,
-				category,
+				categories,
 				spotToHighlightID
 			);
 			console.log('newSpotsAdded: ', newSpotsAdded);
@@ -98,11 +98,10 @@ export const spotReducer = (state, action) => {
 	}
 };
 
-const loadGuide = (guide) => {
+const loadGuide = (state, guide) => {
 	const newState = {
-		...initialData,
+		...state,
 		guide,
-		clickedCategories: [],
 	};
 
 	return newState;
@@ -217,14 +216,24 @@ const loadNewClickedCategories = (state, newClickedCategories) => {
 	return newState;
 };
 
-const addNewSpots = (state, newSpots, category, spotToHighlightID = '') => {
+const addNewSpots = (
+	state,
+	newSpots,
+	categories = [],
+	spotToHighlightID = ''
+) => {
 	let mappedSpots = {};
 	let spotIds = [];
 	for (var i = 0; i < newSpots.length; i++) {
 		if (!(newSpots[i].id in state.spots)) {
 			mappedSpots[newSpots[i].id] = newSpots[i];
-			spotIds.push(newSpots[i].id);
+		} else {
+			mappedSpots[newSpots[i].id] = {
+				...state.spots[newSpots[i].id],
+				...newSpots[i],
+			};
 		}
+		spotIds.push(newSpots[i].id);
 	}
 	const newState = {
 		...state,
@@ -241,11 +250,14 @@ const addNewSpots = (state, newSpots, category, spotToHighlightID = '') => {
 				],
 			},
 		},
-		queriedCategories: [...new Set([category, ...state.queriedCategories])],
-		clickedCategories: [...new Set([category, ...state.clickedCategories])],
+		queriedCategories: [
+			...new Set([...categories, ...state.queriedCategories]),
+		],
+		clickedCategories: [
+			...new Set([...categories, ...state.clickedCategories]),
+		],
 		spotToHighlightID,
 	};
-
 	return newState;
 };
 
