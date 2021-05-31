@@ -14,7 +14,7 @@ import StarRateIcon from '@material-ui/icons/StarRate';
 import marked from 'marked';
 import { Divider } from '@material-ui/core';
 
-import { SpotCardImages } from './loggingImage';
+import { SpotCardImages } from './images';
 import { GoogleReviews } from './googleReviews';
 import GoogleDirectionLink from './googleDirectionLink';
 import { OpeningHoursAccordion } from './openingHoursAccordion';

@@ -24,7 +24,7 @@ import { Draggable } from 'react-beautiful-dnd';
 import { Image } from 'cloudinary-react';
 
 import marked from 'marked';
-import { SpotCardImages, HeaderThumbnail } from './loggingImage';
+import { SpotCardImages, HeaderThumbnail } from './images';
 import GoogleDirectionLink from './googleDirectionLink';
 
 const useStyles = makeStyles((theme) => ({
@@ -246,7 +246,6 @@ export const SpotCardBase = (props) => {
 
 	return (
 		<Card
-			id="spot-card"
 			ref={provided && provided.innerRef}
 			// {...(provided ? { ...provided.draggableProps } : {})}
 			// {...(provided ? { ...provided.dragHandleProps } : {})}
@@ -263,7 +262,7 @@ export const SpotCardBase = (props) => {
 				<HeaderThumbnail spotImgUrl={spot.imgUrl[0]} />
 			</CardMedia>
 
-			<CardContent className={classes.headerInfo}>
+			<CardContent className={classes.headerInfo} data-testid="spot-card">
 				<div className={classes.ratingHeartRow}>
 					<div className={classes.ratingRow}>
 						{spot.place.rating}

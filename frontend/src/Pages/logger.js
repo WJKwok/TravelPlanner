@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { SpotContext } from '../Store/SpotContext';
 
 import CategoryChipBarWeb from '../Components/categoryChipBarWeb';
-import ScrollBoardWithinMap from '../Components/scrollBoardWithinMapWeb';
+import ContentWithinMapWeb from '../Components/contentWithinMapWeb';
 import AppBar from '../Components/appBar';
 import { LoggingForm } from '../Components/loggingForm';
 
@@ -64,7 +64,7 @@ function Logger(props) {
 		console.log('main coordinates:', spotState.guide.coordinates);
 
 		return (
-			<ScrollBoardWithinMap
+			<ContentWithinMapWeb
 				dragAndDroppable={false}
 				key={columnId}
 				boardId={columnId}

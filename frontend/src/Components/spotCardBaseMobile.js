@@ -13,18 +13,13 @@ import {
 	Typography,
 	IconButton,
 } from '@material-ui/core';
-import Link from '@material-ui/core/Link';
-import Rating from '@material-ui/lab/Rating';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import StarRateIcon from '@material-ui/icons/StarRate';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 
-import { Draggable } from 'react-beautiful-dnd';
-import { Image } from 'cloudinary-react';
-
 import marked from 'marked';
-import { SpotCardImages, HeaderThumbnail } from './loggingImage';
+import { SpotCardImages, HeaderThumbnail } from './images';
 import GoogleDirectionLink from './googleDirectionLink';
 
 const useStyles = makeStyles((theme) => ({
@@ -169,10 +164,6 @@ export const SpotCardBase = (props) => {
 	const styleProps = { highlight };
 	const classes = useStyles(styleProps);
 	const [expanded, setExpanded] = useState(props.expanded);
-
-	const handleExpandClick = () => {
-		setExpanded((expanded) => !expanded);
-	};
 
 	const editClickHandler = (e) => {
 		e.stopPropagation();

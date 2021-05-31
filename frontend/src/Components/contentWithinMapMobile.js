@@ -3,7 +3,7 @@ import { SpotContext } from '../Store/SpotContext';
 import { Droppable } from 'react-beautiful-dnd';
 
 import moment from 'moment';
-import GoogleMapWithScrollBoard from './googleMapWithScrollBoardMobile';
+import GoogleMapWithScrollBoard from './googleMapMobile';
 import DaySelectMenu from './daySelectMenu';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function ScrollBoardWithinMap(props) {
+function ContentWithinMapMobile(props) {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(`(max-width:${theme.maxMobileWidth}px)`);
 	const {
@@ -204,4 +204,4 @@ function ScrollBoardWithinMap(props) {
 	);
 }
 
-export default ScrollBoardWithinMap;
+export default ContentWithinMapMobile;

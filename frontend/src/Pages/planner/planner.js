@@ -30,7 +30,6 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Dialog from '@material-ui/core/Dialog';
 import { Image } from 'cloudinary-react';
 import Icon from '@material-ui/core/Icon';
-import ScrollBoardWithinMap from '../../Components/scrollBoardWithinMap';
 
 const useStyles = makeStyles((theme) => ({
 	headerImage: {
@@ -594,15 +593,6 @@ function Planner(props) {
 				coordinates={guideData.coordinates}
 			/>
 		);
-		// return (
-		// 	<ScrollBoardWithinMap
-		// 		dragAndDroppable={true}
-		// 		key={columnId}
-		// 		boardId={columnId}
-		// 		spots={spots}
-		// 		coordinates={guideData.coordinates}
-		// 	/>
-		// );
 	};
 
 	const placeAutoCompletePlaceHolderText = 'Google a place of interest 🙌';

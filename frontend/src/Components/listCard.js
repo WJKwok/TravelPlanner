@@ -2,17 +2,11 @@ import React, { useState, useContext } from 'react';
 import { SpotContext } from '../Store/SpotContext';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import { SpotCardImagesInstaStyle } from './loggingImage';
+import { SpotCardImages } from './images';
 import marked from 'marked';
-import { set } from 'react-ga';
 import { iconDict } from './spotIcons';
 import StarRateIcon from '@material-ui/icons/StarRate';
 
@@ -114,7 +108,7 @@ export const ListCard = ({ spotId }) => {
 				</div>
 			</div>
 			<div className={classes.mediaCards}>
-				<SpotCardImagesInstaStyle spotImgUrl={spot.imgUrl} />
+				<SpotCardImages spotImgUrl={spot.imgUrl} instaStyle />
 			</div>
 			<div className={classes.cardContent}>
 				<div className={classes.likeButton} onClick={likeClickHandler}>
@@ -122,14 +116,6 @@ export const ListCard = ({ spotId }) => {
 						{spot.place.rating}
 						<StarRateIcon color="error" /> ({spot.place.userRatingsTotal})
 					</Typography>
-
-					{/* <p className={classes.ratingRow}>
-						{spot.place.rating}
-						<span>
-							<StarRateIcon color="error" />{' '}
-						</span>
-						({spot.place.userRatingsTotal})
-					</p> */}
 					{spot.liked ? (
 						<FavoriteIcon color="error" data-testid="filled-heart" />
 					) : (

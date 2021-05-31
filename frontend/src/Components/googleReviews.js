@@ -5,8 +5,6 @@ import Rating from '@material-ui/lab/Rating';
 import Avatar from '@material-ui/core/Avatar';
 import moment from 'moment';
 
-import { OpeningHoursAccordion } from './openingHoursAccordion';
-
 const useStyles = makeStyles((theme) => ({
 	review: {
 		marginBottom: '1em',

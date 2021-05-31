@@ -8,8 +8,8 @@ it('edit guide', () => {
 	cy.visit('http://localhost:3000/logger/5ed7aee473e66d73abe88279/');
 
 	cy.get('[data-testid*=chip-clicked]').should('have.length', 5);
-	cy.get('[data-testid=spots-board]').within(() => {
-		cy.get('[data-testid="spot-card"]').should('have.length', 16);
+	cy.get('[data-testid=bottom-bar-cards]').within(() => {
+		cy.get('[data-testid=spot-card]').should('have.length', 16);
 	});
 
 	//Saving without a placeId
@@ -46,7 +46,8 @@ it('edit guide', () => {
 
 	cy.get('#edit-content').type('Test');
 
-	cy.get('[data-testid="5ee1fbf4aa3118be4c682992"]').within(() => {
+	cy.get('[data-testid="5ee1fbf4aa3118be4c682992"]').click();
+	cy.get('[data-testid=side-panel]').within(() => {
 		cy.get('[data-testid=existing-image]').should('have.length', 3);
 	});
 
@@ -61,7 +62,7 @@ it('edit guide', () => {
 	//Check if image is successfully uploaded
 	// cy.visit('http://localhost:3000/logger/5ed7aee473e66d73abe88279/');
 
-	cy.get('[data-testid="5ee1fbf4aa3118be4c682992"]').within(() => {
+	cy.get('[data-testid=side-panel]').within(() => {
 		cy.get('[data-testid=existing-image]').should('have.length', 4);
 		cy.contains('Test');
 	});
@@ -92,7 +93,7 @@ it('edit guide', () => {
 	// check if delete was successful
 	// cy.visit('http://localhost:3000/logger/5ed7aee473e66d73abe88279/');
 
-	cy.get('[data-testid="5ee1fbf4aa3118be4c682992"]').within(() => {
+	cy.get('[data-testid=side-panel]').within(() => {
 		cy.get('[data-testid=existing-image]').should('have.length', 3);
 		cy.contains('Test').should('have.length', 0);
 	});

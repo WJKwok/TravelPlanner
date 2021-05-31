@@ -78,20 +78,24 @@ it('test as non-user', () => {
 
 	//check if trip has been added in trips
 	cy.get('[data-testid=nav-trips-user]').click();
-	cy.get('[data-testid*=tripCard]')
-		.last()
-		.within(() => {
-			cy.get('[data-testid=trip-date]').contains(
-				`${todaysDate[1]} - ${tmrDate[1]}`
-			);
-		});
+	cy.get('#personalTrips').within(() => {
+		cy.get('[data-testid*=tripCard]')
+			.last()
+			.within(() => {
+				cy.get('[data-testid=trip-date]').contains(
+					`${todaysDate[1]} - ${tmrDate[1]}`
+				);
+			});
+	});
 
 	//check if saved trip would open to the retail chip being already clicked
-	cy.get('[data-testid*=tripCard]')
-		.last()
-		.within(() => {
-			cy.get('[data-testid=trip-date]').click();
-		});
+	cy.get('#personalTrips').within(() => {
+		cy.get('[data-testid*=tripCard]')
+			.last()
+			.within(() => {
+				cy.get('[data-testid=trip-date]').click();
+			});
+	});
 
 	cy.get('[data-testid=Retail-chip-clicked]').should('have.length', 1);
 	cy.get('[data-testid=5ee1fbf4aa3118be4c682992]').within(() => {
@@ -100,19 +104,29 @@ it('test as non-user', () => {
 
 	//delete trip
 	cy.get('[data-testid=nav-trips-user]').click();
-	cy.get('[data-testid*=tripCard]')
-		.its('length')
-		.then((tripsLength) => {
-			cy.log(tripsLength);
-			cy.get('[data-testid*=tripCard]')
-				.last()
-				.within(() => {
-					cy.get('[data-testid=trip-date]').contains(
-						`${todaysDate[1]} - ${tmrDate[1]}`
-					);
-					cy.get('[data-testid=more-actions]').click();
-				});
-			cy.get('[data-testid=delete-trip]').last().click();
-			cy.get('[data-testid*=tripCard]').should('have.length', tripsLength - 1);
-		});
+	cy.get('#personalTrips').within(() => {
+		cy.get('[data-testid*=tripCard]')
+			.its('length')
+			.then((tripsLength) => {
+				cy.log(tripsLength);
+				cy.get('[data-testid*=tripCard]')
+					.last()
+					.within(() => {
+						cy.get('[data-testid=trip-date]').contains(
+							`${todaysDate[1]} - ${tmrDate[1]}`
+						);
+						cy.get('[data-testid=more-actions]').click();
+					});
+				//way to escape 'within'
+				cy.document()
+					.its('body')
+					.find('[data-testid=delete-trip]')
+					.eq(tripsLength - 1)
+					.click();
+				cy.get('[data-testid*=tripCard]').should(
+					'have.length',
+					tripsLength - 1
+				);
+			});
+	});
 });

@@ -83,11 +83,11 @@ export default function FormDialog({ trip, open, setOpen }) {
 				onClose={handleClose}
 				aria-labelledby="form-dialog-title"
 			>
-				<DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+				<DialogTitle id="form-dialog-title">Share</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
-						To subscribe to this website, please enter your email address here.
-						We will send updates occasionally.
+						Edit your trip in real-time with your friend 🥰 simply add them by
+						their email addresses.
 					</DialogContentText>
 					<TextField
 						autoFocus

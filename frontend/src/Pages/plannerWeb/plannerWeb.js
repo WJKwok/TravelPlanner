@@ -4,37 +4,25 @@ import { SpotContext } from '../../Store/SpotContext';
 import { AuthContext } from '../../Store/AuthContext';
 import { SnackBarContext } from '../../Store/SnackBarContext';
 
-import {
-	useQuery,
-	useLazyQuery,
-	useMutation,
-	useSubscription,
-	gql,
-} from '@apollo/client';
+import { useQuery, useLazyQuery, useSubscription, gql } from '@apollo/client';
 import { SPOT_DATA } from '../../utils/graphql';
 
 import { useSubmitTrip } from '../../graphqlHooks/useSubmitTrip';
 import { useEditTrip } from '../../graphqlHooks/useEditTrip';
 
 import CategoryChipBar from '../../Components/categoryChipBarWeb';
-import ScrollBoardWithinMap from '../../Components/scrollBoardWithinMapWeb';
-import ScrollBoardWithinMapMobile from '../../Components/scrollBoardWithinMapMobile';
+import ContentWithinMapWeb from '../../Components/contentWithinMapWeb';
+import ContentWithinMapMobile from '../../Components/contentWithinMapMobile';
 import { ListPage } from 'Components/listPage';
 import AuthModal from '../../Components/AuthModal';
 import ConfirmNavPrompt from '../../Components/confirmNavPrompt';
 import ProfileIconButton from '../../Components/profileIconButton';
-import DatePicker from '../../Components/datePicker';
 import PlaceAutoComplete from '../../Components/placeAutoComplete';
 import { LeftButtonGroup } from '../../Components/leftButtonGroup';
 
-import ListIcon from '@material-ui/icons/List';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import SaveIcon from '@material-ui/icons/Save';
 import Dialog from '@material-ui/core/Dialog';
-import Icon from '@material-ui/core/Icon';
 
 const useStyles = makeStyles((theme) => ({
 	searchDialogSize: {
@@ -67,6 +55,7 @@ function Planner(props) {
 		authState,
 		setTripId
 	);
+
 	const editTrip = useEditTrip(dispatch, setSnackMessage);
 
 	useEffect(() => {
@@ -313,7 +302,6 @@ function Planner(props) {
 		};
 
 		setNewSearchItem(reshapedItem);
-
 		getSpot({
 			variables: {
 				guideId,
@@ -338,7 +326,6 @@ function Planner(props) {
 		const spots = [...new Set([...filteredSpots, ...likedSpots])];
 
 		console.log('filtering spots: ', spots);
-
 		console.log('main coordinates:', spotState.guide.coordinates);
 
 		if (isMobile) {
@@ -352,7 +339,7 @@ function Planner(props) {
 				);
 			} else {
 				return (
-					<ScrollBoardWithinMapMobile
+					<ContentWithinMapMobile
 						dragAndDroppable={true}
 						key={columnId}
 						boardId={columnId}
@@ -374,7 +361,7 @@ function Planner(props) {
 			}
 		}
 		return (
-			<ScrollBoardWithinMap
+			<ContentWithinMapWeb
 				dragAndDroppable={true}
 				key={columnId}
 				boardId={columnId}

@@ -10,7 +10,7 @@ import { SnackBarContext } from '../Store/SnackBarContext';
 import { SpotContext } from '../Store/SpotContext';
 import { SPOT_DATA } from '../utils/graphql';
 
-import { LoggingImage } from './loggingImage';
+import { LoggingImage } from './images';
 import PlaceAutoComplete from './placeAutoComplete';
 import { CategoryDragAndDrop } from './categoryDragAndDrop';
 import { SpotCardBase } from './spotCardBaseWeb';

@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CardContent from '@material-ui/core/CardContent';
 
 import Typography from '@material-ui/core/Typography';
-import { SpotCardImages } from './loggingImage';
+import { SpotCardImages } from './images';
 import marked from 'marked';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';

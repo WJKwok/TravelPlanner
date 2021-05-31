@@ -147,14 +147,11 @@ function Trips() {
 
 	const classes = useStyles();
 
-	const { loading, data: { getUserTrips: trips } = {} } = useQuery(
-		GET_USER_TRIPS,
-		{
-			variables: {
-				userId: authState.user.id,
-			},
-		}
-	);
+	const { data: { getUserTrips: trips } = {} } = useQuery(GET_USER_TRIPS, {
+		variables: {
+			userId: authState.user.id,
+		},
+	});
 
 	const greetingName = authState.user.username.split(' ')[0];
 	const handleLogout = () => {
@@ -196,10 +193,8 @@ function Trips() {
 		deleteTrip({ variables: { tripId } });
 	};
 
-	console.log(trips);
-	const tripCards = loading
-		? ''
-		: trips
+	const tripCards = trips
+		? trips
 				.filter((trip) => trip.sharedWith.length === 0)
 				.map((trip) => (
 					<TripCard
@@ -207,11 +202,11 @@ function Trips() {
 						trip={trip}
 						deleteHandler={deleteHandler}
 					/>
-				));
+				))
+		: '';
 
-	const sharedTripCards = loading
-		? ''
-		: trips
+	const sharedTripCards = trips
+		? trips
 				.filter((trip) => trip.sharedWith.length !== 0)
 				.map((trip) => (
 					<TripCard
@@ -219,7 +214,8 @@ function Trips() {
 						trip={trip}
 						deleteHandler={deleteHandler}
 					/>
-				));
+				))
+		: '';
 
 	return (
 		<div className={classes.root}>
@@ -237,8 +233,7 @@ function Trips() {
 					Logout 👋🏻
 				</Button>
 			</div>
-
-			{tripCards}
+			<div id="personalTrips">{tripCards}</div>
 			{sharedTripCards.length > 0 && (
 				<>
 					<Typography variant="h5">Shared</Typography>

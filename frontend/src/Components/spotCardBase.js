@@ -23,7 +23,7 @@ import { Draggable } from 'react-beautiful-dnd';
 import { Image } from 'cloudinary-react';
 
 import marked from 'marked';
-import { SpotCardImages, HeaderThumbnail } from './loggingImage';
+import { SpotCardImages, HeaderThumbnail } from './images';
 import GoogleDirectionLink from './googleDirectionLink';
 
 const useStyles = makeStyles((theme) => ({
