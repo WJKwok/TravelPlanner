@@ -49,14 +49,8 @@ function Planner(props) {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(`(max-width:${theme.maxMobileWidth}px)`);
 
-	const submitTrip = useSubmitTrip(
-		dispatch,
-		setSnackMessage,
-		authState,
-		setTripId
-	);
-
-	const editTrip = useEditTrip(dispatch, setSnackMessage);
+	const submitTrip = useSubmitTrip(setTripId);
+	const editTrip = useEditTrip();
 
 	useEffect(() => {
 		return () => {

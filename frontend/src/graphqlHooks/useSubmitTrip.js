@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useMutation, gql } from '@apollo/client';
 
-export const useSubmitTrip = (
-	dispatch,
-	setSnackMessage,
-	authState,
-	setTripId
-) => {
+import { AuthContext } from '../Store/AuthContext';
+import { SpotContext } from '../Store/SpotContext';
+import { SnackBarContext } from '../Store/SnackBarContext';
+export const useSubmitTrip = (setTripId) => {
+	const { authState } = useContext(AuthContext);
+	const { dispatch } = useContext(SpotContext);
+	const { setSnackMessage } = useContext(SnackBarContext);
+
 	const [submitTrip] = useMutation(SUBMIT_TRIP, {
 		onCompleted({ submitTrip }) {
 			console.log(submitTrip);

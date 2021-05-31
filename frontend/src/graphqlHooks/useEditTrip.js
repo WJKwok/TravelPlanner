@@ -2,10 +2,13 @@ import { useContext } from 'react';
 import { useMutation, gql } from '@apollo/client';
 
 import { SpotContext } from '../Store/SpotContext';
+import { SnackBarContext } from '../Store/SnackBarContext';
 import { SPOT_DATA } from '../utils/graphql';
 
-export const useEditTrip = (dispatch, setSnackMessage) => {
-	const { spotState } = useContext(SpotContext);
+export const useEditTrip = () => {
+	const { dispatch, spotState } = useContext(SpotContext);
+	const { setSnackMessage } = useContext(SnackBarContext);
+
 	const [editTrip] = useMutation(EDIT_TRIP, {
 		onCompleted({ editTrip }) {
 			console.log('Trip edited', editTrip);
