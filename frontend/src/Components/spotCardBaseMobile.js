@@ -149,7 +149,7 @@ export const SpotCardBase = (props) => {
 		day,
 		highlight,
 		mouseOver,
-		dragAndDroppable,
+		isEditMode = false,
 		provided,
 		cardClickedHandler,
 	} = props;
@@ -302,7 +302,11 @@ export const SpotCardBase = (props) => {
 							<StarRateIcon color="error" data-testid="filled-heart" /> (
 							{spot.place.userRatingsTotal})
 						</div>
-						{dragAndDroppable ? (
+						{isEditMode ? (
+							<div className={classes.editButton} onClick={editClickHandler}>
+								<EditOutlinedIcon data-testid="edit-pen" />
+							</div>
+						) : (
 							<div onClick={likeClickHandler}>
 								{spot.liked ? (
 									<FavoriteIcon
@@ -316,10 +320,6 @@ export const SpotCardBase = (props) => {
 										data-testid="hollow-heart"
 									/>
 								)}
-							</div>
-						) : (
-							<div className={classes.editButton} onClick={editClickHandler}>
-								<EditOutlinedIcon data-testid="edit-pen" />
 							</div>
 						)}
 					</div>

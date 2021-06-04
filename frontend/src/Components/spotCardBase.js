@@ -138,16 +138,8 @@ renderer.link = (href, title, text) => {
 };
 
 export const SpotCardBase = (props) => {
-	const {
-		spot,
-		index,
-		date,
-		day,
-		highlight,
-		mouseOver,
-		dragAndDroppable,
-		provided,
-	} = props;
+	const { spot, index, date, day, highlight, mouseOver, isEditMode, provided } =
+		props;
 	const { dispatch } = useContext(SpotContext);
 	const { setClickedCard } = useContext(LoggerContext);
 	// const cssProps = {
@@ -305,17 +297,17 @@ export const SpotCardBase = (props) => {
 							</span>
 							<span className={classes.index}>{index + 1}</span>
 						</div>
-						{dragAndDroppable ? (
+						{isEditMode ? (
+							<div className={classes.editButton} onClick={editClickHandler}>
+								<EditOutlinedIcon data-testid="edit-pen" />
+							</div>
+						) : (
 							<div onClick={likeClickHandler}>
 								{liked ? (
 									<FavoriteIcon color="error" data-testid="filled-heart" />
 								) : (
 									<FavoriteBorderIcon data-testid="hollow-heart" />
 								)}
-							</div>
-						) : (
-							<div className={classes.editButton} onClick={editClickHandler}>
-								<EditOutlinedIcon data-testid="edit-pen" />
 							</div>
 						)}
 					</div>

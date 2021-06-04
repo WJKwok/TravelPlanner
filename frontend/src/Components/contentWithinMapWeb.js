@@ -9,6 +9,10 @@ import GoogleMapWithScrollBoard from './googleMapWeb';
 import DaySelectMenu from './daySelectMenu';
 import { SpotCardBase } from './spotCardBaseWeb';
 import { SidePanelCard } from './sidePanelCard';
+import ProfileIconButton from './profileIconButton';
+import { LeftButtonGroup } from './leftButtonGroup';
+import CategoryChipBar from './categoryChipBarWeb';
+import { getSpotsFromState } from 'utils/getSpotsFromState';
 
 const useStyles = makeStyles((theme) => ({
 	categoryBar: {
@@ -48,17 +52,10 @@ const useStyles = makeStyles((theme) => ({
 
 function ContentWithinMapWeb(props) {
 	const theme = useTheme();
-	const {
-		boardId,
-		spots,
-		coordinates,
-		dragAndDroppable,
-		catBar,
-		leftButtonGroup,
-		rightButtons,
-	} = props;
+	const { isEditMode } = props;
 
 	const { spotState } = useContext(SpotContext);
+	const spots = getSpotsFromState(spotState);
 
 	const [mouseOverCard, setMouseOverCard] = useState(undefined);
 	const [clickedCard, setClickedCard] = useState(null);
@@ -106,14 +103,16 @@ function ContentWithinMapWeb(props) {
 	return (
 		<GoogleMapWithScrollBoard
 			spots={spots}
-			coordinates={coordinates}
+			coordinates={spotState.guide.coordinates}
 			resizable={true}
 			pinClicked={executeScroll}
 			mouseOverCard={mouseOverCard}
 			clickedCard={clickedCard}
 			showSidePanel={showSidePanel && clickedCard}
 		>
-			<div className={classes.categoryBar}>{catBar}</div>
+			<div className={classes.categoryBar}>
+				<CategoryChipBar />
+			</div>
 			<SidePanelCard
 				spotId={clickedCard?.id}
 				showSidePanel={showSidePanel}
@@ -128,13 +127,13 @@ function ContentWithinMapWeb(props) {
 					{spots.length > 0
 						? spots.map((spot, index) => (
 								<SpotCardBase
+									isEditMode={isEditMode}
 									key={spot.id}
 									spot={spot}
 									day={day}
 									index={index}
 									highlight={clickedCard?.id === spot.id}
 									mouseOver={(id) => setMouseOverCard(id)}
-									dragAndDroppable={dragAndDroppable}
 									cardClickedHandler={() => {
 										setClickedCard(spot);
 										setShowSidePanel(true);
@@ -144,8 +143,12 @@ function ContentWithinMapWeb(props) {
 						: placeHolderText}
 					<div style={{ height: '5px', minWidth: '10px', clear: 'both' }}></div>
 				</div>
-				<div className={classes.leftButtons}>{leftButtonGroup}</div>
-				<div className={classes.rightButtons}>{rightButtons}</div>
+				<div className={classes.leftButtons}>
+					<LeftButtonGroup />
+				</div>
+				<div className={classes.rightButtons}>
+					<ProfileIconButton />
+				</div>
 			</div>
 		</GoogleMapWithScrollBoard>
 	);

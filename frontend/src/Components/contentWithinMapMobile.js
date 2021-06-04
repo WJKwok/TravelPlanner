@@ -14,6 +14,10 @@ import { SpotCardBase } from './spotCardBaseMobile';
 import { SlideUpCard } from './slideUpCard';
 import debounce from 'lodash/debounce';
 import ArrowBackOutlinedIcon from '@material-ui/icons/ArrowBackOutlined';
+import ProfileIconButton from './profileIconButton';
+import { LeftButtonGroup } from './leftButtonGroup';
+import CategoryChipBar from './categoryChipBarWeb';
+import { getSpotsFromState } from 'utils/getSpotsFromState';
 
 const useStyles = makeStyles((theme) => ({
 	categoryBar: {
@@ -66,20 +70,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function ContentWithinMapMobile(props) {
-	const theme = useTheme();
-	const isMobile = useMediaQuery(`(max-width:${theme.maxMobileWidth}px)`);
-	const {
-		boardId,
-		spots,
-		coordinates,
-		dragAndDroppable,
-		catBar,
-		leftButtonGroup,
-		rightButtons,
-	} = props;
-
+function ContentWithinMapMobile() {
 	const { spotState } = useContext(SpotContext);
+	const spots = getSpotsFromState(spotState);
 
 	const [mouseOverCard, setMouseOverCard] = useState(undefined);
 	const [clickedCard, setClickedCard] = useState(null);
@@ -138,19 +131,20 @@ function ContentWithinMapMobile(props) {
 		<p>Click on the category chips above 👆 to display cards.</p>
 	);
 
-	console.log('mobile coordinates:', coordinates);
 	return (
 		<>
 			{/* <DaySelectMenu day={day} dayChangeHandler={setDay} /> */}
 			<GoogleMapWithScrollBoard
 				spots={spots}
-				coordinates={coordinates}
+				coordinates={spotState.guide.coordinates}
 				resizable={true}
 				pinClicked={executeScroll}
 				// mouseOverCard={mouseOverCard}
 				clickedCard={clickedCard}
 			>
-				<div className={classes.categoryBar}>{catBar}</div>
+				<div className={classes.categoryBar}>
+					<CategoryChipBar />
+				</div>
 				{clickedCard ? (
 					<SlideUpCard spotId={clickedCard.id} showSidePanel={showSidePanel}>
 						<IconButton
@@ -182,7 +176,6 @@ function ContentWithinMapMobile(props) {
 										expanded={false}
 										// highlight={clickedCard && clickedCard.id === spot.id}
 										// mouseOver={(id) => setMouseOverCard(id)}
-										dragAndDroppable={dragAndDroppable}
 										cardClickedHandler={() => {
 											setClickedCard(spot);
 											setShowSidePanel(true);
@@ -196,8 +189,12 @@ function ContentWithinMapMobile(props) {
 					</div>
 					{/* )}
 					</Droppable> */}
-					<div className={classes.leftButtonGroup}>{leftButtonGroup}</div>
-					<div className={classes.rightButtons}>{rightButtons}</div>
+					<div className={classes.leftButtonGroup}>
+						<LeftButtonGroup />
+					</div>
+					<div className={classes.rightButtons}>
+						<ProfileIconButton />
+					</div>
 				</div>
 			</GoogleMapWithScrollBoard>
 		</>

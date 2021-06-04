@@ -1,15 +1,28 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { useMutation, gql } from '@apollo/client';
 
 import { AuthContext } from '../Store/AuthContext';
 import { SpotContext } from '../Store/SpotContext';
 import { SnackBarContext } from '../Store/SnackBarContext';
+
+import { getVariableFromContext } from './getVariableFromContext';
 export const useSubmitTrip = (setTripId) => {
 	const { authState } = useContext(AuthContext);
-	const { dispatch } = useContext(SpotContext);
+	const { dispatch, spotState } = useContext(SpotContext);
 	const { setSnackMessage } = useContext(SnackBarContext);
 
+	const { daySpotsArray, categoriesInTrip, likedSpots, googlePlacesInTrip } =
+		getVariableFromContext(spotState);
+
 	const [submitTrip] = useMutation(SUBMIT_TRIP, {
+		variables: {
+			guide: spotState.guide.id,
+			startDate: spotState.startDate.format('YYYY-MM-DD'),
+			dayLists: daySpotsArray,
+			categoriesInTrip,
+			likedSpots,
+			googlePlacesInTrip,
+		},
 		onCompleted({ submitTrip }) {
 			console.log(submitTrip);
 			setTripId(submitTrip.id);

@@ -542,7 +542,7 @@ export const LoggingForm = ({ guide }) => {
 						index={0}
 						day={1}
 						expanded={true}
-						dragAndDroppable={false}
+						isEditMode={true}
 					/>
 					<Card className={classes.cardContentDiv}>
 						<SpotCardContent

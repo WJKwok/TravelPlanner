@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
+
+import { AuthContext } from '../Store/AuthContext';
+
 import ListIcon from '@material-ui/icons/List';
 import SaveIcon from '@material-ui/icons/Save';
 import Icon from '@material-ui/core/Icon';
-
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
+
+import AuthModal from './AuthModal';
+import { PlannerPlaceAutoComplete } from './PlannerPlaceAutoComplete';
+import { SpotContext } from 'Store/SpotContext';
 
 const useStyles = makeStyles((theme) => ({
 	iconButton: {
@@ -25,41 +32,59 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export const LeftButtonGroup = ({
-	isLoggedIn,
-	isMobile,
-	saveItinerary,
-	setSearchModalOpen,
-	setIsListView,
-}) => {
+export const LeftButtonGroup = () => {
 	const classes = useStyles();
+	const { authState } = useContext(AuthContext);
+	const { dispatch } = useContext(SpotContext);
+
+	const theme = useTheme();
+	const isMobile = useMediaQuery(`(max-width:${theme.maxMobileWidth}px)`);
+	const isLoggedIn = !authState.user;
+
+	const [registerOpen, setRegisterOpen] = useState(false);
+	const [searchModalOpen, setSearchModalOpen] = useState(false);
 
 	return (
-		<ButtonGroup
-			variant="contained"
-			aria-label="contained primary button group"
-			classes={{
-				groupedContained: classes.iconButton,
-			}}
-		>
-			<Button
-				data-testid="google-search-button"
-				onClick={() => setSearchModalOpen(true)}
+		<>
+			<ButtonGroup
+				variant="contained"
+				aria-label="contained primary button group"
+				classes={{
+					groupedContained: classes.iconButton,
+				}}
 			>
-				<Icon classes={{ root: classes.iconRoot }}>
-					<img className={classes.imageIcon} src="/images/search.png" />
-				</Icon>
-			</Button>
-			{isLoggedIn && (
-				<Button id="save" onClick={saveItinerary}>
-					<SaveIcon />
+				<Button
+					data-testid="google-search-button"
+					onClick={() => setSearchModalOpen(true)}
+				>
+					<Icon classes={{ root: classes.iconRoot }}>
+						<img className={classes.imageIcon} src="/images/search.png" />
+					</Icon>
 				</Button>
-			)}
-			{isMobile && (
-				<Button id="list" onClick={() => setIsListView(true)}>
-					<ListIcon />
-				</Button>
-			)}
-		</ButtonGroup>
+				{isLoggedIn && (
+					<Button id="save" onClick={() => setRegisterOpen(true)}>
+						<SaveIcon />
+					</Button>
+				)}
+				{isMobile && (
+					<Button
+						id="list"
+						onClick={() =>
+							dispatch({ type: 'SWITCH_VIEW', payload: { view: 'LIST' } })
+						}
+					>
+						<ListIcon />
+					</Button>
+				)}
+			</ButtonGroup>
+			<AuthModal
+				registerOpen={registerOpen}
+				setRegisterOpen={setRegisterOpen}
+			/>
+			<PlannerPlaceAutoComplete
+				searchModalOpen={searchModalOpen}
+				setSearchModalOpen={setSearchModalOpen}
+			/>
+		</>
 	);
 };

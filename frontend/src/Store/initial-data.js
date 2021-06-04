@@ -23,6 +23,7 @@ export const initialData = {
 	},
 	filteredBoard: ['filtered-spots'],
 	dayBoard: ['day1', 'day2'],
+	tripId: undefined,
 	guide: {
 		id: undefined,
 		categories: [],
@@ -32,4 +33,5 @@ export const initialData = {
 	spotToHighlightID: '',
 	unsavedChanges: false,
 	recentLikeToggledSpotId: undefined,
+	view: 'MAP', // MAP || LIST
 };

@@ -5,11 +5,24 @@ import { SpotContext } from '../Store/SpotContext';
 import { SnackBarContext } from '../Store/SnackBarContext';
 import { SPOT_DATA } from '../utils/graphql';
 
-export const useEditTrip = () => {
+import { getVariableFromContext } from './getVariableFromContext';
+
+export const useEditTrip = (tripId) => {
 	const { dispatch, spotState } = useContext(SpotContext);
 	const { setSnackMessage } = useContext(SnackBarContext);
 
+	const { daySpotsArray, categoriesInTrip, likedSpots, googlePlacesInTrip } =
+		getVariableFromContext(spotState);
+
 	const [editTrip] = useMutation(EDIT_TRIP, {
+		variables: {
+			tripId,
+			startDate: spotState.startDate.format('YYYY-MM-DD'),
+			dayLists: daySpotsArray,
+			categoriesInTrip,
+			likedSpots,
+			googlePlacesInTrip,
+		},
 		onCompleted({ editTrip }) {
 			console.log('Trip edited', editTrip);
 			dispatch({ type: 'TRIP_SAVED' });

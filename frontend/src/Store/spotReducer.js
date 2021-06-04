@@ -27,6 +27,13 @@ export const spotReducer = (state, action) => {
 				unsavedChanges: false,
 			};
 			return mapLoaded;
+		case 'SWITCH_VIEW':
+			const { view } = action.payload;
+			const switchedViewState = {
+				...state,
+				view,
+			};
+			return switchedViewState;
 		case 'NEW_CLICKED_CATEGORIES':
 			const { newClickedCategories } = action.payload;
 			const loadedNewClickedCategories = loadNewClickedCategories(
@@ -199,6 +206,7 @@ const loadMap = (state, trip) => {
 			},
 		},
 		filteredBoard: ['filtered-spots'],
+		tripId: trip.id,
 		guide: trip.guide,
 		clickedCategories: [],
 		queriedCategories: trip.categoriesInTrip,

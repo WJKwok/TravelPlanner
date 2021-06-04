@@ -5,6 +5,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { ListCard } from './listCard';
 import MapIcon from '@material-ui/icons/Map';
 import Button from '@material-ui/core/Button';
+import CategoryChipBar from './categoryChipBarWeb';
+import { getSpotsFromState } from 'utils/getSpotsFromState';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -32,11 +34,12 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export const ListPage = ({ spots, catBar, setIsListView }) => {
+export const ListPage = () => {
 	const classes = useStyles();
 
 	let myref = useRef(null);
-	const { spotState } = useContext(SpotContext);
+	const { dispatch, spotState } = useContext(SpotContext);
+	const spots = getSpotsFromState(spotState);
 
 	useEffect(() => {
 		console.log('ref', myref);
@@ -48,7 +51,9 @@ export const ListPage = ({ spots, catBar, setIsListView }) => {
 
 	return (
 		<div className={classes.root}>
-			<div className={classes.categoryBar}>{catBar}</div>
+			<div className={classes.categoryBar}>
+				<CategoryChipBar />
+			</div>
 			<div ref={myref} className={classes.spotCards}>
 				{spots.length > 0 ? (
 					spots.map((spot) => <ListCard key={spot.id} spotId={spot.id} />)
@@ -62,7 +67,9 @@ export const ListPage = ({ spots, catBar, setIsListView }) => {
 					variant="contained"
 					color="secondary"
 					startIcon={<MapIcon />}
-					onClick={() => setIsListView(false)}
+					onClick={() =>
+						dispatch({ type: 'SWITCH_VIEW', payload: { view: 'MAP' } })
+					}
 				>
 					Map View
 				</Button>

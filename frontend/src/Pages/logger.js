@@ -65,7 +65,7 @@ function Logger(props) {
 
 		return (
 			<ContentWithinMapWeb
-				dragAndDroppable={false}
+				isEditMode={true}
 				key={columnId}
 				boardId={columnId}
 				spots={spots}

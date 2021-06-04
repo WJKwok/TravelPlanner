@@ -17,7 +17,6 @@ const useStyles = makeStyles((theme) => ({
 const CardsHorizontalScrollWindow = ({
 	cardsDivRef,
 	clickedCard,
-	dragAndDroppable,
 	setMouseOverCard,
 	handleCardClicked,
 }) => {
@@ -38,7 +37,6 @@ const CardsHorizontalScrollWindow = ({
 							index={index}
 							highlight={clickedCard?.id === spot.id}
 							mouseOver={(id) => setMouseOverCard(id)}
-							dragAndDroppable={dragAndDroppable}
 							onCardClicked={handleCardClicked}
 						/>
 				  ))
