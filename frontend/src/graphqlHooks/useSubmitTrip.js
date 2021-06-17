@@ -24,7 +24,7 @@ export const useSubmitTrip = (setTripId) => {
 			googlePlacesInTrip,
 		},
 		onCompleted({ submitTrip }) {
-			console.log(submitTrip);
+			console.log('trip submited', submitTrip);
 			setTripId(submitTrip.id);
 			dispatch({ type: 'TRIP_SAVED' });
 			setSnackMessage({ text: 'Your trip has been saved:)', code: 'Confirm' });
