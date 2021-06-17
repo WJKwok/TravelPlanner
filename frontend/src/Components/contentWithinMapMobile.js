@@ -136,7 +136,6 @@ function ContentWithinMapMobile() {
 			{/* <DaySelectMenu day={day} dayChangeHandler={setDay} /> */}
 			<GoogleMapWithScrollBoard
 				spots={spots}
-				coordinates={spotState.guide.coordinates}
 				resizable={true}
 				pinClicked={executeScroll}
 				// mouseOverCard={mouseOverCard}

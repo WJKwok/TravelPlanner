@@ -16,6 +16,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useGuide } from 'graphqlHooks/useGuide';
 import { useGetTrip } from 'graphqlHooks/useGetTrip';
 import { useTripSubscription } from 'graphqlHooks/useTripSubscription';
+import { useGetGuideData } from 'graphqlHooks/useGetGuideData';
 
 function Planner(props) {
 	const { authState } = useContext(AuthContext);
@@ -31,6 +32,7 @@ function Planner(props) {
 	useGuide();
 	useGetTrip();
 	useTripSubscription();
+	const { guideData } = useGetGuideData();
 
 	useEffect(() => {
 		return () => {
@@ -65,7 +67,7 @@ function Planner(props) {
 		return <ContentWithinMapWeb />;
 	};
 
-	return spotState.guide.id ? (
+	return guideData?.id ? (
 		<>
 			<ConfirmNavPrompt
 				when={spotState.unsavedChanges === true}

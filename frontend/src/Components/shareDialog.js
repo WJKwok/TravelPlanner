@@ -77,45 +77,47 @@ export default function FormDialog({ trip, open, setOpen }) {
 	});
 
 	return (
-		<div>
-			<Dialog
-				open={open}
-				onClose={handleClose}
-				aria-labelledby="form-dialog-title"
-			>
-				<DialogTitle id="form-dialog-title">Share</DialogTitle>
-				<DialogContent>
-					<DialogContentText>
-						Edit your trip in real-time with your friend 🥰 simply add them by
-						their email addresses.
-					</DialogContentText>
-					<TextField
-						autoFocus
-						autoComplete="off"
-						margin="dense"
-						id="name"
-						label="Email Address"
-						type="email"
-						fullWidth
-						value={email}
-						onChange={(e) => setEmail(e.target.value)}
-						onKeyPress={(e) => {
-							if (e.key === 'Enter') {
-								handleEnter();
-							}
-						}}
+		<Dialog
+			open={open}
+			onClose={handleClose}
+			aria-labelledby="form-dialog-title"
+		>
+			<DialogTitle id="form-dialog-title">Share</DialogTitle>
+			<DialogContent>
+				<DialogContentText>
+					Edit your trip in real-time with your friend 🥰 simply add them by
+					their email addresses.
+				</DialogContentText>
+				<TextField
+					autoFocus
+					autoComplete="off"
+					margin="dense"
+					id="name"
+					label="Email Address"
+					type="email"
+					fullWidth
+					value={email}
+					onChange={(e) => setEmail(e.target.value)}
+					onKeyPress={(e) => {
+						if (e.key === 'Enter') {
+							handleEnter();
+						}
+					}}
+				/>
+				{emails.map((email) => (
+					<Chip
+						key={email}
+						onDelete={() => deleteOneEmail(email)}
+						label={email}
 					/>
-					{emails.map((email) => (
-						<Chip onDelete={() => deleteOneEmail(email)} label={email} />
-					))}
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={handleClose} color="primary">
-						Close
-					</Button>
-				</DialogActions>
-			</Dialog>
-		</div>
+				))}
+			</DialogContent>
+			<DialogActions>
+				<Button onClick={handleClose} color="primary">
+					Close
+				</Button>
+			</DialogActions>
+		</Dialog>
 	);
 }
 

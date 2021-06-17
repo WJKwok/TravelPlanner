@@ -11,6 +11,7 @@ import CategoryChip from './categoryChip';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import Tooltip from '@material-ui/core/Tooltip';
 import SnackBar from '../snackBar';
+import { useGetGuideData } from 'graphqlHooks/useGetGuideData';
 const useStyles = makeStyles((theme) => ({
 	chipRow: {
 		display: 'flex',
@@ -39,7 +40,9 @@ const CategoryChipBar = ({ hideOnlyLikedButton }) => {
 	const classes = useStyles();
 	const { dispatch, spotState } = useContext(SpotContext);
 
-	let categories = spotState.guide.categories.map((category) => {
+	const { guideData } = useGetGuideData();
+
+	let categories = guideData.categories.map((category) => {
 		return {
 			key: category,
 			label: category,
@@ -67,7 +70,7 @@ const CategoryChipBar = ({ hideOnlyLikedButton }) => {
 			if (!spotState.queriedCategories.includes(clickedChip.label)) {
 				getSpotsForCategoryInGuide({
 					variables: {
-						guideId: spotState.guide.id,
+						guideId: guideData.id,
 						category: clickedChip.label,
 					},
 				});

@@ -7,10 +7,12 @@ import { useLazyQuery, gql } from '@apollo/client';
 import { SPOT_DATA } from '../utils/graphql';
 
 import { useGetSpotsForCategory } from './useGetSpotsForCategory';
+import { useGetGuideData } from './useGetGuideData';
 
 export const useGetSpot = () => {
 	const { setSnackMessage } = useContext(SnackBarContext);
-	const { spotState, dispatch } = useContext(SpotContext);
+	const { dispatch } = useContext(SpotContext);
+	const { guideData } = useGetGuideData();
 
 	const getSpotsForCategoryInGuide = useGetSpotsForCategory();
 
@@ -29,7 +31,7 @@ export const useGetSpot = () => {
 				const itemCategory = getSpot.categories[0];
 				getSpotsForCategoryInGuide({
 					variables: {
-						guideId: spotState.guide.id,
+						guideId: guideData.id,
 						category: itemCategory,
 						itemId: getSpot.id,
 					},

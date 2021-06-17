@@ -198,6 +198,7 @@ function Trips() {
 				.filter((trip) => trip.sharedWith.length === 0)
 				.map((trip) => (
 					<TripCard
+						key={trip.id}
 						user={authState.user}
 						trip={trip}
 						deleteHandler={deleteHandler}
@@ -210,6 +211,7 @@ function Trips() {
 				.filter((trip) => trip.sharedWith.length !== 0)
 				.map((trip) => (
 					<TripCard
+						key={trip.id}
 						user={authState.user}
 						trip={trip}
 						deleteHandler={deleteHandler}

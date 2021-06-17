@@ -7,6 +7,7 @@ import { useGetSpot } from 'graphqlHooks/useGetSpot';
 import PlaceAutoComplete from './placeAutoComplete';
 import { Dialog } from '@material-ui/core';
 import { SnackBarContext } from 'Store/SnackBarContext';
+import { useGetGuideData } from 'graphqlHooks/useGetGuideData';
 
 const useStyles = makeStyles((theme) => ({
 	searchDialogSize: {
@@ -23,6 +24,8 @@ export const PlannerPlaceAutoComplete = ({
 	const { setSnackMessage } = useContext(SnackBarContext);
 	const getSpot = useGetSpot();
 	const classes = useStyles();
+
+	const { guideData } = useGetGuideData();
 
 	const searchedItemClicked = (searchedItem) => {
 		setSearchModalOpen(false);
@@ -63,7 +66,7 @@ export const PlannerPlaceAutoComplete = ({
 
 		getSpot({
 			variables: {
-				guideId: spotState.guide.id,
+				guideId: guideData.id,
 				placeId: searchedItem.id,
 				searchedItem: reshapedItem,
 			},
@@ -81,8 +84,8 @@ export const PlannerPlaceAutoComplete = ({
 			<div className={classes.searchDialogSize}>
 				<PlaceAutoComplete
 					clickFunction={searchedItemClicked}
-					city={spotState.guide.city}
-					coordinates={spotState.guide.coordinates}
+					city={guideData.city}
+					coordinates={guideData.coordinates}
 					placeHolderText={placeAutoCompletePlaceHolderText}
 				/>
 			</div>

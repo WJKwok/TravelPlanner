@@ -4,6 +4,7 @@ import { fitBounds } from 'google-map-react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { MapMarker } from './mapMarkerWebAndMobile';
+import { useGetGuideData } from 'graphqlHooks/useGetGuideData';
 
 const useStyles = makeStyles((theme) => ({
 	gMap: {
@@ -20,7 +21,6 @@ const useStyles = makeStyles((theme) => ({
 
 function GoogleMapWithScrollBoard({
 	spots,
-	coordinates,
 	pinClicked,
 	mouseOverCard,
 	resizable,
@@ -31,9 +31,11 @@ function GoogleMapWithScrollBoard({
 	const mapClass = useStyles();
 	let mapsRef = useRef(null);
 	let mapRef = useRef(null);
+
+	const { guideData } = useGetGuideData();
 	const [center, setCenter] = useState({
-		lat: coordinates[0],
-		lng: coordinates[1],
+		lat: guideData.coordinates[0],
+		lng: guideData.coordinates[1],
 	});
 
 	console.log('mapcenter web:', center);

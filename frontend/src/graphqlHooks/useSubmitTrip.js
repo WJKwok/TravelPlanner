@@ -6,17 +6,20 @@ import { SpotContext } from '../Store/SpotContext';
 import { SnackBarContext } from '../Store/SnackBarContext';
 
 import { getVariableFromContext } from './getVariableFromContext';
+import { useGetGuideData } from './useGetGuideData';
 export const useSubmitTrip = (setTripId) => {
 	const { authState } = useContext(AuthContext);
 	const { dispatch, spotState } = useContext(SpotContext);
 	const { setSnackMessage } = useContext(SnackBarContext);
+
+	const { guideData } = useGetGuideData();
 
 	const { daySpotsArray, categoriesInTrip, likedSpots, googlePlacesInTrip } =
 		getVariableFromContext(spotState);
 
 	const [submitTrip] = useMutation(SUBMIT_TRIP, {
 		variables: {
-			guide: spotState.guide.id,
+			guide: guideData?.id,
 			startDate: spotState.startDate.format('YYYY-MM-DD'),
 			dayLists: daySpotsArray,
 			categoriesInTrip,

@@ -61,15 +61,15 @@ export const TripCard = ({ user, trip, deleteHandler }) => {
 
 	const isTripOwner = trip.user.email === user.email;
 	const userTag = (label) => {
-		return <span className={classes.userTag}>{label}</span>;
+		return (
+			<span key={label} className={classes.userTag}>
+				{label}
+			</span>
+		);
 	};
 
 	return (
-		<Card
-			className={classes.tripCard}
-			key={trip.id}
-			data-testid={`tripCard-${trip.id}`}
-		>
+		<Card className={classes.tripCard} data-testid={`tripCard-${trip.id}`}>
 			<Link
 				to={cardLink}
 				style={{ textDecoration: 'none', display: 'flex', flex: 1 }}
