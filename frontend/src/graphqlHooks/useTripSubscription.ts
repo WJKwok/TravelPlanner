@@ -1,7 +1,7 @@
 import { useSubscription, gql } from '@apollo/client';
 import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import { SpotContext } from 'Store/SpotContext';
+import { SpotContext } from 'Store';
 import { useGetSpots } from './useGetSpots';
 import { useGetTrip } from './useGetTrip';
 

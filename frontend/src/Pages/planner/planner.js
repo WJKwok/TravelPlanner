@@ -14,9 +14,7 @@ import SpotsBoard from '../../Components/spotsBoard';
 import DayBoard from '../../Components/dayBoard';
 import DatePicker from '../../Components/datePicker';
 import PlaceAutoComplete from '../../Components/placeAutoComplete';
-import { SpotContext } from '../../Store/SpotContext';
-import { AuthContext } from '../../Store/AuthContext';
-import { SnackBarContext } from '../../Store/SnackBarContext';
+import { SpotContext, AuthContext, SnackBarContext } from 'Store';
 
 import AuthModal from '../../Components/AuthModal';
 import ConfirmNavPrompt from '../../Components/confirmNavPrompt';

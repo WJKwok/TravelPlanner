@@ -1,8 +1,7 @@
 import { useContext } from 'react';
 import { useMutation, gql } from '@apollo/client';
 
-import { SpotContext } from '../Store/SpotContext';
-import { SnackBarContext } from '../Store/SnackBarContext';
+import { SpotContext, SnackBarContext } from 'Store';
 import { SPOT_DATA } from '../utils/graphql';
 
 import { getVariableFromContext } from './getVariableFromContext';

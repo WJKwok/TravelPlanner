@@ -1,9 +1,7 @@
 import { useContext } from 'react';
 import { useMutation, gql } from '@apollo/client';
 
-import { AuthContext } from '../Store/AuthContext';
-import { SpotContext } from '../Store/SpotContext';
-import { SnackBarContext } from '../Store/SnackBarContext';
+import { AuthContext, SpotContext, SnackBarContext } from 'Store';
 
 import { getVariableFromContext } from './getVariableFromContext';
 import { useGetGuideData } from './useGetGuideData';

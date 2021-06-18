@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 
-import { SpotContext } from '../../Store/SpotContext';
-import { AuthContext } from '../../Store/AuthContext';
+import { SpotContext, AuthContext } from 'Store';
 
 import ContentWithinMapWeb from '../../Components/contentWithinMapWeb';
 import ContentWithinMapMobile from '../../Components/contentWithinMapMobile';

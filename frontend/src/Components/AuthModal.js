@@ -2,8 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { useMutation, gql } from '@apollo/client';
 import { GoogleLogin } from 'react-google-login';
 
-import { AuthContext } from '../Store/AuthContext';
-import { SnackBarContext } from '../Store/SnackBarContext';
+import { AuthContext, SnackBarContext } from 'Store';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';

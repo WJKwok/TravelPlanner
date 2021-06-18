@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useContext } from 'react';
-import { SpotContext } from '../Store/SpotContext';
+import { SpotContext } from 'Store';
 
 import moment from 'moment';
 

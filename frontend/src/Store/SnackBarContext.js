@@ -1,30 +1,28 @@
 import React, { createContext, useState, useEffect } from 'react';
 
-export const SnackBarContext = createContext();
+const SnackBarContext = createContext();
 
 const snackInitialState = {
-    text: "", 
-    code: ""
-}
+	text: '',
+	code: '',
+};
 
 const SnackBarContextProvider = (props) => {
+	const [snackMessage, setSnackMessage] = useState(snackInitialState);
 
-    const [snackMessage, setSnackMessage] = useState(snackInitialState)
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			setSnackMessage(snackInitialState);
+		}, 5000);
 
-    useEffect(() => {
+		return () => clearTimeout(timer);
+	}, [snackMessage]);
 
-        const timer = setTimeout(() => {
-            setSnackMessage(snackInitialState)
-        }, 5000);
+	return (
+		<SnackBarContext.Provider value={{ snackMessage, setSnackMessage }}>
+			{props.children}
+		</SnackBarContext.Provider>
+	);
+};
 
-        return () => clearTimeout(timer);
-    }, [snackMessage])
-
-    return (
-        <SnackBarContext.Provider value={{snackMessage, setSnackMessage}}>
-            {props.children}
-        </SnackBarContext.Provider>
-    )
-}
-
-export default SnackBarContextProvider;
+export { SnackBarContext, SnackBarContextProvider };

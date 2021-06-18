@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 
-import { AuthContext } from '../Store/AuthContext';
+import { AuthContext, SpotContext } from 'Store';
 
 import ListIcon from '@material-ui/icons/List';
 import SaveIcon from '@material-ui/icons/Save';
@@ -12,7 +12,6 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 import AuthModal from './AuthModal';
 import { PlannerPlaceAutoComplete } from './PlannerPlaceAutoComplete';
-import { SpotContext } from 'Store/SpotContext';
 
 const useStyles = makeStyles((theme) => ({
 	iconButton: {

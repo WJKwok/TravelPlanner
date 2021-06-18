@@ -2,7 +2,7 @@ import React, { createContext, useReducer } from 'react';
 import { initialData } from './initial-data';
 import { spotReducer } from './spotReducer';
 
-export const SpotContext = createContext();
+const SpotContext = createContext();
 
 const SpotContextProvider = (props) => {
 	const [spotState, dispatch] = useReducer(spotReducer, initialData);
@@ -13,4 +13,4 @@ const SpotContextProvider = (props) => {
 	);
 };
 
-export default SpotContextProvider;
+export { SpotContext, SpotContextProvider };

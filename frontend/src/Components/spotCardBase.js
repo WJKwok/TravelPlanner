@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { SpotContext } from '../Store/SpotContext';
-import { LoggerContext } from '../Store/LoggerContext';
+import { SpotContext, LoggerContext } from 'Store';
 import moment from 'moment';
 
 import { iconDict } from './spotIcons';

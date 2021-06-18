@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { SpotContext } from '../../Store/SpotContext';
+import { SpotContext } from 'Store';
 
 import { useLazyQuery, gql } from '@apollo/client';
 import { SPOT_DATA } from '../../utils/graphql';

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { SnackBarContext } from '../Store/SnackBarContext';
+import { SnackBarContext } from 'Store';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';

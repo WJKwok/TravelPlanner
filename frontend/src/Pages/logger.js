@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { SpotContext } from '../Store/SpotContext';
+import { SpotContext } from 'Store';
 
 import CategoryChipBarWeb from '../Components/categoryChipBarWeb';
 import ContentWithinMapWeb from '../Components/contentWithinMapWeb';

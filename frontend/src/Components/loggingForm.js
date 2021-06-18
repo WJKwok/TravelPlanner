@@ -5,9 +5,12 @@ import React, {
 	useReducer,
 	useRef,
 } from 'react';
-import { LoggerContext, emptyClickedCardState } from '../Store/LoggerContext';
-import { SnackBarContext } from '../Store/SnackBarContext';
-import { SpotContext } from '../Store/SpotContext';
+import {
+	LoggerContext,
+	emptyClickedCardState,
+	SnackBarContext,
+	SpotContext,
+} from 'Store';
 import { SPOT_DATA } from '../utils/graphql';
 
 import { LoggingImage } from './images';

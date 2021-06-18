@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { blue, red, green } from '@material-ui/core/colors/';
 import Zoom from '@material-ui/core/Zoom';
 
-import { SnackBarContext } from '../Store/SnackBarContext';
+import { SnackBarContext } from 'Store';
 
 const useStyles = makeStyles({
 	snackBar: (props) => ({

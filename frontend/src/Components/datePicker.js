@@ -10,7 +10,7 @@ import {
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { SpotContext } from '../Store/SpotContext';
+import { SpotContext } from 'Store';
 
 /* custom style for disabled property
 https://stackoverflow.com/questions/58540364/material-ui-overide-disabled-styles-for-inputbase

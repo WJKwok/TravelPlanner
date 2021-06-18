@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useContext } from 'react';
-import { SpotContext } from '../Store/SpotContext';
+import { SpotContext } from 'Store';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { ListCard } from './listCard';

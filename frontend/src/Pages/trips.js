@@ -2,9 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, gql } from '@apollo/client';
 
-import { AuthContext } from '../Store/AuthContext';
-import { SpotContext } from '../Store/SpotContext';
-import { SnackBarContext } from '../Store/SnackBarContext';
+import { AuthContext, SpotContext, SnackBarContext } from 'Store';
 
 import AppBar from '../Components/appBar';
 import Button from '@material-ui/core/Button';

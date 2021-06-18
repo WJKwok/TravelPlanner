@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useContext } from 'react';
-import { SpotContext } from '../Store/SpotContext';
+import { SpotContext } from 'Store';
 import { Droppable } from 'react-beautiful-dnd';
 
 import moment from 'moment';

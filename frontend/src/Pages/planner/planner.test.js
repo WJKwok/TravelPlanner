@@ -20,9 +20,11 @@ import {
 	mocks,
 	retailGetSpotsForCategoryInGuideWasCalled,
 } from './mockGraphql';
-import { AuthContext, AuthContextProvider } from '../../Store/AuthContext';
-import SnackBarContextProvider from '../../Store/SnackBarContext';
-import SpotContextProvider from '../../Store/SpotContext';
+import {
+	AuthContext,
+	SnackBarContextProvider,
+	SpotContextProvider,
+} from 'Store';
 import { client } from '../../ApolloProvider';
 
 const authState = {
@@ -96,9 +98,8 @@ test('test', async () => {
 	const retailChip = await getByText('Retail');
 	await userEvent.click(retailChip);
 	await screen.findByText('The Store X Berlin');
-	const totalCardsInSpotBoardAfterRetailClick = await findAllByTestIdInSpotBoard(
-		'spot-card'
-	);
+	const totalCardsInSpotBoardAfterRetailClick =
+		await findAllByTestIdInSpotBoard('spot-card');
 	expect(totalCardsInSpotBoardAfterRetailClick.length).toBe(8);
 	expect(retailGetSpotsForCategoryInGuideWasCalled).toBe(1);
 

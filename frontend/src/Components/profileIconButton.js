@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import FaceIcon from '@material-ui/icons/Face';
 
-import { AuthContext } from '../Store/AuthContext';
+import { AuthContext } from 'Store';
 import AuthModal from './AuthModal';
 
 import IconButton from '@material-ui/core/IconButton';

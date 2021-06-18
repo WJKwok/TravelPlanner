@@ -9,12 +9,12 @@ import Typography from '@material-ui/core/Typography';
 import FaceIcon from '@material-ui/icons/Face';
 import Box from '@material-ui/core/Box';
 
-import { AuthContext } from '../Store/AuthContext';
 import AuthModal from './AuthModal';
 import SnackBar from './snackBar';
 import { Button, Snackbar } from '@material-ui/core';
 
 import { Image } from 'cloudinary-react';
+import { AuthContext } from 'Store';
 
 const useStyles = makeStyles((theme) => ({
 	AppBar: (props) => ({
