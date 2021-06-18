@@ -11,7 +11,7 @@ import CategoryChip from './categoryChip';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import Tooltip from '@material-ui/core/Tooltip';
 import SnackBar from '../snackBar';
-import { useGetGuideData } from 'graphqlHooks/useGetGuideData';
+import { useGetGuideData } from 'graphqlHooks';
 const useStyles = makeStyles((theme) => ({
 	chipRow: {
 		display: 'flex',

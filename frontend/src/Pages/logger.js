@@ -9,10 +9,13 @@ import { LoggingForm } from '../Components/loggingForm';
 import { SPOT_DATA } from '../utils/graphql';
 
 import { useQuery, gql } from '@apollo/client';
+import { useGetGuideData } from 'graphqlHooks';
 
 function Logger(props) {
 	const guideId = props.match.params.guideBookId;
 	const { spotState, dispatch } = useContext(SpotContext);
+
+	const { guideData } = useGetGuideData();
 
 	useEffect(() => {
 		return () => {
@@ -30,10 +33,6 @@ function Logger(props) {
 					newSpots: getAllSpotsForGuide.spots,
 					categories: getAllSpotsForGuide.guide.categories,
 				},
-			});
-			dispatch({
-				type: 'LOAD_GUIDE',
-				payload: { guide: getAllSpotsForGuide.guide },
 			});
 		},
 		onError(err) {
@@ -61,7 +60,7 @@ function Logger(props) {
 
 		console.log('filtering spots: ', spots);
 
-		console.log('main coordinates:', spotState.guide.coordinates);
+		console.log('main coordinates:', guideData.coordinates);
 
 		return (
 			<ContentWithinMapWeb
@@ -69,7 +68,7 @@ function Logger(props) {
 				key={columnId}
 				boardId={columnId}
 				spots={spots}
-				coordinates={spotState.guide.coordinates}
+				coordinates={guideData.coordinates}
 				catBar={<CategoryChipBarWeb hideOnlyLikedButton={true} />}
 				// leftButtonGroup={
 				// 	<LeftButtonGroup
@@ -87,13 +86,13 @@ function Logger(props) {
 
 	console.log('spotstate', spotState);
 
-	return (
+	return guideData ? (
 		<>
 			<AppBar offset={true} />
-			{spotState.guide.id && renderSpotsBoard()}
-			{spotState.guide.categories && <LoggingForm guide={spotState.guide} />}
+			{guideData.id && renderSpotsBoard()}
+			{guideData.categories && <LoggingForm guide={guideData} />}
 		</>
-	);
+	) : null;
 }
 
 /* 
@@ -114,18 +113,6 @@ const SAVE_PLACE = gql`
 With the '!' the playground will still work, but here it wont.
 You have to use the below:
 */
-
-const GET_GUIDE = gql`
-	query getGuide($guideId: ID!) {
-		getGuide(guideId: $guideId) {
-			id
-			name
-			city
-			coordinates
-			categories
-		}
-	}
-`;
 
 const GET_ALL_SPOTS_IN_GUIDE = gql`
 	query getAllSpotsForGuide($guideId: ID!) {

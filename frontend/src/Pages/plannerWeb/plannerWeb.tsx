@@ -3,9 +3,6 @@ import React, { useContext, useState, useEffect } from 'react';
 import { SpotContext } from '../../Store/SpotContext';
 import { AuthContext } from '../../Store/AuthContext';
 
-import { useSubmitTrip } from '../../graphqlHooks/useSubmitTrip';
-import { useEditTrip } from '../../graphqlHooks/useEditTrip';
-
 import ContentWithinMapWeb from '../../Components/contentWithinMapWeb';
 import ContentWithinMapMobile from '../../Components/contentWithinMapMobile';
 import { ListPage } from 'Components/listPage';
@@ -13,10 +10,14 @@ import ConfirmNavPrompt from '../../Components/confirmNavPrompt';
 
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useGuide } from 'graphqlHooks/useGuide';
-import { useGetTrip } from 'graphqlHooks/useGetTrip';
-import { useTripSubscription } from 'graphqlHooks/useTripSubscription';
-import { useGetGuideData } from 'graphqlHooks/useGetGuideData';
+import {
+	useEditTrip,
+	useSubmitTrip,
+	useGuide,
+	useGetTrip,
+	useTripSubscription,
+	useGetGuideData,
+} from 'graphqlHooks';
 
 function Planner(props) {
 	const { authState } = useContext(AuthContext);

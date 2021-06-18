@@ -14,11 +14,6 @@ export const spotReducer = (state, action) => {
 				newLikedSpots
 			);
 			return syncedTrip;
-		case 'LOAD_GUIDE':
-			const { guide } = action.payload;
-			const loadedGuide = loadGuide(state, guide);
-			console.log('loadedGuide', loadedGuide);
-			return loadedGuide;
 		case 'LOAD_MAP':
 			const { map } = action.payload;
 			const loadedMap = loadMap(state, map);
@@ -103,15 +98,6 @@ export const spotReducer = (state, action) => {
 		default:
 			return state;
 	}
-};
-
-const loadGuide = (state, guide) => {
-	const newState = {
-		...state,
-		guide,
-	};
-
-	return newState;
 };
 
 const syncTrip = (state, shouldAdd, shouldRemove, newLikedSpots) => {

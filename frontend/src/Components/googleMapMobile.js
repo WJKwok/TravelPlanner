@@ -4,7 +4,7 @@ import { fitBounds } from 'google-map-react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { MapMarker } from './mapMarkerWebAndMobile';
-import { useGetGuideData } from 'graphqlHooks/useGetGuideData';
+import { useGetGuideData } from 'graphqlHooks';
 
 const useStyles = makeStyles((theme) => ({
 	gMap: {

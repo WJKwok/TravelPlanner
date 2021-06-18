@@ -3,11 +3,10 @@ import { SpotContext } from 'Store/SpotContext';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import { useGetSpot } from 'graphqlHooks/useGetSpot';
+import { useGetSpot, useGetGuideData } from 'graphqlHooks';
 import PlaceAutoComplete from './placeAutoComplete';
 import { Dialog } from '@material-ui/core';
 import { SnackBarContext } from 'Store/SnackBarContext';
-import { useGetGuideData } from 'graphqlHooks/useGetGuideData';
 
 const useStyles = makeStyles((theme) => ({
 	searchDialogSize: {

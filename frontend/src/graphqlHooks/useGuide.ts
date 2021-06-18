@@ -1,7 +1,5 @@
 import { useQuery, gql } from '@apollo/client';
-import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import { SpotContext } from 'Store/SpotContext';
 
 interface Guide {
 	id: string;
@@ -24,7 +22,6 @@ interface GuideVars {
 
 export const useGuide = () => {
 	let { guideBookId, tripId } = useParams();
-	const { dispatch } = useContext(SpotContext);
 
 	const {
 		loading,
@@ -32,9 +29,6 @@ export const useGuide = () => {
 		data: { getGuide: guideData } = {},
 	} = useQuery<GuideData, GuideVars>(GET_GUIDE, {
 		skip: tripId,
-		onCompleted({ getGuide }) {
-			dispatch({ type: 'LOAD_GUIDE', payload: { guide: getGuide } });
-		},
 		variables: {
 			guideId: guideBookId,
 		},
