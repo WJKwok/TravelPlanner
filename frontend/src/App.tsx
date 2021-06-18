@@ -10,7 +10,6 @@ import Logger from './Pages/logger';
 import Landing from './Pages/landing';
 import Trips from './Pages/trips';
 
-import PlaceContextProvider from './Store/PlaceContext';
 import SnackBarContextProvider from './Store/SnackBarContext';
 import { AuthContextProvider } from './Store/AuthContext';
 import SpotContextProvider from './Store/SpotContext';
@@ -69,47 +68,45 @@ function App() {
 
 	return (
 		<AuthContextProvider>
-			<PlaceContextProvider>
-				<SpotContextProvider>
-					<SnackBarContextProvider>
-						<LoggerContextProvider>
-							<ThemeProvider theme={theme}>
-								<BrowserRouter>
-									<div className={classes.container}>
-										<Route exact path="/" component={Landing} />
-										<Route
-											exact
-											path="/planner/:guideBookId"
-											component={Planner}
-										/>
-										<UnAuthRoute exact path="/trips" component={Trips} />
-										<UnAuthRoute
-											exact
-											path="/planner/:guideBookId/:tripId"
-											component={Planner}
-										/>
-									</div>
-									<AdminRoute
-										exact
-										path="/logger/:guideBookId"
-										component={Logger}
-									/>
+			<SpotContextProvider>
+				<SnackBarContextProvider>
+					<LoggerContextProvider>
+						<ThemeProvider theme={theme}>
+							<BrowserRouter>
+								<div className={classes.container}>
+									<Route exact path="/" component={Landing} />
 									<Route
 										exact
-										path="/web/planner/:guideBookId"
-										component={PlannerWeb}
+										path="/planner/:guideBookId"
+										component={Planner}
 									/>
+									<UnAuthRoute exact path="/trips" component={Trips} />
 									<UnAuthRoute
 										exact
-										path="/web/planner/:guideBookId/:tripId"
-										component={PlannerWeb}
+										path="/planner/:guideBookId/:tripId"
+										component={Planner}
 									/>
-								</BrowserRouter>
-							</ThemeProvider>
-						</LoggerContextProvider>
-					</SnackBarContextProvider>
-				</SpotContextProvider>
-			</PlaceContextProvider>
+								</div>
+								<AdminRoute
+									exact
+									path="/logger/:guideBookId"
+									component={Logger}
+								/>
+								<Route
+									exact
+									path="/web/planner/:guideBookId"
+									component={PlannerWeb}
+								/>
+								<UnAuthRoute
+									exact
+									path="/web/planner/:guideBookId/:tripId"
+									component={PlannerWeb}
+								/>
+							</BrowserRouter>
+						</ThemeProvider>
+					</LoggerContextProvider>
+				</SnackBarContextProvider>
+			</SpotContextProvider>
 		</AuthContextProvider>
 	);
 }
