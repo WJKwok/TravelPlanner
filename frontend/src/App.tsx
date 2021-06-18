@@ -4,12 +4,6 @@ import { AuthRoute, UnAuthRoute, AdminRoute } from './utils/AuthRoute';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import Planner from './Pages/planner';
-import PlannerWeb from './Pages/plannerWeb';
-import Logger from './Pages/logger';
-import Landing from './Pages/landing';
-import Trips from './Pages/trips';
-
 import SnackBarContextProvider from './Store/SnackBarContext';
 import { AuthContextProvider } from './Store/AuthContext';
 import SpotContextProvider from './Store/SpotContext';
@@ -20,6 +14,8 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import teal from '@material-ui/core/colors/teal';
 import deepOrange from '@material-ui/core/colors/deepOrange';
+
+import { Landing, Trips, Planner, PlannerWeb, Logger } from 'Pages';
 
 declare module '@material-ui/core/styles/createMuiTheme' {
 	interface Theme {
