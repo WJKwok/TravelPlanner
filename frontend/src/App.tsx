@@ -10,7 +10,7 @@ import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import teal from '@material-ui/core/colors/teal';
 import deepOrange from '@material-ui/core/colors/deepOrange';
 
-import { Landing, Trips, Planner, PlannerWeb, Logger } from 'Pages';
+import { Landing, Trips, PlannerWeb, Logger } from 'Pages';
 import {
 	SnackBarContextProvider,
 	AuthContextProvider,
@@ -72,17 +72,7 @@ function App() {
 							<BrowserRouter>
 								<div className={classes.container}>
 									<Route exact path="/" component={Landing} />
-									<Route
-										exact
-										path="/planner/:guideBookId"
-										component={Planner}
-									/>
 									<UnAuthRoute exact path="/trips" component={Trips} />
-									<UnAuthRoute
-										exact
-										path="/planner/:guideBookId/:tripId"
-										component={Planner}
-									/>
 								</div>
 								<AdminRoute
 									exact
