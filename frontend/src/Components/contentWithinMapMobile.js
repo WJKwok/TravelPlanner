@@ -99,6 +99,16 @@ function ContentWithinMapMobile() {
 	}, [spotState.clickedCategories.length]);
 
 	const cardWithAndMargin = window.innerWidth * 0.93;
+
+	useEffect(() => {
+		if (spotState.spotToHighlightID) {
+			const spotToHighlightIndex = spots.findIndex(
+				(spot) => spot.id === spotState.spotToHighlightID
+			);
+			executeScroll(spotToHighlightIndex, spots[spotToHighlightIndex], false);
+		}
+	}, [spotState.spotToHighlightID]);
+
 	const executeScroll = (index, spot) => {
 		const pixel = index * cardWithAndMargin;
 		console.log('pixel', pixel);
