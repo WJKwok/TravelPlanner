@@ -1,13 +1,11 @@
 import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
-
-import FaceIcon from '@material-ui/icons/Face';
 
 import { AuthContext } from 'Store';
-import AuthModal from './AuthModal';
+import { AuthModal } from 'Components';
 
-import IconButton from '@material-ui/core/IconButton';
+import { makeStyles } from '@material-ui/core/styles';
+import FaceIcon from '@material-ui/icons/Face';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 
@@ -27,7 +25,7 @@ const useStyles = makeStyles({
 	},
 });
 
-const ProfileIconButton = () => {
+export const ProfileIconButton = () => {
 	const classes = useStyles();
 	const {
 		authState: { user },
@@ -63,5 +61,3 @@ const ProfileIconButton = () => {
 		</>
 	);
 };
-
-export default ProfileIconButton;

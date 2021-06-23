@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { MapMarker } from 'Components';
+import { useGetGuideData } from 'graphqlHooks';
+
 import GoogleMapReact from 'google-map-react';
-import { fitBounds } from 'google-map-react';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { MapMarker } from './mapMarkerWebAndMobile';
-import { useGetGuideData } from 'graphqlHooks';
 
 const useStyles = makeStyles((theme) => ({
 	gMap: {
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function GoogleMapWithScrollBoard({
+export function GoogleMapWithScrollBoardWeb({
 	spots,
 	pinClicked,
 	mouseOverCard,
@@ -180,8 +180,6 @@ function GoogleMapWithScrollBoard({
 		</div>
 	);
 }
-
-export default GoogleMapWithScrollBoard;
 
 /* using animation
 marker: {

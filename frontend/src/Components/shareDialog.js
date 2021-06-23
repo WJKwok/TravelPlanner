@@ -1,6 +1,8 @@
 import React, { useState, useContext } from 'react';
 import { SnackBarContext } from 'Store';
 
+import { useMutation, gql } from '@apollo/client';
+
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -10,9 +12,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Chip from '@material-ui/core/Chip';
 
-import { useMutation, gql } from '@apollo/client';
-
-export default function FormDialog({ trip, open, setOpen }) {
+export function ShareDialog({ trip, open, setOpen }) {
 	const { setSnackMessage } = useContext(SnackBarContext);
 
 	const [email, setEmail] = useState('');

@@ -3,15 +3,16 @@ import { SpotContext } from 'Store';
 
 import { useLazyQuery, gql } from '@apollo/client';
 import { SPOT_DATA } from '../../utils/graphql';
+import { useGetGuideData } from 'graphqlHooks';
 
 import Paper from '@material-ui/core/Paper';
-import { iconDict } from '../../Components/spotIcons';
 import { makeStyles } from '@material-ui/core';
 import CategoryChip from './categoryChip';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import Tooltip from '@material-ui/core/Tooltip';
-import SnackBar from '../snackBar';
-import { useGetGuideData } from 'graphqlHooks';
+
+import { SnackBar, iconDict } from 'Components';
+
 const useStyles = makeStyles((theme) => ({
 	chipRow: {
 		display: 'flex',
@@ -36,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const CategoryChipBar = ({ hideOnlyLikedButton }) => {
+export const CategoryChipBar = ({ hideOnlyLikedButton }) => {
 	const classes = useStyles();
 	const { dispatch, spotState } = useContext(SpotContext);
 
@@ -128,8 +129,6 @@ const CategoryChipBar = ({ hideOnlyLikedButton }) => {
 		</>
 	);
 };
-
-export default CategoryChipBar;
 
 const GET_SPOTS = gql`
 	query getSpotsForCategoryInGuide($guideId: ID!, $category: String!) {

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
+
+import { fetchOnePlaceId, fetchPredictions } from '../Services/googlePlaceApi';
+
 import { makeStyles } from '@material-ui/core/styles';
 import { List, ListItem, ListItemText, TextField } from '@material-ui/core/';
 import Paper from '@material-ui/core/Paper';
-
-import { fetchOnePlaceId, fetchPredictions } from '../Services/googlePlaceApi';
 
 const useStyles = makeStyles({
 	root: {
@@ -22,7 +23,7 @@ const useStyles = makeStyles({
 	},
 });
 
-function PlaceAutoComplete({
+export function PlaceAutoComplete({
 	clickFunction,
 	city,
 	coordinates,
@@ -107,5 +108,3 @@ function PlaceAutoComplete({
 		</>
 	);
 }
-
-export default PlaceAutoComplete;

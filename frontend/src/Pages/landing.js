@@ -1,12 +1,13 @@
-import React, { Suspense, useState } from 'react';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useQuery, gql } from '@apollo/client';
-import { Link, useHistory } from 'react-router-dom';
+
+import { AppBar } from 'Components';
 
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CardMedia from '@material-ui/core/CardMedia';
-import AppBar from '../Components/appBar';
 
 const useStyles = makeStyles({
 	cardMedia: {

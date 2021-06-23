@@ -1,9 +1,11 @@
 import React from 'react';
+
+import moment from 'moment';
+
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Rating from '@material-ui/lab/Rating';
 import Avatar from '@material-ui/core/Avatar';
-import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
 	review: {

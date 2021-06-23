@@ -1,14 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react';
 
 import { SpotContext, AuthContext } from 'Store';
-
-import ContentWithinMapWeb from '../../Components/contentWithinMapWeb';
-import ContentWithinMapMobile from '../../Components/contentWithinMapMobile';
-import { ListPage } from 'Components/listPage';
-import ConfirmNavPrompt from '../../Components/confirmNavPrompt';
-
-import { useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import {
+	ContentWithinMapMobile,
+	ContentWithinMapWeb,
+	ListPage,
+	ConfirmNavPrompt,
+} from 'Components';
 import {
 	useEditTrip,
 	useSubmitTrip,
@@ -17,6 +15,9 @@ import {
 	useTripSubscription,
 	useGetGuideData,
 } from 'graphqlHooks';
+
+import { useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 function Planner(props) {
 	const { authState } = useContext(AuthContext);

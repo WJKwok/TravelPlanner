@@ -1,18 +1,21 @@
 import React, { useRef, useState, useEffect, useContext } from 'react';
 import { SpotContext } from 'Store';
 
+import {
+	GoogleMapWithScrollBoardWeb,
+	DaySelectMenu,
+	SpotCardBaseWeb,
+	SidePanelCard,
+	ProfileIconButton,
+	LeftButtonGroup,
+	CategoryChipBar,
+} from 'Components';
+
+import { getSpotsFromState } from 'utils/getSpotsFromState';
+
 import moment from 'moment';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-
-import GoogleMapWithScrollBoard from './googleMapWeb';
-import DaySelectMenu from './daySelectMenu';
-import { SpotCardBase } from './spotCardBaseWeb';
-import { SidePanelCard } from './sidePanelCard';
-import ProfileIconButton from './profileIconButton';
-import { LeftButtonGroup } from './leftButtonGroup';
-import CategoryChipBar from './categoryChipBarWeb';
-import { getSpotsFromState } from 'utils/getSpotsFromState';
 
 const useStyles = makeStyles((theme) => ({
 	categoryBar: {
@@ -50,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function ContentWithinMapWeb(props) {
+export function ContentWithinMapWeb(props) {
 	const theme = useTheme();
 	const { isEditMode } = props;
 
@@ -101,7 +104,7 @@ function ContentWithinMapWeb(props) {
 	);
 
 	return (
-		<GoogleMapWithScrollBoard
+		<GoogleMapWithScrollBoardWeb
 			spots={spots}
 			resizable={true}
 			pinClicked={executeScroll}
@@ -125,7 +128,7 @@ function ContentWithinMapWeb(props) {
 				>
 					{spots.length > 0
 						? spots.map((spot, index) => (
-								<SpotCardBase
+								<SpotCardBaseWeb
 									isEditMode={isEditMode}
 									key={spot.id}
 									spot={spot}
@@ -149,10 +152,8 @@ function ContentWithinMapWeb(props) {
 					<ProfileIconButton />
 				</div>
 			</div>
-		</GoogleMapWithScrollBoard>
+		</GoogleMapWithScrollBoardWeb>
 	);
 }
-
-export default ContentWithinMapWeb;
 
 // <DaySelectMenu day={day} dayChangeHandler={setDay} />

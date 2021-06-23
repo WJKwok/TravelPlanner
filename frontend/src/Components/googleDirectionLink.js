@@ -1,8 +1,6 @@
 import React from 'react';
-import { CardActions, Button } from '@material-ui/core';
-import DirectionsIcon from '@material-ui/icons/Directions';
 
-const GoogleDirectionLink = ({ place, children }) => {
+export const GoogleDirectionLink = ({ place, children }) => {
 	// const mapUrlLauncher = `https://www.google.com/maps/dir/?api=1&destination=${encodeURI(
 	// 	place.name
 	// )}&destination_place_id=${place.id}&travelmode=transit`;
@@ -21,5 +19,3 @@ const GoogleDirectionLink = ({ place, children }) => {
 		</a>
 	);
 };
-
-export default GoogleDirectionLink;

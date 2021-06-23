@@ -1,20 +1,22 @@
 import React, { useContext } from 'react';
+
 import { SpotContext } from 'Store';
-import { makeStyles } from '@material-ui/core/styles';
+import {
+	SpotCardImages,
+	GoogleReviews,
+	OpeningHoursAccordion,
+	GoogleDirectionLink,
+} from 'Components';
 
-import CardContent from '@material-ui/core/CardContent';
-
-import Typography from '@material-ui/core/Typography';
-import { SpotCardImages } from './images';
 import marked from 'marked';
+
+import { makeStyles } from '@material-ui/core/styles';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import StarRateIcon from '@material-ui/icons/StarRate';
 import Divider from '@material-ui/core/Divider';
-
-import { GoogleReviews } from './googleReviews';
-import { OpeningHoursAccordion } from './openingHoursAccordion';
-import GoogleDirectionLink from './googleDirectionLink';
 
 const useStyles = makeStyles((theme) => ({
 	mediaCards: {

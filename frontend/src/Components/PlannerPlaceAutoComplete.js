@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
+import { SnackBarContext, SpotContext } from 'Store';
+import { useGetSpot, useGetGuideData } from 'graphqlHooks';
 
+import { Dialog } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { useGetSpot, useGetGuideData } from 'graphqlHooks';
-import PlaceAutoComplete from './placeAutoComplete';
-import { Dialog } from '@material-ui/core';
-import { SnackBarContext, SpotContext } from 'Store';
+import { PlaceAutoComplete } from 'Components';
 
 const useStyles = makeStyles((theme) => ({
 	searchDialogSize: {

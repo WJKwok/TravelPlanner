@@ -11,18 +11,21 @@ import {
 	SnackBarContext,
 	SpotContext,
 } from 'Store';
+
+import { useMutation, gql } from '@apollo/client';
 import { SPOT_DATA } from '../utils/graphql';
 
-import { LoggingImage } from './images';
-import PlaceAutoComplete from './placeAutoComplete';
-import { CategoryDragAndDrop } from './categoryDragAndDrop';
-import { SpotCardBase } from './spotCardBaseWeb';
-import { SpotCardContent } from './spotCardContent';
+import {
+	LoggingImage,
+	PlaceAutoComplete,
+	CategoryDragAndDrop,
+	SpotCardBaseWeb,
+	SpotCardContent,
+} from 'Components';
 
 import { TextField, Button, Typography, Card } from '@material-ui/core/';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { useMutation, gql } from '@apollo/client';
 import { getPublicIdsOfUploadedImages } from '../Services/cloudinaryApi';
 
 const useStyles = makeStyles((theme) => ({
@@ -513,7 +516,7 @@ export const LoggingForm = ({ guide }) => {
 			<div className={classes.previewCardAndSubmitDiv}>
 				<div>
 					<Typography className={classes.previewText}>Preview</Typography>
-					<SpotCardBase
+					<SpotCardBaseWeb
 						spot={{
 							categories: spotInput.categories,
 							content: spotInput.content,

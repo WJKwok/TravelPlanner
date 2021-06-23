@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 
+import { SnackBarContext } from 'Store';
+
 import { makeStyles } from '@material-ui/core/styles';
 import { blue, red, green } from '@material-ui/core/colors/';
 import Zoom from '@material-ui/core/Zoom';
-
-import { SnackBarContext } from 'Store';
 
 const useStyles = makeStyles({
 	snackBar: (props) => ({
@@ -21,7 +21,7 @@ const snackBarColorCode = {
 	Info: blue[500],
 };
 
-const SnackBar = () => {
+export const SnackBar = () => {
 	const { snackMessage } = useContext(SnackBarContext);
 	const props = { backgroundColor: snackBarColorCode[snackMessage.code] };
 	const classes = useStyles(props);
@@ -32,5 +32,3 @@ const SnackBar = () => {
 		</Zoom>
 	);
 };
-
-export default SnackBar;

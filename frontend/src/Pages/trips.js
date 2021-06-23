@@ -1,32 +1,19 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, gql } from '@apollo/client';
 
 import { AuthContext, SpotContext, SnackBarContext } from 'Store';
 
-import AppBar from '../Components/appBar';
-import Button from '@material-ui/core/Button';
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-import AddCircleOutlineRoundedIcon from '@material-ui/icons/AddCircleOutlineRounded';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import {
-	Card,
-	CardMedia,
-	CardContent,
-	Typography,
-	IconButton,
-	makeStyles,
-} from '@material-ui/core';
-import Popover from '@material-ui/core/Popover';
-import LinearProgress from '@material-ui/core/LinearProgress';
+import { AppBar, TripCard } from 'Components';
 
 import { europeanCountries, flagDict } from '../utils/flags';
+
+import Button from '@material-ui/core/Button';
+import AddCircleOutlineRoundedIcon from '@material-ui/icons/AddCircleOutlineRounded';
+import { Typography, IconButton, makeStyles } from '@material-ui/core';
+import Popover from '@material-ui/core/Popover';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import Avatar from '@material-ui/core/Avatar';
-import Tooltip from '@material-ui/core/Tooltip';
-import ShareDialog from '../Components/shareDialog';
-import { TripCard } from '../Components/tripCard';
 
 const useStyles = makeStyles((theme) => ({
 	root: {

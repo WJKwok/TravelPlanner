@@ -11,7 +11,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-function AuthModal({ registerOpen, setRegisterOpen, navgiateTo }) {
+export function AuthModal({ registerOpen, setRegisterOpen, navgiateTo }) {
 	const { authState, dispatch } = useContext(AuthContext);
 	const { setSnackMessage } = useContext(SnackBarContext);
 
@@ -216,5 +216,3 @@ const GOOGLE_AUTH = gql`
 		}
 	}
 `;
-
-export default AuthModal;

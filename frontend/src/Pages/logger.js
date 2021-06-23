@@ -1,15 +1,17 @@
 import React, { useContext, useEffect } from 'react';
-import { SpotContext } from 'Store';
-
-import CategoryChipBarWeb from '../Components/categoryChipBarWeb';
-import ContentWithinMapWeb from '../Components/contentWithinMapWeb';
-import AppBar from '../Components/appBar';
-import { LoggingForm } from '../Components/loggingForm';
-
-import { SPOT_DATA } from '../utils/graphql';
 
 import { useQuery, gql } from '@apollo/client';
+import { SPOT_DATA } from '../utils/graphql';
 import { useGetGuideData } from 'graphqlHooks';
+
+import { SpotContext } from 'Store';
+
+import {
+	CategoryChipBar,
+	ContentWithinMapWeb,
+	AppBar,
+	LoggingForm,
+} from 'Components';
 
 function Logger(props) {
 	const guideId = props.match.params.guideBookId;
@@ -69,7 +71,7 @@ function Logger(props) {
 				boardId={columnId}
 				spots={spots}
 				coordinates={guideData.coordinates}
-				catBar={<CategoryChipBarWeb hideOnlyLikedButton={true} />}
+				catBar={<CategoryChipBar hideOnlyLikedButton={true} />}
 				// leftButtonGroup={
 				// 	<LeftButtonGroup
 				// 		isLoggedIn={!authState.user}

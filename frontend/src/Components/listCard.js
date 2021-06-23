@@ -1,16 +1,16 @@
 import React, { useState, useContext } from 'react';
 import { SpotContext } from 'Store';
+
+import { SpotCardImages, iconDict, OpeningHoursAccordion } from 'Components';
+
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Typography from '@material-ui/core/Typography';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import { SpotCardImages } from './images';
-import marked from 'marked';
-import { iconDict } from './spotIcons';
 import StarRateIcon from '@material-ui/icons/StarRate';
 
-import { OpeningHoursAccordion } from './openingHoursAccordion';
+import marked from 'marked';
 
 const useStyles = makeStyles((theme) => ({
 	header: {

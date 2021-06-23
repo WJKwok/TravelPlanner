@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useContext } from 'react';
 import { SpotContext } from 'Store';
 
+import { ListCard, CategoryChipBar } from 'Components';
+
 import { makeStyles } from '@material-ui/core/styles';
-import { ListCard } from './listCard';
 import MapIcon from '@material-ui/icons/Map';
 import Button from '@material-ui/core/Button';
-import CategoryChipBar from './categoryChipBarWeb';
+
 import { getSpotsFromState } from 'utils/getSpotsFromState';
 
 const useStyles = makeStyles((theme) => ({

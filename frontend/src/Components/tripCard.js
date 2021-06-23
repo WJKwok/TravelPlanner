@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+
+import { ShareDialog } from 'Components';
+
 import moment from 'moment';
 
 import Menu from '@material-ui/core/Menu';
@@ -12,8 +15,6 @@ import {
 	Typography,
 	makeStyles,
 } from '@material-ui/core';
-
-import ShareDialog from './shareDialog';
 
 const useStyles = makeStyles((theme) => ({
 	tripCard: {

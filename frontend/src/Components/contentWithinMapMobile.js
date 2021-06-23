@@ -1,23 +1,26 @@
 import React, { useRef, useState, useEffect, useContext } from 'react';
 import { SpotContext } from 'Store';
-import { Droppable } from 'react-beautiful-dnd';
+
+import {
+	ProfileIconButton,
+	LeftButtonGroup,
+	CategoryChipBar,
+	SpotCardBaseMobile,
+	SlideUpCard,
+	GoogleMapWithScrollBoardMobile,
+	DaySelectMenu,
+} from 'Components';
+
+import { getSpotsFromState } from 'utils/getSpotsFromState';
 
 import moment from 'moment';
-import GoogleMapWithScrollBoard from './googleMapMobile';
-import DaySelectMenu from './daySelectMenu';
+import debounce from 'lodash/debounce';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Paper from '@material-ui/core/Paper';
-import { SpotCardBase } from './spotCardBaseMobile';
-import { SlideUpCard } from './slideUpCard';
-import debounce from 'lodash/debounce';
 import ArrowBackOutlinedIcon from '@material-ui/icons/ArrowBackOutlined';
-import ProfileIconButton from './profileIconButton';
-import { LeftButtonGroup } from './leftButtonGroup';
-import CategoryChipBar from './categoryChipBarWeb';
-import { getSpotsFromState } from 'utils/getSpotsFromState';
 
 const useStyles = makeStyles((theme) => ({
 	categoryBar: {
@@ -70,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function ContentWithinMapMobile() {
+export function ContentWithinMapMobile() {
 	const { spotState } = useContext(SpotContext);
 	const spots = getSpotsFromState(spotState);
 
@@ -144,7 +147,7 @@ function ContentWithinMapMobile() {
 	return (
 		<>
 			{/* <DaySelectMenu day={day} dayChangeHandler={setDay} /> */}
-			<GoogleMapWithScrollBoard
+			<GoogleMapWithScrollBoardMobile
 				spots={spots}
 				resizable={true}
 				pinClicked={executeScroll}
@@ -177,7 +180,7 @@ function ContentWithinMapMobile() {
 					>
 						{spots.length > 0
 							? spots.map((spot, index) => (
-									<SpotCardBase
+									<SpotCardBaseMobile
 										key={spot.id}
 										spot={spot}
 										day={day}
@@ -205,9 +208,7 @@ function ContentWithinMapMobile() {
 						<ProfileIconButton />
 					</div>
 				</div>
-			</GoogleMapWithScrollBoard>
+			</GoogleMapWithScrollBoardMobile>
 		</>
 	);
 }
-
-export default ContentWithinMapMobile;

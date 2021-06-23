@@ -1,6 +1,8 @@
 import React from 'react';
+
+import { iconDict } from 'Components';
+
 import { makeStyles } from '@material-ui/core/styles';
-import { iconDict } from './spotIcons';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 
 const useStyles = makeStyles((theme) => ({

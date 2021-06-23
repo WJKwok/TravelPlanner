@@ -2,6 +2,8 @@ import React, { useContext, useState } from 'react';
 
 import { AuthContext, SpotContext } from 'Store';
 
+import { AuthModal, PlannerPlaceAutoComplete } from 'Components';
+
 import ListIcon from '@material-ui/icons/List';
 import SaveIcon from '@material-ui/icons/Save';
 import Icon from '@material-ui/core/Icon';
@@ -9,9 +11,6 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-
-import AuthModal from './AuthModal';
-import { PlannerPlaceAutoComplete } from './PlannerPlaceAutoComplete';
 
 const useStyles = makeStyles((theme) => ({
 	iconButton: {

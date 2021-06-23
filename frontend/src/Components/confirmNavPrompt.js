@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Prompt } from 'react-router-dom';
+
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -71,5 +72,3 @@ export const ConfirmNavPrompt = ({ when, navigate }) => {
 		</>
 	);
 };
-
-export default ConfirmNavPrompt;

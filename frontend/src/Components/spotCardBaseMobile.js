@@ -1,8 +1,11 @@
 import React, { useState, useContext } from 'react';
-import { SpotContext, LoggerContext } from 'Store';
-import moment from 'moment';
 
-import { iconDict } from './spotIcons';
+import { SpotContext, LoggerContext } from 'Store';
+import { SpotCardImages, HeaderThumbnail } from 'Components';
+
+import moment from 'moment';
+import marked from 'marked';
+
 import { makeStyles } from '@material-ui/core/styles';
 import {
 	Card,
@@ -10,16 +13,11 @@ import {
 	CardContent,
 	Collapse,
 	Typography,
-	IconButton,
 } from '@material-ui/core';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import StarRateIcon from '@material-ui/icons/StarRate';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-
-import marked from 'marked';
-import { SpotCardImages, HeaderThumbnail } from './images';
-import GoogleDirectionLink from './googleDirectionLink';
 
 const useStyles = makeStyles((theme) => ({
 	root: (props) => ({
@@ -140,7 +138,7 @@ renderer.link = (href, title, text) => {
 	return html.replace(/^<a /, '<a target="_blank" rel="nofollow" ');
 };
 
-export const SpotCardBase = (props) => {
+export const SpotCardBaseMobile = (props) => {
 	const {
 		spot,
 		index,

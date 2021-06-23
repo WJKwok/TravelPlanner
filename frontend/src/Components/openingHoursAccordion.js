@@ -1,20 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
+
+import clsx from 'clsx';
+import moment from 'moment';
+
 import { makeStyles } from '@material-ui/core/styles';
-import Accordion from '@material-ui/core/Accordion';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ScheduleIcon from '@material-ui/icons/Schedule';
-import Divider from '@material-ui/core/Divider';
 import Collapse from '@material-ui/core/Collapse';
-import clsx from 'clsx';
-import IconButton from '@material-ui/core/IconButton';
-import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
 	root: {

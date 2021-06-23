@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { SpotContext } from 'Store';
+
 import moment from 'moment';
 import MomentUtils from '@date-io/moment';
+
 import {
 	MuiPickersUtilsProvider,
 	KeyboardDatePicker,
 	DatePicker as DatePickerUI,
 } from '@material-ui/pickers';
-
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
-
-import { SpotContext } from 'Store';
 
 /* custom style for disabled property
 https://stackoverflow.com/questions/58540364/material-ui-overide-disabled-styles-for-inputbase
@@ -31,7 +31,7 @@ const useStyles = makeStyles({
 	},
 });
 
-function DatePicker() {
+export function DatePicker() {
 	const { dispatch, spotState } = useContext(SpotContext);
 
 	const classes = useStyles();
@@ -150,5 +150,3 @@ function DatePicker() {
 		</MuiPickersUtilsProvider>
 	);
 }
-
-export default DatePicker;
