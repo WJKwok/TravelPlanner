@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import App from './App';
 
 import {
@@ -16,9 +16,12 @@ import { setContext } from '@apollo/client/link/context';
 
 import { getMainDefinition } from '@apollo/client/utilities';
 import { WebSocketLink } from '@apollo/client/link/ws';
+import { persistCache, LocalStorageWrapper } from 'apollo3-cache-persist';
 
-const getNewToken = () => {
+const getNewToken = async () => {
 	console.log('refreshToken', localStorage.getItem('refreshToken'));
+
+	const client = await getClient();
 	return client
 		.mutate({
 			mutation: REFRESH_TOKEN,
@@ -107,10 +110,19 @@ const authLink = setContext(() => {
 	};
 });
 
-export const client = new ApolloClient({
-	link: ApolloLink.from([errorLink, authLink, splitLink]),
-	cache: new InMemoryCache(),
-});
+export const getClient = async () => {
+	const cache = new InMemoryCache();
+
+	// await before instantiating ApolloClient, else queries might run before the cache is persisted
+	await persistCache({
+		cache,
+		storage: new LocalStorageWrapper(window.localStorage),
+	});
+	return new ApolloClient({
+		link: ApolloLink.from([errorLink, authLink, splitLink]),
+		cache,
+	});
+};
 
 const REFRESH_TOKEN = gql`
 	mutation refreshToken($refreshToken: String!) {
@@ -121,8 +133,24 @@ const REFRESH_TOKEN = gql`
 	}
 `;
 
-export default (
-	<ApolloProvider client={client}>
-		<App />
-	</ApolloProvider>
-);
+export const ApolloApp = () => {
+	const [client, setClient] = useState(null);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		getClient().then((client) => {
+			setClient(client);
+			setLoading(false);
+		});
+	}, []);
+
+	if (loading) {
+		return <h2>Initializing app...</h2>;
+	}
+
+	return (
+		<ApolloProvider client={client}>
+			<App />
+		</ApolloProvider>
+	);
+};

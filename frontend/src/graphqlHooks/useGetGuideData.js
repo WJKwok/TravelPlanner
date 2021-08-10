@@ -1,4 +1,4 @@
-import { client } from 'ApolloProvider';
+import { useApolloClient } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 import gql from 'graphql-tag';
 
@@ -6,6 +6,7 @@ import gql from 'graphql-tag';
 
 export const useGetGuideData = () => {
 	let { guideBookId } = useParams();
+	const client = useApolloClient();
 
 	const guideData = client.readFragment({
 		id: `Guide:${guideBookId}`, // The value of the to-do item's unique identifier
