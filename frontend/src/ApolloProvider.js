@@ -11,12 +11,17 @@ import {
 	split,
 	gql,
 } from '@apollo/client';
+import { RetryLink } from '@apollo/client/link/retry';
+import QueueLink from 'apollo-link-queue';
+import SerializingLink from 'apollo-link-serialize';
+
 import { onError } from '@apollo/client/link/error';
 import { setContext } from '@apollo/client/link/context';
 
 import { getMainDefinition } from '@apollo/client/utilities';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { persistCache, LocalStorageWrapper } from 'apollo3-cache-persist';
+import safeJsonStringify from 'safe-json-stringify';
 
 const getNewToken = async () => {
 	console.log('refreshToken', localStorage.getItem('refreshToken'));
@@ -72,6 +77,53 @@ const errorLink = onError(({ graphQLErrors, operation, forward }) => {
 	}
 });
 
+const retryLink = new RetryLink({ attempts: { max: Infinity } });
+
+const queueLink = new QueueLink();
+window.addEventListener('offline', () => queueLink.close());
+window.addEventListener('online', () => queueLink.open());
+
+const serializingLink = new SerializingLink();
+
+const trackerLink = new ApolloLink((operation, forward) => {
+	console.log('tracker:', forward);
+	if (forward === undefined) return null;
+
+	const context = operation.getContext();
+	const trackedQueries =
+		JSON.parse(window.localStorage.getItem('trackedQueries') || null) || [];
+
+	console.log('tracker:', context, trackedQueries);
+
+	if (context.tracked) {
+		const { operationName, query, variables } = operation;
+
+		const newTrackedQuery = {
+			query,
+			context,
+			variables,
+			operationName,
+		};
+		console.log('it is tracked', newTrackedQuery);
+
+		window.localStorage.setItem(
+			'trackedQueries',
+			safeJsonStringify([...trackedQueries, newTrackedQuery])
+		);
+	}
+
+	return forward(operation).map((data) => {
+		if (context.tracked) {
+			window.localStorage.setItem(
+				'trackedQueries',
+				safeJsonStringify(trackedQueries)
+			);
+		}
+
+		return data;
+	});
+});
+
 const httpLink = createHttpLink({
 	uri:
 		process.env.NODE_ENV === 'production'
@@ -119,7 +171,15 @@ export const getClient = async () => {
 		storage: new LocalStorageWrapper(window.localStorage),
 	});
 	return new ApolloClient({
-		link: ApolloLink.from([errorLink, authLink, splitLink]),
+		link: ApolloLink.from([
+			trackerLink,
+			queueLink,
+			serializingLink,
+			retryLink,
+			errorLink,
+			authLink,
+			splitLink,
+		]),
 		cache,
 	});
 };
@@ -143,6 +203,40 @@ export const ApolloApp = () => {
 			setLoading(false);
 		});
 	}, []);
+
+	useEffect(() => {
+		if (!client) return;
+
+		const execute = async () => {
+			const trackedQueries =
+				JSON.parse(window.localStorage.getItem('trackedQueries') || null) || [];
+
+			const updateFunction = (cache, result) => {
+				console.log('update function:', { cache, result });
+			};
+			console.log('trackedQueries', trackedQueries);
+			const promises = trackedQueries.map(
+				({ variables, query, context, operationName }) =>
+					client.mutate({
+						context,
+						variables,
+						mutation: query,
+						update: updateFunction,
+						optimisticResponse: context.optimisticResponse,
+					})
+			);
+
+			try {
+				await Promise.all(promises);
+			} catch (error) {
+				// A good place to show notification
+			}
+
+			window.localStorage.setItem('trackedQueries', []);
+		};
+
+		execute();
+	}, [client]);
 
 	if (loading) {
 		return <h2>Initializing app...</h2>;

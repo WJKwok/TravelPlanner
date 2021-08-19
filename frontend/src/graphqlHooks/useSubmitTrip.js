@@ -56,6 +56,9 @@ export const useSubmitTrip = (setTripId) => {
 				console.log('update cache error:', err);
 			}
 		},
+		context: {
+			serializationKey: 'SUBMIT_TRIP',
+		},
 		onError(err) {
 			console.log(err);
 		},

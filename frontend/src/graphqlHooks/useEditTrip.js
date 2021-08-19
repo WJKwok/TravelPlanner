@@ -55,6 +55,21 @@ export const useEditTrip = (tripId) => {
 				console.log('update cache error:', err);
 			}
 		},
+		optimisticResponse: {
+			editTrip: {
+				__typename: 'Trip',
+				id: tripId,
+				startDate: spotState.startDate.format('YYYY-MM-DD'),
+				dayLists: daySpotsArray,
+				categoriesInTrip,
+				likedSpots,
+				googlePlacesInTrip,
+			},
+		},
+		context: {
+			tracked: true,
+			serializationKey: 'EDIT_TRIP_KEY',
+		},
 		onError(err) {
 			console.log(err);
 		},
