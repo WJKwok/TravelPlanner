@@ -17,6 +17,10 @@
 ### CI/CD SE_23:
 note: `git push` will trigger `npm test` and all tests will have to pass before the push would complete successfully.
 
+### NoSQL database SE_06:
+data model of database: https://imgur.com/a/h3ssB2E
+ER-diagram: https://imgur.com/a/7qsmcvV
+
 ### Cybersecurity SE_09:
 What can go wrong?
 Fortunately, my app is for itinerary planning and does not store any payment or personal data. That said, for the application to be useful, users should not have to worry about their itinerary being edited by another person. Likewise, guide administrators should not worry their guide be edited by a user/ another admin.
