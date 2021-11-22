@@ -14,6 +14,9 @@
 6. create `.env` file and with valid `REACT_APP_GOOGLE_PLACES_API_KEY`, `REACT_APP_CLOUD_NAME` variable
 7. `npm start`
 
+### CI/CD SE_23:
+note: `git push` will trigger `npm test` and all tests will have to pass before the push would complete successfully.
+
 ### Cybersecurity SE_09:
 What can go wrong?
 Fortunately, my app is for itinerary planning and does not store any payment or personal data. That said, for the application to be useful, users should not have to worry about their itinerary being edited by another person. Likewise, guide administrators should not worry their guide be edited by a user/ another admin.
