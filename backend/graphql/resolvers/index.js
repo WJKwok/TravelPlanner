@@ -4,6 +4,7 @@ const guideResolvers = require('./guides');
 const spotResolvers = require('./spots');
 const placeResolvers = require('./places');
 const tripResolvers = require('./trips');
+const berlinPlaceResolvers = require('./berlinPlaces');
 
 module.exports = {
 	Query: {
@@ -12,6 +13,7 @@ module.exports = {
 		...guideResolvers.Query,
 		...spotResolvers.Query,
 		...tripResolvers.Query,
+		...berlinPlaceResolvers.Query,
 	},
 	Mutation: {
 		...userResolvers.Mutataion,

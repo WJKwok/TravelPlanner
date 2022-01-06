@@ -1,6 +1,4 @@
-const Spot = require('../../models/Spot');
-const Place = require('../../models/Place');
-const Guide = require('../../models/Guide');
+const { Spot, Place, Guide } = require('../../models/');
 const checkAuth = require('../../utils/checkAuth');
 const { getGooglePlace } = require('../../utils/googlePlaceApi');
 const ObjectId = require('mongoose').Types.ObjectId;

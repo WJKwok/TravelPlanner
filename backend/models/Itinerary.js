@@ -1,14 +1,15 @@
-const { model, Schema } = require('mongoose');
+const { model, Schema, connection } = require('mongoose');
 
 const itinerarySchema = new Schema({
-    city: String,
-    username: String,
-    createdAt: String,
-    dayPlans: [],
-    user: {
-        type: Schema.ObjectId,
-        ref: 'User',
-    }
+	city: String,
+	username: String,
+	createdAt: String,
+	dayPlans: [],
+	user: {
+		type: Schema.ObjectId,
+		ref: 'User',
+	},
 });
 
-module.exports = model('Itinerary', itinerarySchema);
+module.exports = itinerarySchema;
+// module.exports = model('Itinerary', itinerarySchema);

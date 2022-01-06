@@ -1,4 +1,4 @@
-const { model, Schema } = require('mongoose');
+const { model, Schema, connection } = require('mongoose');
 
 const tripSchema = new Schema({
 	user: {
@@ -17,4 +17,5 @@ const tripSchema = new Schema({
 	sharedWith: [String],
 });
 
-module.exports = model('Trip', tripSchema);
+module.exports = tripSchema;
+// module.exports = model('Trip', tripSchema);

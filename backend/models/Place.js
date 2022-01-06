@@ -1,4 +1,4 @@
-const { model, Schema } = require('mongoose');
+const { model, Schema, connection } = require('mongoose');
 
 const placeSchema = new Schema({
 	_id: String,
@@ -15,4 +15,5 @@ const placeSchema = new Schema({
 	reviews: String,
 });
 
-module.exports = model('Place', placeSchema);
+module.exports = placeSchema;
+// module.exports = model('Place', placeSchema);

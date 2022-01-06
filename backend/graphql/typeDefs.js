@@ -1,6 +1,15 @@
 const gql = require('graphql-tag');
 
 module.exports = gql`
+	type BerlinPlace {
+		name: String
+		googlePlaceId: String
+		content: [String]
+		category: [String]
+		link: [String]
+		tally: Float
+		bay_rating: Float
+	}
 	type User {
 		id: ID!
 		email: String!
@@ -118,6 +127,7 @@ module.exports = gql`
 		getSpot(guideId: ID!, placeId: String!): Spot
 		getSpots(spotIds: [String]): [Spot]
 		getAllSpotsForGuide(guideId: ID!): GuideAndSpots!
+		getBerlinPlaces: [BerlinPlace]!
 	}
 	type Mutation {
 		register(registerInput: RegisterInput): User!

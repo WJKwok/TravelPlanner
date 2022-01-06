@@ -1,9 +1,7 @@
 const { UserInputError, ForbiddenError, withFilter } = require('apollo-server');
-const Trip = require('../../models/Trip');
-const Spot = require('../../models/Spot');
+const { Trip, User, Spot } = require('../../models/');
 const checkAuth = require('../../utils/checkAuth');
 const { getGooglePlace } = require('../../utils/googlePlaceApi');
-const User = require('../../models/User');
 const ObjectId = require('mongoose').Types.ObjectId;
 
 module.exports = {

@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 //const { ACCESS_TOKEN_SECRET } = require('../../config')
-const User = require('../../models/User');
+const { User } = require('../../models/');
 const {
 	validateRegisterInput,
 	validateLoginInput,

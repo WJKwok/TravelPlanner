@@ -1,4 +1,4 @@
-const Place = require('../../models/Place');
+const { Place } = require('../../models/');
 const { getGooglePlaceForUpdate } = require('../../utils/googlePlaceApi');
 const checkAuth = require('../../utils/checkAuth');
 

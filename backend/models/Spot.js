@@ -1,4 +1,4 @@
-const { model, Schema } = require('mongoose');
+const { model, Schema, connection } = require('mongoose');
 
 const spotSchema = new Schema({
 	guide: {
@@ -17,4 +17,5 @@ const spotSchema = new Schema({
 	eventName: String,
 });
 
-module.exports = model('Spot', spotSchema);
+module.exports = spotSchema;
+// module.exports = model('Spot', spotSchema);
