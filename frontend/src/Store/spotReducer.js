@@ -193,7 +193,6 @@ const loadMap = (state, trip) => {
 		},
 		filteredBoard: ['filtered-spots'],
 		tripId: trip.id,
-		guide: trip.guide,
 		clickedCategories: [],
 		queriedCategories: trip.categoriesInTrip,
 	};
@@ -273,10 +272,6 @@ const addSearchItem = (state, newSearchItem) => {
 			},
 		},
 		spotToHighlightID: newSearchItem.id,
-		guide: {
-			...state.guide,
-			categories: [...new Set(['Searched', ...state.guide.categories])],
-		},
 		clickedCategories: [...new Set(['Searched', ...state.clickedCategories])],
 	};
 

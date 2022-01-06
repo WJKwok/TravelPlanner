@@ -11,8 +11,8 @@ export const useTripSubscription = () => {
 	const { getSpots } = useGetSpots();
 
 	const { spotState, dispatch } = useContext(SpotContext);
-	const shouldSkipSubscription = tripData?.sharedWith.length === 0;
-	console.log('shouldSkipSubscription', shouldSkipSubscription);
+	const shouldSkipSubscription =
+		tripData?.sharedWith.length === 0 || tripData === undefined;
 
 	const { data, loading } = useSubscription(TRIP_SUBSCRIPTION, {
 		skip: shouldSkipSubscription,
