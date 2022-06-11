@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
@@ -37,6 +37,11 @@ const ListScraper = () => {
 						escape(window.atob(data.encodedHtml))
 					);
 					setUrlHtml(html);
+
+					// reset iframe state
+					setIsIframeLoaded(false);
+					titleElRef.current = undefined;
+					contentElRef.current = undefined;
 				})
 				.catch((error) => {
 					// TODO: user feedback
