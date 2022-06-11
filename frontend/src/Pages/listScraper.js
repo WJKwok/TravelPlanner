@@ -21,6 +21,11 @@ const ListScraper = () => {
 	const [listURL, setListURL] = useState('');
 	const [urlHtml, setUrlHtml] = useState('');
 
+	const iframeref = useRef();
+	const [isIframeLoaded, setIsIframeLoaded] = useState(false);
+	const titleElRef = useRef(undefined);
+	const contentElRef = useRef(undefined);
+
 	useEffect(() => {
 		listURL &&
 			fetch(
@@ -39,6 +44,49 @@ const ListScraper = () => {
 				});
 	}, [listURL]);
 
+	useEffect(() => {
+		const doc = iframeref.current;
+
+		//https://theculturetrip.com/europe/germany/berlin/articles/berlin-from-the-top-the-5-best-panoramic-views/
+		//https://misstourist.com/22-things-to-do-in-berlin-ultimate-bucket-list/
+
+		if (isIframeLoaded) {
+			const elements = doc.contentDocument.querySelectorAll('*');
+			elements.forEach((element) => {
+				element.addEventListener('click', (e) => {
+					//prevent bubbling
+					e.stopPropagation();
+					//prevent page links from opening
+					e.preventDefault();
+
+					if (!titleElRef.current && !contentElRef.current) {
+						e.target.style.background = 'yellow';
+						titleElRef.current = e.target;
+					} else if (titleElRef.current && !contentElRef.current) {
+						if (titleElRef.current === e.target) {
+							e.target.style.background = '';
+							titleElRef.current = undefined;
+						} else {
+							e.target.style.background = 'purple';
+							contentElRef.current = e.target;
+						}
+					} else if (titleElRef.current && contentElRef.current) {
+						if (contentElRef.current === e.target) {
+							e.target.style.background = '';
+							contentElRef.current = undefined;
+						} else if (titleElRef.current === e.target) {
+							// do nothing
+						} else {
+							contentElRef.current.style.background = '';
+							e.target.style.background = 'purple';
+							contentElRef.current = e.target;
+						}
+					}
+				});
+			});
+		}
+	}, [isIframeLoaded]);
+
 	return (
 		<div className={classes.page}>
 			<input
@@ -47,7 +95,13 @@ const ListScraper = () => {
 				onChange={(e) => setListURL(e.target.value)}
 			/>
 			<div className={classes.iframe}>
-				<iframe width="100%" height="100%" srcDoc={urlHtml} />
+				<iframe
+					ref={iframeref}
+					width="100%"
+					height="100%"
+					srcDoc={urlHtml}
+					onLoad={() => setIsIframeLoaded(true)}
+				/>
 			</div>
 		</div>
 	);
