@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/core';
+import { ScrapedListItem } from 'Components';
 
 const useStyles = makeStyles((theme) => ({
 	page: {
@@ -141,6 +142,12 @@ const ListScraper = () => {
 				onChange={(e) => setListURL(e.target.value)}
 			/>
 			<button onClick={extractList}>Extract List</button>
+			<div>
+				{listItems &&
+					listItems.map((item, idx) => (
+						<ScrapedListItem name={item.name} content={item.content} />
+					))}
+			</div>
 			<div className={classes.iframe}>
 				<iframe
 					ref={iframeref}
