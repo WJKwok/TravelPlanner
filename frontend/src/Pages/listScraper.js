@@ -26,6 +26,9 @@ const ListScraper = () => {
 	const titleElRef = useRef(undefined);
 	const contentElRef = useRef(undefined);
 
+	const [listItems, setListItems] = useState([]);
+	const editableListItemsRef = useRef({});
+
 	useEffect(() => {
 		listURL &&
 			fetch(
@@ -92,6 +95,44 @@ const ListScraper = () => {
 		}
 	}, [isIframeLoaded]);
 
+	const extractList = () => {
+		if (titleElRef.current && contentElRef.current) {
+			const { nodeName: tNodeName, className: tClassName } = titleElRef.current;
+			const { nodeName: cNodeName, className: cClassName } =
+				contentElRef.current;
+
+			const tSelector =
+				tNodeName.toLowerCase() +
+				(tClassName ? '.' + tClassName.split(' ').join('.') : '');
+			const cSelector =
+				cNodeName.toLowerCase() +
+				(cClassName ? '.' + cClassName.split(' ').join('.') : '');
+
+			console.log(
+				'scrapping list with these two selectors:',
+				tSelector,
+				cSelector
+			);
+
+			fetch(
+				`https://python-list-scrapper.herokuapp.com/extracthtml/?url=${listURL}&titleSelector=${tSelector}&contentSelector=${cSelector}`
+			)
+				.then((response) => response.json())
+				.then((data) => {
+					console.log('list extracted:', data);
+					//TODO: rename name to title
+					const filteredItems = data.arrayOfDocuments.filter((doc) => doc.name);
+					const itemsDict = {};
+					filteredItems.forEach((item, index) => (itemsDict[index] = item));
+					editableListItemsRef.current = itemsDict;
+					setListItems(filteredItems);
+				})
+				.catch((error) => {
+					console.error('Extract List Error:', error);
+				});
+		}
+	};
+
 	return (
 		<div className={classes.page}>
 			<input
@@ -99,6 +140,7 @@ const ListScraper = () => {
 				value={listURL}
 				onChange={(e) => setListURL(e.target.value)}
 			/>
+			<button onClick={extractList}>Extract List</button>
 			<div className={classes.iframe}>
 				<iframe
 					ref={iframeref}
