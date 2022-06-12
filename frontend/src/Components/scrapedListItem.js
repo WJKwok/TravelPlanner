@@ -25,12 +25,18 @@ export const ScrapedListItem = ({ name, content, index, listItemRef }) => {
 	const [show, setShow] = useState(true);
 	const [itemName, setItemName] = useState(name);
 	const [itemContent, setItemContent] = useState(content);
+	const [suggestions, setSuggestion] = useState([]);
 
 	const getPredictions = async (searchString) => {
 		// TODO: get coordinates from trip
 		const locationCoords = '52.5200,13.4050';
 		const data = await fetchPredictions(searchString, locationCoords);
+		setSuggestion(data.predictions);
 	};
+
+	useEffect(() => {
+		getPredictions(name);
+	}, []);
 
 	const editListItemRef = (field, value) => {
 		listItemRef.current = {
@@ -45,6 +51,7 @@ export const ScrapedListItem = ({ name, content, index, listItemRef }) => {
 	const editName = (value) => {
 		setItemName(value);
 		editListItemRef('name', value);
+		getPredictions(value);
 	};
 
 	const editContent = (value) => {
@@ -64,6 +71,17 @@ export const ScrapedListItem = ({ name, content, index, listItemRef }) => {
 				Place name:
 				<textarea value={itemName} onChange={(e) => editName(e.target.value)} />
 			</label>
+			{suggestions && (
+				<List>
+					{suggestions.map((suggestion) => {
+						return (
+							<ListItem key={suggestion.place_id}>
+								<ListItemText primary={suggestion.description} />
+							</ListItem>
+						);
+					})}
+				</List>
+			)}
 			<textarea
 				value={
 					itemContent ? itemContent : 'Unfortunately could not scrap content'
