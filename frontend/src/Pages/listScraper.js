@@ -131,6 +131,7 @@ const ListScraper = () => {
 					//TODO: rename name to title
 					const filteredItems = data.arrayOfDocuments.filter((doc) => doc.name);
 					const itemsDict = {};
+					//TODO: use id instead of index
 					filteredItems.forEach((item, index) => (itemsDict[index] = item));
 					editableListItemsRef.current = itemsDict;
 					setListItems(filteredItems);
@@ -152,10 +153,20 @@ const ListScraper = () => {
 			<div className={classes.listItems}>
 				{listItems &&
 					listItems.map((item, idx) => (
-						<ScrapedListItem name={item.name} content={item.content} />
+						<ScrapedListItem
+							key={item.name}
+							name={item.name}
+							content={item.content}
+							index={idx}
+							listItemRef={editableListItemsRef}
+						/>
 					))}
 			</div>
+			<button onClick={() => console.log(editableListItemsRef.current)}>
+				Print List Item ref
+			</button>
 			<div className={classes.iframe}>
+				{/* tune out all the network errors within iframe */}
 				<iframe
 					ref={iframeref}
 					width="100%"
