@@ -14,6 +14,13 @@ const useStyles = makeStyles((theme) => ({
 		borderWidth: '1px',
 		height: '800px',
 	},
+	listItems: {
+		display: 'flex',
+		overflowX: 'auto',
+		'&::-webkit-scrollbar': {
+			display: 'none',
+		},
+	},
 }));
 
 const ListScraper = () => {
@@ -142,7 +149,7 @@ const ListScraper = () => {
 				onChange={(e) => setListURL(e.target.value)}
 			/>
 			<button onClick={extractList}>Extract List</button>
-			<div>
+			<div className={classes.listItems}>
 				{listItems &&
 					listItems.map((item, idx) => (
 						<ScrapedListItem name={item.name} content={item.content} />
