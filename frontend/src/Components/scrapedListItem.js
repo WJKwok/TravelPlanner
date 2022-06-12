@@ -1,6 +1,6 @@
-import { makeStyles } from '@material-ui/core';
+import { List, ListItem, ListItemText, makeStyles } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { fetchPredictions } from 'Services/googlePlaceApi';
 
 const useStyles = makeStyles((theme) => ({
@@ -26,9 +26,30 @@ export const ScrapedListItem = ({ name, content, index, listItemRef }) => {
 	const [itemName, setItemName] = useState(name);
 	const [itemContent, setItemContent] = useState(content);
 
-	const getPredictions = async () => {
+	const getPredictions = async (searchString) => {
+		// TODO: get coordinates from trip
 		const locationCoords = '52.5200,13.4050';
-		const data = await fetchPredictions(itemName, locationCoords);
+		const data = await fetchPredictions(searchString, locationCoords);
+	};
+
+	const editListItemRef = (field, value) => {
+		listItemRef.current = {
+			...listItemRef.current,
+			[index]: {
+				...listItemRef.current[index],
+				[field]: value,
+			},
+		};
+	};
+
+	const editName = (value) => {
+		setItemName(value);
+		editListItemRef('name', value);
+	};
+
+	const editContent = (value) => {
+		setItemContent(value);
+		editListItemRef('content', value);
 	};
 
 	const deleteItem = () => {
@@ -41,17 +62,14 @@ export const ScrapedListItem = ({ name, content, index, listItemRef }) => {
 			<DeleteIcon className={classes.delete} onClick={deleteItem} />
 			<label>
 				Place name:
-				<textarea
-					value={itemName}
-					onChange={(e) => setItemName(e.target.value)}
-				/>
+				<textarea value={itemName} onChange={(e) => editName(e.target.value)} />
 			</label>
 			<textarea
 				value={
 					itemContent ? itemContent : 'Unfortunately could not scrap content'
 				}
 				rows={10}
-				onChange={(e) => setItemContent(e.target.value)}
+				onChange={(e) => editContent(e.target.value)}
 			/>
 		</div>
 	) : null;

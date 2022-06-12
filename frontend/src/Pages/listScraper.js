@@ -149,8 +149,10 @@ const ListScraper = () => {
 				value={listURL}
 				onChange={(e) => setListURL(e.target.value)}
 			/>
+			{/* TODO: do not show extract when you don't have selectors */}
 			<button onClick={extractList}>Extract List</button>
 			<div className={classes.listItems}>
+				{/* TODO: listItems changes, component state doesn't reset - try key change? */}
 				{listItems &&
 					listItems.map((item, idx) => (
 						<ScrapedListItem
@@ -166,7 +168,8 @@ const ListScraper = () => {
 				Print List Item ref
 			</button>
 			<div className={classes.iframe}>
-				{/* tune out all the network errors within iframe */}
+				{/* TODO: tune out all the network errors within iframe */}
+				{/* TODO: set loading? */}
 				<iframe
 					ref={iframeref}
 					width="100%"
