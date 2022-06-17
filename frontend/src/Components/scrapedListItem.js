@@ -1,7 +1,7 @@
 import { List, ListItem, ListItemText, makeStyles } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import React, { useEffect, useState } from 'react';
-import { fetchPredictions } from 'Services/googlePlaceApi';
+import { fetchOnePlaceId, fetchPredictions } from 'Services/googlePlaceApi';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -18,6 +18,12 @@ const useStyles = makeStyles((theme) => ({
 			cursor: 'pointer',
 		},
 	},
+	suggestion: {
+		'&:hover': {
+			backgroundColor: 'antiqueWhite',
+			cursor: 'pointer',
+		},
+	},
 }));
 
 export const ScrapedListItem = ({ name, content, index, listItemRef }) => {
@@ -26,16 +32,22 @@ export const ScrapedListItem = ({ name, content, index, listItemRef }) => {
 	const [itemName, setItemName] = useState(name);
 	const [itemContent, setItemContent] = useState(content);
 	const [suggestions, setSuggestion] = useState([]);
+	const [googlePlace, setGooglePlace] = useState();
 
-	const getPredictions = async (searchString) => {
-		// TODO: get coordinates from trip
-		const locationCoords = '52.5200,13.4050';
-		const data = await fetchPredictions(searchString, locationCoords);
-		setSuggestion(data.predictions);
-	};
+	const locationCoords = '52.5200,13.4050';
 
 	useEffect(() => {
-		getPredictions(name);
+		const getPredictions = async () => {
+			const { predictions } = await fetchPredictions(name, locationCoords);
+			if (predictions.length === 1) {
+				const placeObject = await fetchOnePlaceId(predictions[0].place_id);
+				editListItemRef('googlePlaceData', placeObject);
+				setGooglePlace(JSON.stringify(placeObject));
+			} else {
+				setSuggestion(predictions);
+			}
+		};
+		getPredictions();
 	}, []);
 
 	const editListItemRef = (field, value) => {
@@ -48,10 +60,11 @@ export const ScrapedListItem = ({ name, content, index, listItemRef }) => {
 		};
 	};
 
-	const editName = (value) => {
+	const editName = async (value) => {
 		setItemName(value);
 		editListItemRef('name', value);
-		getPredictions(value);
+		const { predictions } = await fetchPredictions(value, locationCoords);
+		setSuggestion(predictions);
 	};
 
 	const editContent = (value) => {
@@ -64,6 +77,13 @@ export const ScrapedListItem = ({ name, content, index, listItemRef }) => {
 		delete listItemRef.current[index];
 	};
 
+	const onSuggestionClick = async (placeId) => {
+		const placeObject = await fetchOnePlaceId(placeId);
+		editListItemRef('googlePlaceData', placeObject);
+		setGooglePlace(JSON.stringify(placeObject));
+		setSuggestion([]);
+	};
+
 	return show ? (
 		<div className={classes.root}>
 			<DeleteIcon className={classes.delete} onClick={deleteItem} />
@@ -71,11 +91,16 @@ export const ScrapedListItem = ({ name, content, index, listItemRef }) => {
 				Place name:
 				<textarea value={itemName} onChange={(e) => editName(e.target.value)} />
 			</label>
+			<p>{googlePlace && googlePlace.substring(0, 20)}</p>
 			{suggestions && (
 				<List>
 					{suggestions.map((suggestion) => {
 						return (
-							<ListItem key={suggestion.place_id}>
+							<ListItem
+								className={classes.suggestion}
+								key={suggestion.place_id}
+								onClick={() => onSuggestionClick(suggestion.place_id)}
+							>
 								<ListItemText primary={suggestion.description} />
 							</ListItem>
 						);

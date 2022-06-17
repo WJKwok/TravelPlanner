@@ -152,7 +152,7 @@ const ListScraper = () => {
 			{/* TODO: do not show extract when you don't have selectors */}
 			<button onClick={extractList}>Extract List</button>
 			<div className={classes.listItems}>
-				{/* TODO: listItems changes, component state doesn't reset - try key change? */}
+				{/* TODO: listItems changes, component state doesn't reset - try key change? OR setListItems back to empty */}
 				{listItems &&
 					listItems.map((item, idx) => (
 						<ScrapedListItem
