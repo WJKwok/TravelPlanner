@@ -2,10 +2,15 @@ import React, { useContext, useState } from 'react';
 
 import { AuthContext, SpotContext } from 'Store';
 
-import { AuthModal, PlannerPlaceAutoComplete } from 'Components';
+import {
+	AuthModal,
+	PlannerPlaceAutoComplete,
+	ListScraperDialog,
+} from 'Components';
 
 import ListIcon from '@material-ui/icons/List';
 import SaveIcon from '@material-ui/icons/Save';
+import WebIcon from '@material-ui/icons/Web';
 import Icon from '@material-ui/core/Icon';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -41,6 +46,7 @@ export const LeftButtonGroup = () => {
 
 	const [registerOpen, setRegisterOpen] = useState(false);
 	const [searchModalOpen, setSearchModalOpen] = useState(false);
+	const [listScraperOpen, setListScraperOpen] = useState(false);
 
 	return (
 		<>
@@ -64,6 +70,11 @@ export const LeftButtonGroup = () => {
 						<SaveIcon />
 					</Button>
 				)}
+				{!isMobile && (
+					<Button id="save" onClick={() => setListScraperOpen(true)}>
+						<WebIcon />
+					</Button>
+				)}
 				{isMobile && (
 					<Button
 						id="list"
@@ -82,6 +93,10 @@ export const LeftButtonGroup = () => {
 			<PlannerPlaceAutoComplete
 				searchModalOpen={searchModalOpen}
 				setSearchModalOpen={setSearchModalOpen}
+			/>
+			<ListScraperDialog
+				listScraperOpen={listScraperOpen}
+				setListScraperOpen={setListScraperOpen}
 			/>
 		</>
 	);
