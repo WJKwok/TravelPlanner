@@ -1,10 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/core';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 import { ScrapedListItem } from 'Components';
 
 const useStyles = makeStyles((theme) => ({
 	page: {
 		margin: '5px',
+	},
+	circularProgress: {
+		height: '25px',
 	},
 	urlInput: {
 		marginBottom: '5px',
@@ -27,6 +32,7 @@ const ListScraper = () => {
 	const classes = useStyles();
 
 	const [listURL, setListURL] = useState('');
+	const [isLoading, setIsLoading] = useState(false);
 	const [urlHtml, setUrlHtml] = useState('');
 
 	const iframeref = useRef();
@@ -38,7 +44,8 @@ const ListScraper = () => {
 	const editableListItemsRef = useRef({});
 
 	useEffect(() => {
-		listURL &&
+		if (listURL) {
+			setIsLoading(true);
 			fetch(
 				`https://python-list-scrapper.herokuapp.com/extracthtml/?url=${listURL}`
 			)
@@ -57,7 +64,9 @@ const ListScraper = () => {
 				.catch((error) => {
 					// TODO: user feedback
 					console.error('Fetch failed:', error);
+					setIsLoading(false);
 				});
+		}
 	}, [listURL]);
 
 	useEffect(() => {
@@ -67,6 +76,7 @@ const ListScraper = () => {
 		//https://misstourist.com/22-things-to-do-in-berlin-ultimate-bucket-list/
 
 		if (isIframeLoaded) {
+			setIsLoading(false);
 			const elements = doc.contentDocument.querySelectorAll('*');
 			elements.forEach((element) => {
 				element.addEventListener('click', (e) => {
@@ -144,11 +154,14 @@ const ListScraper = () => {
 
 	return (
 		<div className={classes.page}>
+			{/* buffer for typing? do people usually copy paste? */}
 			<input
 				className={classes.urlInput}
 				value={listURL}
 				onChange={(e) => setListURL(e.target.value)}
 			/>
+			{isLoading && <CircularProgress size={20} />}
+			{/* TODO: indicate if title and content has been chosen, useState counter to register click and rerender to check ref*/}
 			{/* TODO: do not show extract when you don't have selectors */}
 			<button onClick={extractList}>Extract List</button>
 			<div className={classes.listItems}>
