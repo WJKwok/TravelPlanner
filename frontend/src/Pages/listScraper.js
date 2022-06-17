@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
+// TODO: move this component out from pages to component
 const ListScraper = () => {
 	const classes = useStyles();
 
@@ -178,7 +179,7 @@ const ListScraper = () => {
 					))}
 			</div>
 			<button onClick={() => console.log(editableListItemsRef.current)}>
-				Print List Item ref
+				Add items to map
 			</button>
 			<div className={classes.iframe}>
 				{/* TODO: tune out all the network errors within iframe */}
