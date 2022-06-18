@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // TODO: move this component out from pages to component
-const ListScraper = () => {
+export const ListScraper = () => {
 	const classes = useStyles();
 
 	const [listURL, setListURL] = useState('');
@@ -195,5 +195,3 @@ const ListScraper = () => {
 		</div>
 	);
 };
-
-export default ListScraper;

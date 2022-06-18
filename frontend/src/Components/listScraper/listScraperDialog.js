@@ -3,7 +3,7 @@ import React from 'react';
 import { Dialog } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { ListScraper } from 'Pages';
+import { ListScraper } from './listScraper';
 
 const useStyles = makeStyles((theme) => ({
 	searchDialogSize: {

@@ -31,4 +31,4 @@ export { SpotCardContent } from './spotCardContent';
 export { iconDict } from './spotIcons';
 export { TripCard } from './tripCard';
 export { ScrapedListItem } from './scrapedListItem';
-export { ListScraperDialog } from './listScraperDialog';
+export { ListScraperDialog, ListScraper } from './listScraper/';
