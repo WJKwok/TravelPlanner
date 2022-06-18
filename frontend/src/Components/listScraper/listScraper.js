@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { makeStyles } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import { ScrapedListItem } from 'Components';
+import { ScrapedListItem } from './scrapedListItem';
+import { SpotContext } from 'Store';
+import { reshapeGoogleObject } from 'utils/reshapeGoogleObject';
 
 const useStyles = makeStyles((theme) => ({
 	page: {
@@ -31,6 +33,8 @@ const useStyles = makeStyles((theme) => ({
 // TODO: move this component out from pages to component
 export const ListScraper = () => {
 	const classes = useStyles();
+
+	const { dispatch } = useContext(SpotContext);
 
 	const [listURL, setListURL] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
@@ -153,6 +157,29 @@ export const ListScraper = () => {
 		}
 	};
 
+	const reshapedItems = () => {
+		const editedItems = editableListItemsRef.current;
+		const reshapedItemsArray = Object.keys(editedItems).reduce(
+			(result, key) => {
+				if (editedItems[key].googlePlaceData) {
+					const searchedItem = editedItems[key].googlePlaceData;
+					const reshapedItem = reshapeGoogleObject(searchedItem);
+					result.push(reshapedItem);
+				}
+				return result;
+			},
+			[]
+		);
+
+		dispatch({
+			type: 'ADD_SPOTS',
+			payload: {
+				newSpots: reshapedItemsArray,
+				categories: ['Searched'],
+			},
+		});
+	};
+
 	return (
 		<div className={classes.page}>
 			{/* buffer for typing? do people usually copy paste? */}
@@ -178,9 +205,7 @@ export const ListScraper = () => {
 						/>
 					))}
 			</div>
-			<button onClick={() => console.log(editableListItemsRef.current)}>
-				Add items to map
-			</button>
+			<button onClick={reshapedItems}>Add items to map</button>
 			<div className={classes.iframe}>
 				{/* TODO: tune out all the network errors within iframe */}
 				{/* TODO: set loading? */}
