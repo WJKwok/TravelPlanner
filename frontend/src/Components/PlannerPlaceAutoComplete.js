@@ -6,6 +6,7 @@ import { Dialog } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { PlaceAutoComplete } from 'Components';
+import { reshapeGoogleObject } from 'utils/reshapeGoogleObject';
 
 const useStyles = makeStyles((theme) => ({
 	searchDialogSize: {
@@ -39,28 +40,7 @@ export const PlannerPlaceAutoComplete = ({
 			}
 		}
 
-		const reshapedItem = {
-			__typename: 'Spot',
-			categories: ['Searched'],
-			content: '',
-			guide: 'Searched',
-			id: searchedItem.id,
-			imgUrl: ['https://i.imgur.com/zbBglmB.jpg'],
-			place: {
-				__typename: 'Place',
-				id: searchedItem.id,
-				location: [searchedItem.location.lat, searchedItem.location.lng],
-				name: searchedItem.name,
-				rating: searchedItem.rating,
-				userRatingsTotal: searchedItem.userRatingsTotal,
-				businessStatus: searchedItem.businessStatus,
-				hours: searchedItem.hours,
-				reviews: searchedItem.reviews,
-				internationalPhoneNumber: searchedItem.internationalPhoneNumber,
-				website: searchedItem.website,
-				address: searchedItem.address,
-			},
-		};
+		const reshapedItem = reshapeGoogleObject(searchedItem);
 
 		getSpot({
 			variables: {
