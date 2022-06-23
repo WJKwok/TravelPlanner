@@ -72,6 +72,7 @@ export const ListScraper = ({ setListScraperOpen }) => {
 					setUrlHtml(html);
 
 					// reset iframe state
+					setListicleVariable({});
 					setIsIframeLoaded(false);
 					titleElRef.current = undefined;
 					contentElRef.current = undefined;
@@ -249,20 +250,25 @@ export const ListScraper = ({ setListScraperOpen }) => {
 					)}
 				</div>
 			)}
-			<div className={classes.listItems}>
-				{/* TODO: listItems changes, component state doesn't reset - try key change? OR setListItems back to empty */}
-				{listItems &&
-					listItems.map((item, idx) => (
-						<ScrapedListItem
-							key={item.name}
-							name={item.name}
-							content={item.content}
-							index={idx}
-							listItemRef={editableListItemsRef}
-						/>
-					))}
-			</div>
-			<button onClick={addItemsToMap}>Add items to map</button>
+			{listItems.length !== 0 && (
+				<div>
+					<div className={classes.listItems}>
+						{/* TODO: listItems changes, component state doesn't reset - try key change? OR setListItems back to empty */}
+						{listItems &&
+							listItems.map((item, idx) => (
+								<ScrapedListItem
+									key={item.name}
+									name={item.name}
+									content={item.content}
+									index={idx}
+									listItemRef={editableListItemsRef}
+								/>
+							))}
+					</div>
+					<button onClick={addItemsToMap}>Add items to map</button>
+				</div>
+			)}
+
 			<div className={classes.iframe}>
 				{/* TODO: tune out all the network errors within iframe */}
 				{urlHtml && (
