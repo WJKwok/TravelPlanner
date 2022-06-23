@@ -124,7 +124,7 @@ export const ListScraper = ({ setListScraperOpen }) => {
 					e.preventDefault();
 
 					if (!titleElRef.current && !contentElRef.current) {
-						e.target.style.background = 'yellow';
+						e.target.style.background = 'lightcoral';
 						titleElRef.current = e.target;
 					} else if (titleElRef.current && !contentElRef.current) {
 						if (titleElRef.current === e.target) {
@@ -133,7 +133,7 @@ export const ListScraper = ({ setListScraperOpen }) => {
 							titleElRef.current = undefined;
 						} else {
 							//click content
-							e.target.style.background = 'purple';
+							e.target.style.background = 'bisque';
 							contentElRef.current = e.target;
 						}
 					} else if (titleElRef.current && contentElRef.current) {
@@ -144,7 +144,7 @@ export const ListScraper = ({ setListScraperOpen }) => {
 							// do nothing
 						} else {
 							contentElRef.current.style.background = '';
-							e.target.style.background = 'purple';
+							e.target.style.background = 'bisque';
 							contentElRef.current = e.target;
 						}
 					}
