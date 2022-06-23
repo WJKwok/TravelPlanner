@@ -300,6 +300,7 @@ export const ListScraper = ({ setListScraperOpen }) => {
 				{/* TODO: tune out all the network errors within iframe */}
 				{urlHtml && (
 					<iframe
+						sandbox
 						ref={iframeref}
 						width="100%"
 						height="100%"
