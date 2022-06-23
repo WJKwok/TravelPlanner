@@ -24,6 +24,9 @@ const useStyles = makeStyles((theme) => ({
 			cursor: 'pointer',
 		},
 	},
+	googlePlaceSummary: {
+		whiteSpace: 'pre-wrap',
+	},
 }));
 
 export const ScrapedListItem = ({ name, content, index, listItemRef }) => {
@@ -36,13 +39,21 @@ export const ScrapedListItem = ({ name, content, index, listItemRef }) => {
 
 	const locationCoords = '52.5200,13.4050';
 
+	const setGooglePlaceSummary = (placeObject) => {
+		const { name, rating, userRatingsTotal, businessStatus, address } =
+			placeObject;
+
+		const summary = `${name}\n${rating}⭐️(${userRatingsTotal})\nBusiness Status:${businessStatus}\n${address}`;
+		setGooglePlace(summary);
+	};
+
 	useEffect(() => {
 		const getPredictions = async () => {
 			const { predictions } = await fetchPredictions(name, locationCoords);
 			if (predictions.length === 1) {
 				const placeObject = await fetchOnePlaceId(predictions[0].place_id);
 				editListItemRef('googlePlaceData', placeObject);
-				setGooglePlace(JSON.stringify(placeObject));
+				setGooglePlaceSummary(placeObject);
 			} else {
 				setSuggestion(predictions);
 			}
@@ -80,7 +91,7 @@ export const ScrapedListItem = ({ name, content, index, listItemRef }) => {
 	const onSuggestionClick = async (placeId) => {
 		const placeObject = await fetchOnePlaceId(placeId);
 		editListItemRef('googlePlaceData', placeObject);
-		setGooglePlace(JSON.stringify(placeObject));
+		setGooglePlaceSummary(placeObject);
 		setSuggestion([]);
 	};
 
@@ -91,7 +102,9 @@ export const ScrapedListItem = ({ name, content, index, listItemRef }) => {
 				Place name:
 				<textarea value={itemName} onChange={(e) => editName(e.target.value)} />
 			</label>
-			<p>{googlePlace && googlePlace.substring(0, 20)}</p>
+			{googlePlace && (
+				<p className={classes.googlePlaceSummary}>{googlePlace}</p>
+			)}
 			{suggestions && (
 				<List>
 					{suggestions.map((suggestion) => {
