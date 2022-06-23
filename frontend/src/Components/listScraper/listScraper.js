@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // TODO: move this component out from pages to component
-export const ListScraper = () => {
+export const ListScraper = ({ setListScraperOpen }) => {
 	const classes = useStyles();
 
 	const { dispatch } = useContext(SpotContext);
@@ -200,6 +200,8 @@ export const ListScraper = () => {
 		submitListicle({
 			variables: listicleVariable,
 		});
+
+		setListScraperOpen(false);
 
 		// TODO: setSnackMessage({ text: 'Added to maps!', code: 'Confirm' });
 	};

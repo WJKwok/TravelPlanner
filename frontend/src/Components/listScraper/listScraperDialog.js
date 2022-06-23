@@ -22,7 +22,7 @@ export const ListScraperDialog = ({ listScraperOpen, setListScraperOpen }) => {
 			fullWidth={true}
 		>
 			<div className={classes.searchDialogSize}>
-				<ListScraper />
+				<ListScraper setListScraperOpen={setListScraperOpen} />
 			</div>
 		</Dialog>
 	);
