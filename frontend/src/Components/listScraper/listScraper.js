@@ -217,7 +217,11 @@ export const ListScraper = ({ setListScraperOpen }) => {
 			(result, key) => {
 				if (editedItems[key].googlePlaceData) {
 					const searchedItem = editedItems[key].googlePlaceData;
-					const reshapedItem = reshapeGoogleObject(searchedItem);
+					const scrapedContent = editedItems[key].content;
+					const reshapedItem = reshapeGoogleObject(
+						searchedItem,
+						scrapedContent
+					);
 					result.push(reshapedItem);
 				}
 				return result;

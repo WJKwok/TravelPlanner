@@ -1,8 +1,8 @@
-export const reshapeGoogleObject = (googleObject) => {
+export const reshapeGoogleObject = (googleObject, scrapedContent = '') => {
 	const reshapedObject = {
 		__typename: 'Spot',
 		categories: ['Searched'],
-		content: '',
+		content: scrapedContent,
 		guide: 'Searched',
 		id: googleObject.id,
 		imgUrl: ['https://i.imgur.com/zbBglmB.jpg'],
