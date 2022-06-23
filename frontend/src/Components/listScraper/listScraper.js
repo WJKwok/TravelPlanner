@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { ScrapedListItem } from './scrapedListItem';
-import { SpotContext } from 'Store';
+import { SnackBarContext, SpotContext } from 'Store';
 import { reshapeGoogleObject } from 'utils/reshapeGoogleObject';
 import { useMutation, gql } from '@apollo/client';
 
@@ -34,9 +34,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const ListScraper = ({ setListScraperOpen }) => {
-	const classes = useStyles();
-
 	const { dispatch } = useContext(SpotContext);
+	const { setSnackMessage } = useContext(SnackBarContext);
 
 	const [listURL, setListURL] = useState('');
 	const [areIframeListenersLoading, setAreIframeListenersLoading] =
@@ -209,8 +208,7 @@ export const ListScraper = ({ setListScraperOpen }) => {
 		});
 
 		setListScraperOpen(false);
-
-		// TODO: setSnackMessage({ text: 'Added to maps!', code: 'Confirm' });
+		setSnackMessage({ text: 'Added list items to maps!', code: 'Confirm' });
 	};
 
 	return (
