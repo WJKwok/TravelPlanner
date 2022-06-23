@@ -71,8 +71,11 @@ export const ListScraper = ({ setListScraperOpen }) => {
 					);
 					setUrlHtml(html);
 
-					// reset iframe state
+					//case New URL: reset these state
 					setListicleVariable({});
+					setListItems([]);
+
+					// reset iframe state
 					setIsIframeLoaded(false);
 					titleElRef.current = undefined;
 					contentElRef.current = undefined;
@@ -231,8 +234,6 @@ export const ListScraper = ({ setListScraperOpen }) => {
 				/>
 			</label>
 			{areIframeListenersLoading && <CircularProgress size={20} />}
-			{/* TODO: indicate if title and content has been chosen, useState counter to register click and rerender to check ref*/}
-			{/* TODO: do not show extract when you don't have selectors */}
 			{areIframeListenersLoaded && (
 				<div>
 					{titleElRef.current ? (
@@ -253,7 +254,6 @@ export const ListScraper = ({ setListScraperOpen }) => {
 			{listItems.length !== 0 && (
 				<div>
 					<div className={classes.listItems}>
-						{/* TODO: listItems changes, component state doesn't reset - try key change? OR setListItems back to empty */}
 						{listItems &&
 							listItems.map((item, idx) => (
 								<ScrapedListItem
