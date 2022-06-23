@@ -79,7 +79,17 @@ export const ListScraper = ({ setListScraperOpen }) => {
 
 	useEffect(() => {
 		if (listURL) {
+			//case New URL: reset these state
+			setListicleVariable({});
+			setListItems([]);
+			setUrlHtml('');
+
+			// reset iframe state
+			setIsIframeLoaded(false);
+			titleElRef.current = undefined;
+			contentElRef.current = undefined;
 			setAreIframeListenersLoading(true);
+
 			fetch(
 				`https://python-list-scrapper.herokuapp.com/extracthtml/?url=${listURL}`
 			)
@@ -89,15 +99,6 @@ export const ListScraper = ({ setListScraperOpen }) => {
 						escape(window.atob(data.encodedHtml))
 					);
 					setUrlHtml(html);
-
-					//case New URL: reset these state
-					setListicleVariable({});
-					setListItems([]);
-
-					// reset iframe state
-					setIsIframeLoaded(false);
-					titleElRef.current = undefined;
-					contentElRef.current = undefined;
 				})
 				.catch((error) => {
 					console.error('Fetch failed:', error);
