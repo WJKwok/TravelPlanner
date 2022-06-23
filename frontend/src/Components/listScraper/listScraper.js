@@ -257,7 +257,7 @@ export const ListScraper = ({ setListScraperOpen }) => {
 				<input
 					className={classes.urlInput}
 					value={listURL}
-					onChange={(e) => setListURL(e.target.value)}
+					onChange={(e) => setListURL(e.target.value.trim())}
 				/>
 			</label>
 			{areIframeListenersLoading && <CircularProgress size={20} />}
