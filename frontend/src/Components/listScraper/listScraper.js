@@ -31,6 +31,15 @@ const useStyles = makeStyles((theme) => ({
 			display: 'none',
 		},
 	},
+	errorMessage: {
+		position: 'sticky',
+		top: '0',
+		background: 'red',
+		color: 'white',
+		width: '100%',
+		textAlign: 'center',
+		marginTop: '-13px',
+	},
 }));
 
 export const ListScraper = ({ setListScraperOpen }) => {
@@ -52,11 +61,21 @@ export const ListScraper = ({ setListScraperOpen }) => {
 	const [listItems, setListItems] = useState([]);
 	const editableListItemsRef = useRef({});
 
+	const [errMsg, setErrMsg] = useState('');
+
 	const areIframeListenersLoaded = !areIframeListenersLoading && isIframeLoaded;
 	const styleProps = {
 		areIframeListenersLoaded,
 	};
 	const classes = useStyles(styleProps);
+
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			setErrMsg('');
+		}, 5000);
+
+		return () => clearTimeout(timer);
+	}, [errMsg]);
 
 	useEffect(() => {
 		if (listURL) {
@@ -81,8 +100,8 @@ export const ListScraper = ({ setListScraperOpen }) => {
 					contentElRef.current = undefined;
 				})
 				.catch((error) => {
-					// TODO: user feedback
 					console.error('Fetch failed:', error);
+					setErrMsg('URL seems to be broken');
 					setAreIframeListenersLoading(false);
 				});
 		}
@@ -220,10 +239,17 @@ export const ListScraper = ({ setListScraperOpen }) => {
 			setListScraperOpen(false);
 			setSnackMessage({ text: 'Added list items to maps!', code: 'Confirm' });
 		} else {
+			setErrMsg('None of the items has a Google Place selected');
+		}
 	};
 
 	return (
 		<div className={classes.page}>
+			{errMsg && (
+				<div className={classes.errorMessage}>
+					<p>{errMsg}</p>
+				</div>
+			)}
 			{/*TODO: buffer for typing? do people usually copy paste? */}
 			<label>
 				Copy-paste in listcle URL
