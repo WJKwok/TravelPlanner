@@ -16,12 +16,14 @@ const useStyles = makeStyles((theme) => ({
 	},
 	urlInput: {
 		marginBottom: '5px',
+		display: 'block',
 	},
-	iframe: {
+	iframe: (props) => ({
 		borderStyle: 'solid',
 		borderWidth: '1px',
 		height: '800px',
-	},
+		visibility: props.areIframeListenersLoaded ? 'visible' : 'hidden',
+	}),
 	listItems: {
 		display: 'flex',
 		overflowX: 'auto',
@@ -31,14 +33,14 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-// TODO: move this component out from pages to component
 export const ListScraper = ({ setListScraperOpen }) => {
 	const classes = useStyles();
 
 	const { dispatch } = useContext(SpotContext);
 
 	const [listURL, setListURL] = useState('');
-	const [isLoading, setIsLoading] = useState(false);
+	const [areIframeListenersLoading, setAreIframeListenersLoading] =
+		useState(false);
 	const [urlHtml, setUrlHtml] = useState('');
 
 	const iframeref = useRef();
@@ -50,9 +52,14 @@ export const ListScraper = ({ setListScraperOpen }) => {
 	const [listItems, setListItems] = useState([]);
 	const editableListItemsRef = useRef({});
 
+	const styleProps = {
+		areIframeListenersLoaded: !areIframeListenersLoading && isIframeLoaded,
+	};
+	const classes = useStyles(styleProps);
+
 	useEffect(() => {
 		if (listURL) {
-			setIsLoading(true);
+			setAreIframeListenersLoading(true);
 			fetch(
 				`https://python-list-scrapper.herokuapp.com/extracthtml/?url=${listURL}`
 			)
@@ -71,7 +78,7 @@ export const ListScraper = ({ setListScraperOpen }) => {
 				.catch((error) => {
 					// TODO: user feedback
 					console.error('Fetch failed:', error);
-					setIsLoading(false);
+					setAreIframeListenersLoading(false);
 				});
 		}
 	}, [listURL]);
@@ -83,7 +90,6 @@ export const ListScraper = ({ setListScraperOpen }) => {
 		//https://misstourist.com/22-things-to-do-in-berlin-ultimate-bucket-list/
 
 		if (isIframeLoaded) {
-			setIsLoading(false);
 			const elements = doc.contentDocument.querySelectorAll('*');
 			elements.forEach((element) => {
 				element.addEventListener('click', (e) => {
@@ -117,6 +123,7 @@ export const ListScraper = ({ setListScraperOpen }) => {
 					}
 				});
 			});
+			setAreIframeListenersLoading(false);
 		}
 	}, [isIframeLoaded]);
 
@@ -209,12 +216,15 @@ export const ListScraper = ({ setListScraperOpen }) => {
 	return (
 		<div className={classes.page}>
 			{/* buffer for typing? do people usually copy paste? */}
-			<input
-				className={classes.urlInput}
-				value={listURL}
-				onChange={(e) => setListURL(e.target.value)}
-			/>
-			{isLoading && <CircularProgress size={20} />}
+			<label>
+				Copy-paste in listcle URL
+				<input
+					className={classes.urlInput}
+					value={listURL}
+					onChange={(e) => setListURL(e.target.value)}
+				/>
+			</label>
+			{areIframeListenersLoading && <CircularProgress size={20} />}
 			{/* TODO: indicate if title and content has been chosen, useState counter to register click and rerender to check ref*/}
 			{/* TODO: do not show extract when you don't have selectors */}
 			<button onClick={extractList}>Extract List</button>
@@ -235,13 +245,15 @@ export const ListScraper = ({ setListScraperOpen }) => {
 			<div className={classes.iframe}>
 				{/* TODO: tune out all the network errors within iframe */}
 				{/* TODO: set loading? */}
-				<iframe
-					ref={iframeref}
-					width="100%"
-					height="100%"
-					srcDoc={urlHtml}
-					onLoad={() => setIsIframeLoaded(true)}
-				/>
+				{urlHtml && (
+					<iframe
+						ref={iframeref}
+						width="100%"
+						height="100%"
+						srcDoc={urlHtml}
+						onLoad={() => setIsIframeLoaded(true)}
+					/>
+				)}
 			</div>
 		</div>
 	);
