@@ -55,7 +55,7 @@ export const ListScraper = ({ setListScraperOpen }) => {
 	const [isIframeLoaded, setIsIframeLoaded] = useState(false);
 	const titleElRef = useRef(undefined);
 	const contentElRef = useRef(undefined);
-	const [_, setLastClickedEl] = useState(undefined);
+	const [_, setLastClickedTime] = useState(undefined);
 	const [listicleVariable, setListicleVariable] = useState({});
 
 	const [listItems, setListItems] = useState([]);
@@ -150,7 +150,7 @@ export const ListScraper = ({ setListScraperOpen }) => {
 					}
 
 					//basically used to re-render component, since state is frozen within eventListeners
-					setLastClickedEl(e.target);
+					setLastClickedTime(Date.now());
 				});
 			});
 			setAreIframeListenersLoading(false);
