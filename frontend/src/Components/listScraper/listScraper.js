@@ -191,8 +191,6 @@ export const ListScraper = ({ setListScraperOpen }) => {
 	});
 
 	const addItemsToMap = () => {
-		//TODO: checks if editableListItemsRef is not null before adding
-
 		const editedItems = editableListItemsRef.current;
 		const reshapedItemsArray = Object.keys(editedItems).reduce(
 			(result, key) => {
@@ -206,20 +204,22 @@ export const ListScraper = ({ setListScraperOpen }) => {
 			[]
 		);
 
-		dispatch({
-			type: 'ADD_SPOTS',
-			payload: {
-				newSpots: reshapedItemsArray,
-				categories: ['Searched'],
-			},
-		});
+		if (reshapedItemsArray.length !== 0) {
+			dispatch({
+				type: 'ADD_SPOTS',
+				payload: {
+					newSpots: reshapedItemsArray,
+					categories: ['Searched'],
+				},
+			});
 
-		submitListicle({
-			variables: listicleVariable,
-		});
+			submitListicle({
+				variables: listicleVariable,
+			});
 
-		setListScraperOpen(false);
-		setSnackMessage({ text: 'Added list items to maps!', code: 'Confirm' });
+			setListScraperOpen(false);
+			setSnackMessage({ text: 'Added list items to maps!', code: 'Confirm' });
+		} else {
 	};
 
 	return (
