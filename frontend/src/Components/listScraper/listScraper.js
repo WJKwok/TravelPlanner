@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
 		display: 'block',
 	},
 	iframe: (props) => ({
+		marginTop: '15px',
 		borderStyle: 'solid',
 		borderWidth: '1px',
 		height: '800px',
