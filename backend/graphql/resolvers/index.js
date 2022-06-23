@@ -4,6 +4,7 @@ const guideResolvers = require('./guides');
 const spotResolvers = require('./spots');
 const placeResolvers = require('./places');
 const tripResolvers = require('./trips');
+const listicleResolvers = require('./listicles');
 
 module.exports = {
 	Query: {
@@ -19,6 +20,7 @@ module.exports = {
 		...placeResolvers.Mutation,
 		...spotResolvers.Mutation,
 		...tripResolvers.Mutation,
+		...listicleResolvers.Mutation,
 	},
 	Subscription: {
 		...tripResolvers.Subscription,

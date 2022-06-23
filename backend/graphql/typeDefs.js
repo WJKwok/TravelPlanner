@@ -1,6 +1,11 @@
 const gql = require('graphql-tag');
 
 module.exports = gql`
+	type Listicle {
+		url: String!
+		titleSelector: String!
+		contentSelector: String!
+	}
 	type User {
 		id: ID!
 		email: String!
@@ -120,6 +125,11 @@ module.exports = gql`
 		getAllSpotsForGuide(guideId: ID!): GuideAndSpots!
 	}
 	type Mutation {
+		submitListicle(
+			url: String!
+			titleSelector: String!
+			contentSelector: String!
+		): Listicle!
 		register(registerInput: RegisterInput): User!
 		login(username: String!, password: String!): User!
 		refreshToken(refreshToken: String!): User!

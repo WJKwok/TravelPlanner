@@ -5,6 +5,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { ScrapedListItem } from './scrapedListItem';
 import { SpotContext } from 'Store';
 import { reshapeGoogleObject } from 'utils/reshapeGoogleObject';
+import { useMutation, gql } from '@apollo/client';
 
 const useStyles = makeStyles((theme) => ({
 	page: {
@@ -44,6 +45,7 @@ export const ListScraper = () => {
 	const [isIframeLoaded, setIsIframeLoaded] = useState(false);
 	const titleElRef = useRef(undefined);
 	const contentElRef = useRef(undefined);
+	const [listicleVariable, setListicleVariable] = useState({});
 
 	const [listItems, setListItems] = useState([]);
 	const editableListItemsRef = useRef({});
@@ -143,6 +145,11 @@ export const ListScraper = () => {
 				.then((response) => response.json())
 				.then((data) => {
 					console.log('list extracted:', data);
+					setListicleVariable({
+						url: listURL,
+						titleSelector: tSelector,
+						contentSelector: cSelector,
+					});
 					//TODO: rename name to title
 					const filteredItems = data.arrayOfDocuments.filter((doc) => doc.name);
 					const itemsDict = {};
@@ -157,7 +164,18 @@ export const ListScraper = () => {
 		}
 	};
 
-	const reshapedItems = () => {
+	const [submitListicle] = useMutation(SUBMIT_LISTICLE, {
+		onCompleted() {
+			console.log('SubmitListicle Success');
+		},
+		onError(err) {
+			console.log(err);
+		},
+	});
+
+	const addItemsToMap = () => {
+		//TODO: checks if editableListItemsRef is not null before adding
+
 		const editedItems = editableListItemsRef.current;
 		const reshapedItemsArray = Object.keys(editedItems).reduce(
 			(result, key) => {
@@ -178,6 +196,12 @@ export const ListScraper = () => {
 				categories: ['Searched'],
 			},
 		});
+
+		submitListicle({
+			variables: listicleVariable,
+		});
+
+		// TODO: setSnackMessage({ text: 'Added to maps!', code: 'Confirm' });
 	};
 
 	return (
@@ -205,7 +229,7 @@ export const ListScraper = () => {
 						/>
 					))}
 			</div>
-			<button onClick={reshapedItems}>Add items to map</button>
+			<button onClick={addItemsToMap}>Add items to map</button>
 			<div className={classes.iframe}>
 				{/* TODO: tune out all the network errors within iframe */}
 				{/* TODO: set loading? */}
@@ -220,3 +244,21 @@ export const ListScraper = () => {
 		</div>
 	);
 };
+
+const SUBMIT_LISTICLE = gql`
+	mutation submitListicle(
+		$url: String!
+		$titleSelector: String!
+		$contentSelector: String!
+	) {
+		submitListicle(
+			url: $url
+			titleSelector: $titleSelector
+			contentSelector: $contentSelector
+		) {
+			url
+			titleSelector
+			contentSelector
+		}
+	}
+`;
