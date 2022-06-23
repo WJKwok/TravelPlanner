@@ -46,13 +46,15 @@ export const ListScraper = ({ setListScraperOpen }) => {
 	const [isIframeLoaded, setIsIframeLoaded] = useState(false);
 	const titleElRef = useRef(undefined);
 	const contentElRef = useRef(undefined);
+	const [_, setLastClickedEl] = useState(undefined);
 	const [listicleVariable, setListicleVariable] = useState({});
 
 	const [listItems, setListItems] = useState([]);
 	const editableListItemsRef = useRef({});
 
+	const areIframeListenersLoaded = !areIframeListenersLoading && isIframeLoaded;
 	const styleProps = {
-		areIframeListenersLoaded: !areIframeListenersLoading && isIframeLoaded,
+		areIframeListenersLoaded,
 	};
 	const classes = useStyles(styleProps);
 
@@ -102,9 +104,11 @@ export const ListScraper = ({ setListScraperOpen }) => {
 						titleElRef.current = e.target;
 					} else if (titleElRef.current && !contentElRef.current) {
 						if (titleElRef.current === e.target) {
+							//unclick title
 							e.target.style.background = '';
 							titleElRef.current = undefined;
 						} else {
+							//click content
 							e.target.style.background = 'purple';
 							contentElRef.current = e.target;
 						}
@@ -120,6 +124,9 @@ export const ListScraper = ({ setListScraperOpen }) => {
 							contentElRef.current = e.target;
 						}
 					}
+
+					//basically used to re-render component, since state is frozen within eventListeners
+					setLastClickedEl(e.target);
 				});
 			});
 			setAreIframeListenersLoading(false);
@@ -213,7 +220,7 @@ export const ListScraper = ({ setListScraperOpen }) => {
 
 	return (
 		<div className={classes.page}>
-			{/* buffer for typing? do people usually copy paste? */}
+			{/*TODO: buffer for typing? do people usually copy paste? */}
 			<label>
 				Copy-paste in listcle URL
 				<input
@@ -225,7 +232,23 @@ export const ListScraper = ({ setListScraperOpen }) => {
 			{areIframeListenersLoading && <CircularProgress size={20} />}
 			{/* TODO: indicate if title and content has been chosen, useState counter to register click and rerender to check ref*/}
 			{/* TODO: do not show extract when you don't have selectors */}
-			<button onClick={extractList}>Extract List</button>
+			{areIframeListenersLoaded && (
+				<div>
+					{titleElRef.current ? (
+						<span>Title is selected ✅</span>
+					) : (
+						<span>Please select one item title in Iframe</span>
+					)}
+					{contentElRef.current ? (
+						<p>Content is selected ✅</p>
+					) : (
+						<p>Please select one item content in Iframe</p>
+					)}
+					{titleElRef.current && contentElRef.current && (
+						<button onClick={extractList}>Extract List</button>
+					)}
+				</div>
+			)}
 			<div className={classes.listItems}>
 				{/* TODO: listItems changes, component state doesn't reset - try key change? OR setListItems back to empty */}
 				{listItems &&
@@ -242,7 +265,6 @@ export const ListScraper = ({ setListScraperOpen }) => {
 			<button onClick={addItemsToMap}>Add items to map</button>
 			<div className={classes.iframe}>
 				{/* TODO: tune out all the network errors within iframe */}
-				{/* TODO: set loading? */}
 				{urlHtml && (
 					<iframe
 						ref={iframeref}
