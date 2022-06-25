@@ -71,7 +71,10 @@ export const LeftButtonGroup = () => {
 					</Button>
 				)}
 				{!isMobile && (
-					<Button id="save" onClick={() => setListScraperOpen(true)}>
+					<Button
+						data-testid="list-scraper-feature-button"
+						onClick={() => setListScraperOpen(true)}
+					>
 						<WebIcon />
 					</Button>
 				)}

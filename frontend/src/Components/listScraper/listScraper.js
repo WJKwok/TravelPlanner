@@ -250,9 +250,12 @@ export const ListScraper = ({ setListScraperOpen }) => {
 	};
 
 	return (
-		<div className={classes.page}>
+		<div className={classes.page} data-testid="list-scraper-component">
 			{errMsg && (
-				<div className={classes.errorMessage}>
+				<div
+					className={classes.errorMessage}
+					data-testid="list-scraper-err-msg"
+				>
 					<p>{errMsg}</p>
 				</div>
 			)}
@@ -260,6 +263,7 @@ export const ListScraper = ({ setListScraperOpen }) => {
 			<label>
 				Copy-paste in listcle URL
 				<input
+					data-testid="list-scraper-url-input"
 					className={classes.urlInput}
 					value={listURL}
 					onChange={(e) => setListURL(e.target.value.trim())}
@@ -267,7 +271,7 @@ export const ListScraper = ({ setListScraperOpen }) => {
 			</label>
 			{areIframeListenersLoading && <CircularProgress size={20} />}
 			{areIframeListenersLoaded && (
-				<div>
+				<div data-testid="list-scraper-text-selection-prompt">
 					{titleElRef.current ? (
 						<span>Title is selected ✅</span>
 					) : (
@@ -279,7 +283,9 @@ export const ListScraper = ({ setListScraperOpen }) => {
 						<p>Please select one item content in Iframe</p>
 					)}
 					{titleElRef.current && contentElRef.current && (
-						<button onClick={extractList}>Extract List</button>
+						<button data-testid="extract-list-button" onClick={extractList}>
+							Extract List
+						</button>
 					)}
 				</div>
 			)}
@@ -297,7 +303,9 @@ export const ListScraper = ({ setListScraperOpen }) => {
 								/>
 							))}
 					</div>
-					<button onClick={addItemsToMap}>Add items to map</button>
+					<button data-testid="add-items-to-map-button" onClick={addItemsToMap}>
+						Add items to map
+					</button>
 				</div>
 			)}
 
@@ -305,6 +313,7 @@ export const ListScraper = ({ setListScraperOpen }) => {
 				{/* TODO: tune out all the network errors within iframe */}
 				{urlHtml && (
 					<iframe
+						data-cy="the-frame"
 						sandbox
 						ref={iframeref}
 						width="100%"

@@ -40,7 +40,11 @@ export const MapMarker = ({
 	const icon = iconDict[category] ? iconDict[category] : iconDict.Default;
 
 	return (
-		<div className={classes.emoji} onClick={onClick}>
+		<div
+			data-testid={`map-marker-${category}`}
+			className={classes.emoji}
+			onClick={onClick}
+		>
 			{icon}
 			{liked && (
 				<FavoriteIcon

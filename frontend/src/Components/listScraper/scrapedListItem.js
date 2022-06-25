@@ -100,8 +100,12 @@ export const ScrapedListItem = ({ name, content, index, listItemRef }) => {
 	};
 
 	return show ? (
-		<div className={classes.root}>
-			<DeleteIcon className={classes.delete} onClick={deleteItem} />
+		<div className={classes.root} data-testid="scraped-list-item-component">
+			<DeleteIcon
+				data-testid="delete-list-item-button"
+				className={classes.delete}
+				onClick={deleteItem}
+			/>
 			<label>
 				Place name:
 				<textarea value={itemName} onChange={(e) => editName(e.target.value)} />
