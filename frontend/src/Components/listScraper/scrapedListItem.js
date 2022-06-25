@@ -1,5 +1,6 @@
 import { List, ListItem, ListItemText, makeStyles } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { useGetGuideData } from 'graphqlHooks';
 import React, { useEffect, useState } from 'react';
 import { fetchOnePlaceId, fetchPredictions } from 'Services/googlePlaceApi';
 
@@ -37,7 +38,10 @@ export const ScrapedListItem = ({ name, content, index, listItemRef }) => {
 	const [suggestions, setSuggestion] = useState([]);
 	const [googlePlace, setGooglePlace] = useState();
 
-	const locationCoords = '52.5200,13.4050';
+	const {
+		guideData: { coordinates },
+	} = useGetGuideData();
+	const locationCoords = `${coordinates[0]},${coordinates[1]}`;
 
 	const setGooglePlaceSummary = (placeObject) => {
 		const { name, rating, userRatingsTotal, businessStatus, address } =
