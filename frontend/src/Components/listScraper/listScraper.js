@@ -100,6 +100,17 @@ export const ListScraper = ({ setListScraperOpen }) => {
 						escape(window.atob(data.encodedHtml))
 					);
 					setUrlHtml(html);
+
+					if (data.arrayOfDocuments) {
+						const filteredItems = data.arrayOfDocuments.filter(
+							(doc) => doc.title
+						);
+						const itemsDict = {};
+						//TODO: use id instead of index
+						filteredItems.forEach((item, index) => (itemsDict[index] = item));
+						editableListItemsRef.current = itemsDict;
+						setListItems(filteredItems);
+					}
 				})
 				.catch((error) => {
 					console.error('Fetch failed:', error);
