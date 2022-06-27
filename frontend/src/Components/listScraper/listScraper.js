@@ -251,9 +251,11 @@ export const ListScraper = ({ setListScraperOpen }) => {
 				},
 			});
 
-			submitListicle({
-				variables: listicleVariable,
-			});
+			if (Object.keys(listicleVariable).length === 3) {
+				submitListicle({
+					variables: listicleVariable,
+				});
+			}
 
 			setListScraperOpen(false);
 			setSnackMessage({ text: 'Added list items to maps!', code: 'Confirm' });
