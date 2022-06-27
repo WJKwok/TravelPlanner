@@ -188,6 +188,9 @@ export const ListScraper = ({ setListScraperOpen }) => {
 				cSelector
 			);
 
+			editableListItemsRef.current = {};
+			setListItems([]);
+
 			fetch(
 				`https://python-list-scrapper.herokuapp.com/extracthtml/?url=${listURL}&titleSelector=${tSelector}&contentSelector=${cSelector}`
 			)
