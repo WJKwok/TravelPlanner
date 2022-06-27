@@ -14,6 +14,24 @@ const getIframeBody = () => {
 };
 
 describe('ListScraper', function () {
+	beforeEach(() => {
+		// prevent the test link from being saved in listicle collection
+		cy.intercept('POST', 'http://localhost:5010/', (req) => {
+			if (req.body.operationName === 'submitListicle') {
+				req.reply({
+					statusCode: 200,
+					body: {
+						listicle: {
+							url: 'yes',
+							titleSelector: 'yes',
+							contentSelector: 'yes',
+						},
+					},
+				});
+			}
+		});
+	});
+
 	it('new listicle', () => {
 		cy.visit('http://localhost:3000/web/planner/5ed7aee473e66d73abe88279');
 		// click on feature button
@@ -122,7 +140,7 @@ describe('ListScraper', function () {
 		cy.wait(5000);
 		cy.get('[data-testid="scraped-list-item-component"]').should(
 			'have.length',
-			4
+			5
 		);
 		cy.get('[data-testid="add-items-to-map-button"]').should(
 			'not.be.undefined'
@@ -136,7 +154,7 @@ describe('ListScraper', function () {
 			});
 		cy.get('[data-testid="scraped-list-item-component"]').should(
 			'have.length',
-			3
+			4
 		);
 
 		// add items to map
