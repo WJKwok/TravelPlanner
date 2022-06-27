@@ -189,7 +189,9 @@ export const ListScraper = ({ setListScraperOpen }) => {
 						contentSelector: cSelector,
 					});
 					//TODO: rename name to title
-					const filteredItems = data.arrayOfDocuments.filter((doc) => doc.name);
+					const filteredItems = data.arrayOfDocuments.filter(
+						(doc) => doc.title
+					);
 					const itemsDict = {};
 					//TODO: use id instead of index
 					filteredItems.forEach((item, index) => (itemsDict[index] = item));
@@ -295,8 +297,8 @@ export const ListScraper = ({ setListScraperOpen }) => {
 						{listItems &&
 							listItems.map((item, idx) => (
 								<ScrapedListItem
-									key={item.name}
-									name={item.name}
+									key={item.title}
+									title={item.title}
 									content={item.content}
 									index={idx}
 									listItemRef={editableListItemsRef}

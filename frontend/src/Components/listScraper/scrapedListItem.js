@@ -30,10 +30,10 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export const ScrapedListItem = ({ name, content, index, listItemRef }) => {
+export const ScrapedListItem = ({ title, content, index, listItemRef }) => {
 	const classes = useStyles();
 	const [show, setShow] = useState(true);
-	const [itemName, setItemName] = useState(name);
+	const [itemTitle, setItemTitle] = useState(title);
 	const [itemContent, setItemContent] = useState(content);
 	const [suggestions, setSuggestion] = useState([]);
 	const [googlePlace, setGooglePlace] = useState();
@@ -53,7 +53,7 @@ export const ScrapedListItem = ({ name, content, index, listItemRef }) => {
 
 	useEffect(() => {
 		const getPredictions = async () => {
-			const { predictions } = await fetchPredictions(name, locationCoords);
+			const { predictions } = await fetchPredictions(title, locationCoords);
 			if (predictions.length === 1) {
 				const placeObject = await fetchOnePlaceId(predictions[0].place_id);
 				editListItemRef('googlePlaceData', placeObject);
@@ -75,9 +75,9 @@ export const ScrapedListItem = ({ name, content, index, listItemRef }) => {
 		};
 	};
 
-	const editName = async (value) => {
-		setItemName(value);
-		editListItemRef('name', value);
+	const editTitle = async (value) => {
+		setItemTitle(value);
+		editListItemRef('title', value);
 		const { predictions } = await fetchPredictions(value, locationCoords);
 		setSuggestion(predictions);
 	};
@@ -108,7 +108,10 @@ export const ScrapedListItem = ({ name, content, index, listItemRef }) => {
 			/>
 			<label>
 				Place name:
-				<textarea value={itemName} onChange={(e) => editName(e.target.value)} />
+				<textarea
+					value={itemTitle}
+					onChange={(e) => editTitle(e.target.value)}
+				/>
 			</label>
 			{googlePlace && (
 				<p className={classes.googlePlaceSummary}>{googlePlace}</p>
