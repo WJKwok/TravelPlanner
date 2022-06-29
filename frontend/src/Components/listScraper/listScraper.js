@@ -92,6 +92,16 @@ export const ListScraper = ({ setListScraperOpen }) => {
 			contentElRef.current = undefined;
 			setAreIframeListenersLoading(true);
 
+	const consumeArrayOfDocuments = (arrayOfDocuments) => {
+		if (arrayOfDocuments) {
+			const filteredItems = arrayOfDocuments.filter((doc) => doc.title);
+			const itemsDict = {};
+			filteredItems.forEach((item, index) => (itemsDict[index] = item));
+			editableListItemsRef.current = itemsDict;
+			setListItems(filteredItems);
+		}
+	};
+
 			fetch(
 				`https://python-list-scrapper.herokuapp.com/extracthtml/?url=${listURL}`
 			)
@@ -101,20 +111,9 @@ export const ListScraper = ({ setListScraperOpen }) => {
 						escape(window.atob(data.encodedHtml))
 					);
 					setUrlHtml(html);
-
-					if (data.arrayOfDocuments) {
-						const filteredItems = data.arrayOfDocuments.filter(
-							(doc) => doc.title
-						);
-						const itemsDict = {};
-						//TODO: use id instead of index
-						filteredItems.forEach((item, index) => (itemsDict[index] = item));
-						editableListItemsRef.current = itemsDict;
-						setListItems(filteredItems);
-					}
+					consumeArrayOfDocuments(data.arrayOfDocuments);
 				})
 				.catch((error) => {
-					console.error('Fetch failed:', error);
 					setErrMsg('URL seems to be broken');
 					setAreIframeListenersLoading(false);
 				});
@@ -192,15 +191,8 @@ export const ListScraper = ({ setListScraperOpen }) => {
 						titleSelector: tSelector,
 						contentSelector: cSelector,
 					});
-					//TODO: rename name to title
-					const filteredItems = data.arrayOfDocuments.filter(
-						(doc) => doc.title
-					);
-					const itemsDict = {};
-					//TODO: use id instead of index
-					filteredItems.forEach((item, index) => (itemsDict[index] = item));
-					editableListItemsRef.current = itemsDict;
-					setListItems(filteredItems);
+
+					consumeArrayOfDocuments(data.arrayOfDocuments);
 				})
 				.catch((error) => {
 					console.error('Extract List Error:', error);
