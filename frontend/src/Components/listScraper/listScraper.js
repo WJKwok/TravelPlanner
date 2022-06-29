@@ -191,7 +191,6 @@ export const ListScraper = ({ setListScraperOpen }) => {
 			)
 				.then((response) => response.json())
 				.then((data) => {
-					console.log('list extracted:', data);
 					setListicleVariable({
 						url: listURL,
 						titleSelector: tSelector,
@@ -201,7 +200,7 @@ export const ListScraper = ({ setListScraperOpen }) => {
 					consumeArrayOfDocuments(data.arrayOfDocuments);
 				})
 				.catch((error) => {
-					console.error('Extract List Error:', error);
+					setErrMsg('There is an error with list extraction 😞');
 				});
 		}
 	};
