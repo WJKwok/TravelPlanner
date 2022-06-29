@@ -6,8 +6,7 @@ import { ScrapedListItem } from './scrapedListItem';
 import { SnackBarContext, SpotContext } from 'Store';
 import { reshapeGoogleObject } from 'utils/reshapeGoogleObject';
 import { useMutation, gql } from '@apollo/client';
-import { getSelectorsFromElements } from './utils';
-import { xor, isEmpty } from 'lodash';
+import { getSelectorsFromElements, areListicleVariablesPresent } from './utils';
 
 const useStyles = makeStyles((theme) => ({
 	page: {
@@ -236,14 +235,7 @@ export const ListScraper = ({ setListScraperOpen }) => {
 				},
 			});
 
-			const areListicleVariablesPresent = isEmpty(
-				xor(Object.keys(listicleVariable), [
-					'url',
-					'titleSelector',
-					'contentSelector',
-				])
-			);
-			if (areListicleVariablesPresent) {
+			if (areListicleVariablesPresent(listicleVariable)) {
 				submitListicle({
 					variables: listicleVariable,
 				});

@@ -1,3 +1,5 @@
+import { xor, isEmpty } from 'lodash';
+
 export const getSelectorsFromElements = (titleEl, contentEl) => {
 	const { nodeName: tNodeName, className: tClassName } = titleEl;
 	const { nodeName: cNodeName, className: cClassName } = contentEl;
@@ -11,3 +13,12 @@ export const getSelectorsFromElements = (titleEl, contentEl) => {
 
 	return [tSelector, cSelector];
 };
+
+export const areListicleVariablesPresent = (listicleVariable) =>
+	isEmpty(
+		xor(Object.keys(listicleVariable), [
+			'url',
+			'titleSelector',
+			'contentSelector',
+		])
+	);
