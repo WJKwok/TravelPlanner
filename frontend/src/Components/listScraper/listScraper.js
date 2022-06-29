@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef, useContext, useMemo } from 'react';
 import { makeStyles } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
@@ -13,6 +13,8 @@ import {
 	elementClickLogic,
 	consumeArrayOfDocuments,
 } from './utils';
+
+import { debounce } from 'lodash';
 
 const useStyles = makeStyles((theme) => ({
 	page: {
@@ -93,7 +95,7 @@ export const ListScraper = ({ setListScraperOpen }) => {
 		setAreIframeListenersLoading(true);
 	};
 
-	useEffect(() => {
+	const fetchUrlHtml = (listURL) => {
 		if (listURL) {
 			resetComponentState();
 
@@ -117,7 +119,25 @@ export const ListScraper = ({ setListScraperOpen }) => {
 					setAreIframeListenersLoading(false);
 				});
 		}
-	}, [listURL]);
+	};
+
+	const debouncedFetchUrlHtml = useMemo(
+		() => debounce((url) => fetchUrlHtml(url), 1500),
+		[]
+	);
+
+	// Stop the invocation of the debounced function after unmounting
+	useEffect(() => {
+		return () => {
+			debouncedFetchUrlHtml.cancel();
+		};
+	}, [debouncedFetchUrlHtml]);
+
+	const urlInputChangeHandler = (e) => {
+		const urlInput = e.target.value.trim();
+		setListURL(urlInput);
+		debouncedFetchUrlHtml(urlInput);
+	};
 
 	useEffect(() => {
 		const doc = iframeref.current;
@@ -240,7 +260,7 @@ export const ListScraper = ({ setListScraperOpen }) => {
 					data-testid="list-scraper-url-input"
 					className={classes.urlInput}
 					value={listURL}
-					onChange={(e) => setListURL(e.target.value.trim())}
+					onChange={urlInputChangeHandler}
 				/>
 			</label>
 			{areIframeListenersLoading && <CircularProgress size={20} />}
@@ -273,7 +293,6 @@ export const ListScraper = ({ setListScraperOpen }) => {
 
 			<div className={classes.iframe}>
 				{/* TODO: tune out all the network errors within iframe */}
-				{/* REFACTOR: move condition into your visibility prop? */}
 				{urlHtml && (
 					<iframe
 						data-cy="the-frame"
