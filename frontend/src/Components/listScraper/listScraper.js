@@ -206,14 +206,8 @@ export const ListScraper = ({ setListScraperOpen }) => {
 		}
 	};
 
-	const [submitListicle] = useMutation(SUBMIT_LISTICLE, {
-		onCompleted() {
-			console.log('SubmitListicle Success');
-		},
-		onError(err) {
-			console.log(err);
-		},
-	});
+	// REFACTOR: do you need the console.logs?
+	const [submitListicle] = useMutation(SUBMIT_LISTICLE);
 
 	const addItemsToMap = () => {
 		const editedItems = editableListItemsRef.current;
