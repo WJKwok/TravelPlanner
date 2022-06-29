@@ -7,6 +7,7 @@ import { SnackBarContext, SpotContext } from 'Store';
 import { reshapeGoogleObject } from 'utils/reshapeGoogleObject';
 import { useMutation, gql } from '@apollo/client';
 import { getSelectorsFromElements } from './utils';
+import { xor, isEmpty } from 'lodash';
 
 const useStyles = makeStyles((theme) => ({
 	page: {
@@ -206,7 +207,6 @@ export const ListScraper = ({ setListScraperOpen }) => {
 		}
 	};
 
-	// REFACTOR: do you need the console.logs?
 	const [submitListicle] = useMutation(SUBMIT_LISTICLE);
 
 	const addItemsToMap = () => {
@@ -236,8 +236,14 @@ export const ListScraper = ({ setListScraperOpen }) => {
 				},
 			});
 
-			// REFACTOR MORE THOROUGH CHECK? check if keys have all 3 variables
-			if (Object.keys(listicleVariable).length === 3) {
+			const areListicleVariablesPresent = isEmpty(
+				xor(Object.keys(listicleVariable), [
+					'url',
+					'titleSelector',
+					'contentSelector',
+				])
+			);
+			if (areListicleVariablesPresent) {
 				submitListicle({
 					variables: listicleVariable,
 				});
