@@ -49,19 +49,19 @@ export const ListScraper = ({ setListScraperOpen }) => {
 	const { setSnackMessage } = useContext(SnackBarContext);
 
 	const [listURL, setListURL] = useState('');
-	const [areIframeListenersLoading, setAreIframeListenersLoading] =
-		useState(false);
 	const [urlHtml, setUrlHtml] = useState('');
+	const [listicleVariable, setListicleVariable] = useState({});
+	const [listItems, setListItems] = useState([]);
+	const editableListItemsRef = useRef({});
 
 	const iframeref = useRef();
 	const [isIframeLoaded, setIsIframeLoaded] = useState(false);
+	const [areIframeListenersLoading, setAreIframeListenersLoading] =
+		useState(false);
+
 	const titleElRef = useRef(undefined);
 	const contentElRef = useRef(undefined);
 	const [_, setLastClickedTime] = useState(undefined);
-	const [listicleVariable, setListicleVariable] = useState({});
-
-	const [listItems, setListItems] = useState([]);
-	const editableListItemsRef = useRef({});
 
 	const [errMsg, setErrMsg] = useState('');
 
@@ -79,18 +79,21 @@ export const ListScraper = ({ setListScraperOpen }) => {
 		return () => clearTimeout(timer);
 	}, [errMsg]);
 
-	useEffect(() => {
-		if (listURL) {
-			//case New URL: reset these state
-			setListicleVariable({});
-			setListItems([]);
-			setUrlHtml('');
+	const resetScrapedItemsState = () => {
+		setListItems([]);
+		editableListItemsRef.current = {};
+	};
 
-			// reset iframe state
-			setIsIframeLoaded(false);
-			titleElRef.current = undefined;
-			contentElRef.current = undefined;
-			setAreIframeListenersLoading(true);
+	const resetComponentState = () => {
+		resetScrapedItemsState();
+
+		setUrlHtml('');
+		setListicleVariable({});
+		setIsIframeLoaded(false);
+		titleElRef.current = undefined;
+		contentElRef.current = undefined;
+		setAreIframeListenersLoading(true);
+	};
 
 	const consumeArrayOfDocuments = (arrayOfDocuments) => {
 		if (arrayOfDocuments) {
@@ -101,6 +104,10 @@ export const ListScraper = ({ setListScraperOpen }) => {
 			setListItems(filteredItems);
 		}
 	};
+
+	useEffect(() => {
+		if (listURL) {
+			resetComponentState();
 
 			fetch(
 				`https://python-list-scrapper.herokuapp.com/extracthtml/?url=${listURL}`
@@ -177,8 +184,7 @@ export const ListScraper = ({ setListScraperOpen }) => {
 				contentElRef.current
 			);
 
-			editableListItemsRef.current = {};
-			setListItems([]);
+			resetScrapedItemsState();
 
 			fetch(
 				`https://python-list-scrapper.herokuapp.com/extracthtml/?url=${listURL}&titleSelector=${tSelector}&contentSelector=${cSelector}`
