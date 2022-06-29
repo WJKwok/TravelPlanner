@@ -6,6 +6,7 @@ import { ScrapedListItem } from './scrapedListItem';
 import { SnackBarContext, SpotContext } from 'Store';
 import { reshapeGoogleObject } from 'utils/reshapeGoogleObject';
 import { useMutation, gql } from '@apollo/client';
+import { getSelectorsFromElements } from './utils';
 
 const useStyles = makeStyles((theme) => ({
 	page: {
@@ -135,6 +136,7 @@ export const ListScraper = ({ setListScraperOpen }) => {
 					//prevent page links from opening
 					e.preventDefault();
 
+					//REFACTOR: explain which action refer to sandbox?
 					if (!titleElRef.current && !contentElRef.current) {
 						e.target.style.background = 'lightcoral';
 						titleElRef.current = e.target;
@@ -171,21 +173,9 @@ export const ListScraper = ({ setListScraperOpen }) => {
 
 	const extractList = () => {
 		if (titleElRef.current && contentElRef.current) {
-			const { nodeName: tNodeName, className: tClassName } = titleElRef.current;
-			const { nodeName: cNodeName, className: cClassName } =
-				contentElRef.current;
-
-			const tSelector =
-				tNodeName.toLowerCase() +
-				(tClassName ? '.' + tClassName.split(' ').join('.') : '');
-			const cSelector =
-				cNodeName.toLowerCase() +
-				(cClassName ? '.' + cClassName.split(' ').join('.') : '');
-
-			console.log(
-				'scrapping list with these two selectors:',
-				tSelector,
-				cSelector
+			const [tSelector, cSelector] = getSelectorsFromElements(
+				titleElRef.current,
+				contentElRef.current
 			);
 
 			editableListItemsRef.current = {};
@@ -254,6 +244,7 @@ export const ListScraper = ({ setListScraperOpen }) => {
 				},
 			});
 
+			// REFACTOR MORE THOROUGH CHECK? check if keys have all 3 variables
 			if (Object.keys(listicleVariable).length === 3) {
 				submitListicle({
 					variables: listicleVariable,
@@ -289,6 +280,7 @@ export const ListScraper = ({ setListScraperOpen }) => {
 			</label>
 			{areIframeListenersLoading && <CircularProgress size={20} />}
 			{areIframeListenersLoaded && (
+				// msg for listeners are loading?
 				<div data-testid="list-scraper-text-selection-prompt">
 					{titleElRef.current ? (
 						<span>Title is selected ✅</span>
@@ -329,6 +321,7 @@ export const ListScraper = ({ setListScraperOpen }) => {
 
 			<div className={classes.iframe}>
 				{/* TODO: tune out all the network errors within iframe */}
+				{/* REFACTOR: move condition into your visibility prop? */}
 				{urlHtml && (
 					<iframe
 						data-cy="the-frame"
