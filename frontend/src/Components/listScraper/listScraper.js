@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { ScrapedListItem } from './scrapedListItem';
+import { SelectionCheckList } from './partials/SelectionCheckList';
 import { SnackBarContext, SpotContext } from 'Store';
 import { reshapeGoogleObject } from 'utils/reshapeGoogleObject';
 import { useMutation, gql } from '@apollo/client';
@@ -244,24 +245,11 @@ export const ListScraper = ({ setListScraperOpen }) => {
 			</label>
 			{areIframeListenersLoading && <CircularProgress size={20} />}
 			{areIframeListenersLoaded && (
-				// msg for listeners are loading?
-				<div data-testid="list-scraper-text-selection-prompt">
-					{titleElRef.current ? (
-						<span>Title is selected ✅</span>
-					) : (
-						<span>Please select one item title in Iframe</span>
-					)}
-					{contentElRef.current ? (
-						<p>Content is selected ✅</p>
-					) : (
-						<p>Please select one item content in Iframe</p>
-					)}
-					{titleElRef.current && contentElRef.current && (
-						<button data-testid="extract-list-button" onClick={extractList}>
-							Extract List
-						</button>
-					)}
-				</div>
+				<SelectionCheckList
+					titleElRef={titleElRef}
+					contentElRef={contentElRef}
+					extractListHandler={extractList}
+				/>
 			)}
 			{listItems.length !== 0 && (
 				<div>
