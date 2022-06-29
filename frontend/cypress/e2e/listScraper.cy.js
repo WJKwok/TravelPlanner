@@ -166,4 +166,42 @@ describe('ListScraper', function () {
 			.contains('Added list items to maps!')
 			.should('have.length', 1);
 	});
+
+	it.only('previously scraped listicle', () => {
+		cy.visit('http://localhost:3000/web/planner/5ed7aee473e66d73abe88279');
+		// click on feature button
+		cy.get('[data-testid="list-scraper-feature-button"]').click();
+		cy.get('[data-testid="list-scraper-component"]').should('not.be.undefined');
+
+		//input listicle url;
+		cy.get('[data-testid="list-scraper-url-input"]')
+			.clear()
+			.invoke(
+				'val',
+				'https://misstourist.com/22-things-to-do-in-berlin-ultimate-bucket-list/'
+			)
+			.type(' ');
+		cy.wait(5000);
+
+		// extract list button should not exist when both title and content items are not clicked
+		cy.get('[data-testid="extract-list-button"]').should('not.exist');
+
+		cy.get('[data-testid="add-items-to-map-button"]').should(
+			'not.be.undefined'
+		);
+
+		cy.get('[data-testid="scraped-list-item-component"]').should(
+			'have.length',
+			23
+		);
+
+		cy.wait(5000);
+		// check for text selection prompt msgs
+		cy.get('[data-testid="list-scraper-text-selection-prompt"]').within(() => {
+			cy.get('span').should('not.contain', 'Title is selected ✅');
+			cy.get('span').contains('Please select one item title in Iframe');
+			cy.get('p').should('not.contain', 'Content is selected ✅');
+			cy.get('p').contains('Please select one item content in Iframe');
+		});
+	});
 });
