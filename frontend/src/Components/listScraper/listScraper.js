@@ -6,7 +6,12 @@ import { ScrapedListItem } from './scrapedListItem';
 import { SnackBarContext, SpotContext } from 'Store';
 import { reshapeGoogleObject } from 'utils/reshapeGoogleObject';
 import { useMutation, gql } from '@apollo/client';
-import { getSelectorsFromElements, areListicleVariablesPresent } from './utils';
+import {
+	getSelectorsFromElements,
+	areListicleVariablesPresent,
+	elementClickLogic,
+	consumeArrayOfDocuments,
+} from './utils';
 
 const useStyles = makeStyles((theme) => ({
 	page: {
@@ -71,14 +76,6 @@ export const ListScraper = ({ setListScraperOpen }) => {
 	};
 	const classes = useStyles(styleProps);
 
-	useEffect(() => {
-		const timer = setTimeout(() => {
-			setErrMsg('');
-		}, 5000);
-
-		return () => clearTimeout(timer);
-	}, [errMsg]);
-
 	const resetScrapedItemsState = () => {
 		setListItems([]);
 		editableListItemsRef.current = {};
@@ -95,16 +92,6 @@ export const ListScraper = ({ setListScraperOpen }) => {
 		setAreIframeListenersLoading(true);
 	};
 
-	const consumeArrayOfDocuments = (arrayOfDocuments) => {
-		if (arrayOfDocuments) {
-			const filteredItems = arrayOfDocuments.filter((doc) => doc.title);
-			const itemsDict = {};
-			filteredItems.forEach((item, index) => (itemsDict[index] = item));
-			editableListItemsRef.current = itemsDict;
-			setListItems(filteredItems);
-		}
-	};
-
 	useEffect(() => {
 		if (listURL) {
 			resetComponentState();
@@ -118,9 +105,13 @@ export const ListScraper = ({ setListScraperOpen }) => {
 						escape(window.atob(data.encodedHtml))
 					);
 					setUrlHtml(html);
-					consumeArrayOfDocuments(data.arrayOfDocuments);
+					consumeArrayOfDocuments(
+						data.arrayOfDocuments,
+						editableListItemsRef,
+						setListItems
+					);
 				})
-				.catch((error) => {
+				.catch(() => {
 					setErrMsg('URL seems to be broken');
 					setAreIframeListenersLoading(false);
 				});
@@ -130,44 +121,16 @@ export const ListScraper = ({ setListScraperOpen }) => {
 	useEffect(() => {
 		const doc = iframeref.current;
 
-		//https://theculturetrip.com/europe/germany/berlin/articles/berlin-from-the-top-the-5-best-panoramic-views/
-		//https://misstourist.com/22-things-to-do-in-berlin-ultimate-bucket-list/
-
 		if (isIframeLoaded) {
 			const elements = doc.contentDocument.querySelectorAll('*');
 			elements.forEach((element) => {
 				element.addEventListener('click', (e) => {
 					//prevent bubbling
-					e.stopPropagation();
 					//prevent page links from opening
+					e.stopPropagation();
 					e.preventDefault();
 
-					//REFACTOR: explain which action refer to sandbox?
-					if (!titleElRef.current && !contentElRef.current) {
-						e.target.style.background = 'lightcoral';
-						titleElRef.current = e.target;
-					} else if (titleElRef.current && !contentElRef.current) {
-						if (titleElRef.current === e.target) {
-							//unclick title
-							e.target.style.background = '';
-							titleElRef.current = undefined;
-						} else {
-							//click content
-							e.target.style.background = 'bisque';
-							contentElRef.current = e.target;
-						}
-					} else if (titleElRef.current && contentElRef.current) {
-						if (contentElRef.current === e.target) {
-							e.target.style.background = '';
-							contentElRef.current = undefined;
-						} else if (titleElRef.current === e.target) {
-							// do nothing
-						} else {
-							contentElRef.current.style.background = '';
-							e.target.style.background = 'bisque';
-							contentElRef.current = e.target;
-						}
-					}
+					elementClickLogic(e, titleElRef, contentElRef);
 
 					//basically used to re-render component, since state is frozen within eventListeners
 					setLastClickedTime(Date.now());
@@ -176,6 +139,14 @@ export const ListScraper = ({ setListScraperOpen }) => {
 			setAreIframeListenersLoading(false);
 		}
 	}, [isIframeLoaded]);
+
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			setErrMsg('');
+		}, 5000);
+
+		return () => clearTimeout(timer);
+	}, [errMsg]);
 
 	const extractList = () => {
 		if (titleElRef.current && contentElRef.current) {
@@ -197,7 +168,11 @@ export const ListScraper = ({ setListScraperOpen }) => {
 						contentSelector: cSelector,
 					});
 
-					consumeArrayOfDocuments(data.arrayOfDocuments);
+					consumeArrayOfDocuments(
+						data.arrayOfDocuments,
+						editableListItemsRef,
+						setListItems
+					);
 				})
 				.catch((error) => {
 					setErrMsg('There is an error with list extraction 😞');
