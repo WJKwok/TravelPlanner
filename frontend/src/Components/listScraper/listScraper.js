@@ -102,7 +102,15 @@ export const ListScraper = ({ setListScraperOpen }) => {
 			fetch(
 				`https://python-list-scrapper.herokuapp.com/extracthtml/?url=${listURL}`
 			)
-				.then((response) => response.json())
+				.then((res) => {
+					if (!res.ok) {
+						return res.text().then((text) => {
+							throw new Error(text);
+						});
+					} else {
+						return res.json();
+					}
+				})
 				.then((data) => {
 					const html = decodeURIComponent(
 						escape(window.atob(data.encodedHtml))
@@ -114,8 +122,8 @@ export const ListScraper = ({ setListScraperOpen }) => {
 						setListItems
 					);
 				})
-				.catch(() => {
-					setErrMsg('URL seems to be broken');
+				.catch((e) => {
+					setErrMsg(e.message);
 					setAreIframeListenersLoading(false);
 				});
 		}
