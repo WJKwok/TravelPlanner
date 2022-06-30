@@ -41,7 +41,7 @@ describe('ListScraper', function () {
 		//input broken listicle url; see err message
 		cy.get('[data-testid="list-scraper-url-input"]').type('h');
 		cy.get('[data-testid="list-scraper-err-msg"]').contains(
-			'URL seems to be broken'
+			'The url is probably broken :/'
 		);
 		cy.wait(5000);
 
@@ -167,7 +167,7 @@ describe('ListScraper', function () {
 			.should('have.length', 1);
 	});
 
-	it.only('previously scraped listicle', () => {
+	it('previously scraped listicle', () => {
 		cy.visit('http://localhost:3000/web/planner/5ed7aee473e66d73abe88279');
 		// click on feature button
 		cy.get('[data-testid="list-scraper-feature-button"]').click();
